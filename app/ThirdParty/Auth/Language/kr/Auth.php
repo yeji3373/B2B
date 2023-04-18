@@ -1,0 +1,80 @@
+<?php
+
+return [
+    // Registration
+    'registration'          => 'Registration',
+    'account'               => 'Account',
+    'name'  				    	  => 'Name',
+    'id'                    => 'ID',
+    'email' 	      			  => 'E-mail address',
+    'password'	  	    	  => 'Password',
+    'passwordAgain'	    	  => 'Password again',
+    'vendors'               => '업체정보',
+    'vendorName'            => '회사명',
+    'businessNumber'        => '사업자번호',
+    'disallowedCharacters'  => '특수문자는 -만 입력가능합니다',
+    'phone'                 => 'Phone',
+    'address'               => '회사 주소',
+    'region'                => '판매 대상 Region',
+    // 'regionSelect'        => '지역을 선택해주세요',
+    'country'               => '판매 대상 Country',
+    'countrySelect'         => '국가를 선택해주세요',
+    'certificateBusiness'   => '사업자등록증',
+    'businessCard'          => '명함',
+    'allowedFilesGuide'     => 'JPG, GIF, PNG만 가능합니다.',
+    'allowedOnlyNumber'     => '숫자만 입력 가능합니다',
+    'buyerWeb'              => 'Site URL or SNS',
+    'register'		     		  => 'Register',
+    'alreadyRegistered'		  => 'Already registered? Log in!',
+
+    // Login/out
+    'login'					        => 'Log in',
+    'logout'				        => 'Log out',
+    'forgotYourPassword'    => 'Forgot your password?',
+    'loggedInWelcome'       => 'Welcome {0}! You are logged in.',
+
+    // Forgotten password
+    'forgottenPassword'     => 'Forgotten password',
+    'typeEmail'             => 'Type your e-mail address',
+    'setNewPassword'        => 'Set new password',
+
+    // Reset password
+    'resetPassword'         => 'Reset password',
+    'newPassword'			      => 'New password',
+    'newPasswordAgain'      => 'New password again',
+    'passwordResetRequest'  => 'Password reset request',
+
+    // Account
+    'accountSettings'		    => 'Account settings',
+    'changeEmail'           => 'Change e-mail address',
+    'changeEmailInfo'       => 'If you change this we will send you an e-mail at your new address to confirm it.',
+    'newEmail'              => 'New e-mail address',
+    'pendingEmail'          => 'Pending new e-mail address (Check your e-mail to confirm)',
+    'confirmEmail'          => 'Confirm your e-mail address',
+    'emailUpdateRequest'    => 'E-mail address update request',
+    'changePassword'        => 'Change password',
+    'currentPassword'       => 'Current password',
+    'update'                => 'Update',
+    'deleteAccount'         => 'Delete account',
+    'deleteAccountInfo'     => 'Be careful, this action cannot be undone!',
+    'areYouSure'            => 'Are you sure?',
+
+    // Error and success
+    'passwordMismatch'      => 'The passwords must match!',
+    // 'registrationSuccess'       => 'Success! Please activate your account by clicking the activation link in the e-mail we have sent!',
+    'registrationSuccess'   => '회원가입 완료. 승인요청중입니다. 승인요청이 완료되면 e-mail로 알려드립니다. 7일 이내 처리 완료 ',
+    'activationNoUser'      => 'There is no user with this activation code.',
+    'activationSuccess'     => 'Successful activation! Now you can login to your account!',
+    'wrongCredentials'      => 'Wrong credentials!',
+    'notActivated'          => 'This account is not yet activated.',
+    'updateSuccess'         => 'Update was successful!',
+    'accountDeleted'        => 'Account is successfully deleted!',
+    'emailUpdateStarted'    => 'Success! Please verify your new address by clicking the link in the e-mail we have sent!',
+    'confirmEmailSuccess'   => 'Confirmation success! Your new e-mail address is now active.',
+    'passwordUpdateSuccess' => 'Password is successfully updated!',
+    'wrongEmail'            => 'Wrong e-mail address!',
+    'forgottenPasswordEmail'=> 'An e-mail with instructions is sent to the address!',
+    'emailAlreadySent'      => 'An e-mail is already sent to this address!',
+    'invalidRequest'        => 'Invalid request!',
+    'confirmationNoBuyer'   => '승인 요청중입니다!',
+];

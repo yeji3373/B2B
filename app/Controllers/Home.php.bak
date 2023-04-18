@@ -1,0 +1,43 @@
+<?php
+namespace App\Controllers;
+
+use App\Models\ProductModel;
+use App\Models\BrandModel;
+use App\Models\BuyerModel;
+use App\Models\CurrencyModel;
+use App\Models\CartModel;
+use App\Models\MarginModel;
+use App\Models\RegionModel;
+use App\Models\CountryModel;
+use App\Models\BuyerAddressModel;
+use App\Models\PaymentMethodModel;
+use App\Models\ProductPriceModel;
+use App\Models\StockDetailModel;
+use App\Models\OrderModel;
+
+class Home extends BaseController {
+  protected $data;
+  
+  public function __construct() {
+    $this->order = new OrderModel();
+
+    $this->data['header'] = [ 'js' => ['https://www.gstatic.com/charts/loader.js', '/graph.js']];
+  }
+
+  public function index() {
+    // echo $this->request->getLocale();
+    $this->data['order'] = $this->getOrderStatus();
+    // print_r(session()->currency);
+    // print_r(session()->userData);
+    return $this->basicLayout('dash/main', $this->data);
+  }
+
+  public function getOrderStatus() {
+    $orders = $this->order
+                    ->select('created_at, DATE_FORMAT(created_at, \'%Y-%m-%d\') AS created_at_co, AVG(order_amount) order_amount')
+                    ->where('buyer_id', session()->userData['buyerId'])
+                    ->groupBy('created_at_co')
+                    ->find();
+    return $orders;
+  }
+}
