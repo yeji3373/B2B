@@ -24,11 +24,11 @@ class Home extends BaseController {
     $this->notice = new NoticeModel();
 
     $this->data['header'] = [ 'js' => ['https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js']
-                            , 'css' => ['https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css']];
+                            , 'css' => ['https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css', '/main.css']];
   }
 
   public function index() {
-    return $this->basicLayout('dash/index');
+    return $this->basicLayout('dash/index', $this->data);
   }
 
   // public function dashboard() {

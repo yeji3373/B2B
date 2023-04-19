@@ -10,7 +10,7 @@
               <div class='w-75 radio-group'>
                 <?php foreach($currencies as $currency) : ?>
                 <label class='checkout-currency' for='checkout-currency-<?=strtolower($currency['currency_code'])?>'>
-                  <input type='radio' 
+                  <input type='radio'
                       name='checkout-currency' 
                         id='checkout-currency-<?=strtolower($currency['currency_code'])?>'
                         data-rate='<?=($currency['exchange_rate'] / 100)?>'

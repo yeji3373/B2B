@@ -13,7 +13,8 @@ endforeach;?>
   $data = Array();
   foreach( $statistics AS $o ) : 
     // array_merge($data, [date('Y-m-d', strtotime($o['created_at_co'])), $o['subtotal_amount']]);
-    array_push($data, "'".date('Y-m-d', strtotime($o['created_at_co']))."', '".$o['subtotal_amount']."'");
+    array_push($data, 
+    "'".date('Y-m-d', strtotime($o['created_at_co']))."', '".$o['subtotal_amount']."'");
   //   array_merge($data, $o);
     // print_r($o);
     // echo date('Y-m-d', strtotime($o['created_at_co']));
