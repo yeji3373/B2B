@@ -1,0 +1,10 @@
+{
+    "open sans": {
+        "normal": "open_sans_normal",
+        "bold": "open_sans_bold"
+    },
+    "nanum gothic": {
+        "bold": "nanum_gothic_bold",
+        "normal": "nanum_gothic_normal"
+    }
+}
