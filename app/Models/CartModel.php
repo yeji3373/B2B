@@ -42,33 +42,43 @@ class CartModel extends Model {
         ->select('currency_rate.exchange_rate AS basedExchangRate, currency_rate.default_set')
         ->select('CR.cRate_idx, CR.exchange_rate')
         ->select('buyers_currency.cRate_idx AS buyerCurrencyRateIdx')
-        ->select('( stocks_detail.supplied_qty - stocks_detail.stock_basis - IFNULL(stocks_detail.req_qty, 0) ) AS available_stock')
-        ->join('buyers', 'buyers.id = cart.buyer_id')
-        ->join('product', 'product.id = cart.prd_id')
-        ->join('brand', 'brand.brand_id = product.brand_id')
-        ->join('product_price', 'product_price.product_idx = product.id')
-        ->join('supply_price', 'supply_price.product_price_idx = product_price.idx AND supply_price.available = 1', 'left outer')
-        ->join('(SELECT idx, product_price_idx, margin_level, price FROM supply_price) AS supply_price_compare', 'supply_price_compare.product_price_idx = product_price.idx AND supply_price_compare.margin_level = cart.dis_section', 'left outer')
-        ->join('product_spq', 'product_spq.product_idx = product.id', 'left outer')
-        ->join('margin_rate', 'margin_rate.brand_id = product.brand_id')
-        ->join('margin', '(margin.idx = margin_rate.margin_idx AND margin.margin_level = buyers.margin_level)')
-        ->join('currency', '(currency.default_currency = 1 AND currency.default_currency = 1)')
-        ->join('currency_rate', '(currency_rate.currency_idx = currency.idx AND currency_rate.default_set = 1 )' )
-        ->join('buyers_currency', 'buyers_currency.buyer_id = cart.buyer_id', 'LEFT OUTER')
-        ->join('currency_rate AS CR', 'CR.cRate_idx = buyers_currency.cRate_idx', 'LEFT OUTER')
-        ->join('stocks', 'stocks.prd_id = product.id', 'left outer')
-        ->join('( SELECT stocks_id
-                        , SUM( stocks_detail.supplied_qty ) AS supplied_qty
-                        , ( SELECT SUM( stocks_req.req_qty )
-                            FROM stocks_req 
-                            WHERE stock_id IN (GROUP_CONCAT(stocks_detail.id)) 
-                            GROUP BY stocks_req.stock_id ) AS req_qty
-                        , ( SELECT out_of_stock_basis FROM stock_settings WHERE available = 1 ) AS stock_basis
-                  FROM stocks_detail
-                  WHERE stocks_detail.available = 1
-                  GROUP BY stocks_detail.stocks_id
-                ) AS stocks_detail', 'stocks.id = stocks_detail.stocks_id', 'left outer')
-        ->where('product.discontinued', 0)
+        ->select('( stocks_detail.supplied_qty - stocks_detail.stock_basis - IFNULL(stocks_detail.req_qty, 0) ) AS available_stock');
+        $this->joins();
+        $this->joinsDefaultWhere();
+    return $this;
+  }
+
+  public function joins() {
+    $this->join('buyers', 'buyers.id = cart.buyer_id')
+          ->join('product', 'product.id = cart.prd_id')
+          ->join('brand', 'brand.brand_id = product.brand_id')
+          ->join('product_price', 'product_price.product_idx = product.id')
+          ->join('supply_price', 'supply_price.product_price_idx = product_price.idx AND supply_price.available = 1', 'left outer')
+          ->join('(SELECT idx, product_price_idx, margin_level, price FROM supply_price) AS supply_price_compare', 'supply_price_compare.product_price_idx = product_price.idx AND supply_price_compare.margin_level = cart.dis_section', 'left outer')
+          ->join('product_spq', 'product_spq.product_idx = product.id', 'left outer')
+          ->join('margin_rate', 'margin_rate.brand_id = product.brand_id')
+          ->join('margin', '(margin.idx = margin_rate.margin_idx AND margin.margin_level = buyers.margin_level)')
+          ->join('currency', '(currency.default_currency = 1 AND currency.default_currency = 1)')
+          ->join('currency_rate', '(currency_rate.currency_idx = currency.idx AND currency_rate.default_set = 1 )' )
+          ->join('buyers_currency', 'buyers_currency.buyer_id = cart.buyer_id', 'LEFT OUTER')
+          ->join('currency_rate AS CR', 'CR.cRate_idx = buyers_currency.cRate_idx', 'LEFT OUTER')
+          ->join('stocks', 'stocks.prd_id = product.id', 'left outer')
+          ->join('( SELECT stocks_id
+                          , SUM( stocks_detail.supplied_qty ) AS supplied_qty
+                          , ( SELECT SUM( stocks_req.req_qty )
+                              FROM stocks_req 
+                              WHERE stock_id IN (GROUP_CONCAT(stocks_detail.id)) 
+                              GROUP BY stocks_req.stock_id ) AS req_qty
+                          , ( SELECT out_of_stock_basis FROM stock_settings WHERE available = 1 ) AS stock_basis
+                    FROM stocks_detail
+                    WHERE stocks_detail.available = 1
+                    GROUP BY stocks_detail.stocks_id
+                  ) AS stocks_detail', 'stocks.id = stocks_detail.stocks_id', 'left outer');
+    return $this;
+  }
+
+  public function joinsDefaultWhere() {
+    $this->where('product.discontinued', 0)
         ->where('brand.available', 1)
         ->where('product_price.available', 1)
         ->where('margin.available', 1)

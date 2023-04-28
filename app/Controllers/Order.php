@@ -134,7 +134,7 @@ class Order extends BaseController
         $totalPrice['msg'] = '최소 결제금액은 '.$this->CartController->basedMinimumOrderVal.'이상';
       }
 
-      $this->applyDiscountCart();
+      // $this->applyDiscountCart(); // 상황 지켜본후 다시 활성화
     } else {
       $totalPrice['order_subTotal'] = 0;
       $totalPrice['order_price_total'] = 0;

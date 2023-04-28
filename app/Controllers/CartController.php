@@ -72,42 +72,48 @@ class CartController extends BaseController {
   }
 
   public function getCartTotalPrice( $where = array(), $exchange = 1 ) {
+    $cartSubTotal = NULL;
     $whereCondition = array();
-    $cart = $this->cart->cartJoin();
+    
+    $this->cart
+          ->joins()
+          ->select("cart.apply_discount AS applyDiscount")
+          ->joinsDefaultWhere();
+    
     if ( count($where) > 0 ) $whereCondition = $where;
     if ( $exchange > 1 ) :
-      $cart->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}) AS `order_price_total`")
+      $this->cart
+          ->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}) AS `order_price_total`")
           ->select("IF ( `cart`.`apply_discount` = 1, 
-                          ROUND((SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`) * {$exchange}), 0),
-                          0 
-                        ) AS `order_discount_total`")
+                    ROUND(((SUM({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * cart.order_qty) * {$exchange}), 0),
+                    0 
+                  ) AS `order_discount_total`")
           ->select("IF ( `cart`.`apply_discount` = 1, 
                           ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchange}), 0),
                           ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}), 0)
                         ) AS order_subTotal");
     else : 
-      $cart->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_price_total`")
-      ->select("IF ( `cart`.`apply_discount` = 1, 
-                      SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`),
-                      0 
-                    ) AS `order_discount_total`")
-      ->select("IF ( `cart`.`apply_discount` = 1, 
-                      SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`),
-                      SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`)
-                    ) AS `order_subTotal`");
+      $this->cart
+        ->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_price_total`")
+        ->select("IF ( `cart`.`apply_discount` = 1, 
+                        SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`),
+                        0 
+                      ) AS `order_discount_total`")
+        ->select("IF ( `cart`.`apply_discount` = 1, 
+                        SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`),
+                        SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`)
+                        ) AS `order_subTotal`");
     endif;
 
-    $cart->select('cart.apply_discount AS applyDiscount')
+    $this->cart
           ->where('cart.buyer_id', session()->userData['buyerId'])
           ->where('supply_price.margin_level = cart.prd_section')
           ->where($whereCondition)
           ->groupBy('cart.buyer_id');
 
-    $cartSubTotal = $cart->first();
+    $cartSubTotal = $this->cart->first();
 
-    if ( empty($cartSubTotal) ) {
-      return NULL;
-    } else return $cartSubTotal;
+    return $cartSubTotal;
   }
 
   public function initialCartList() {

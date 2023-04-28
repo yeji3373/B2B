@@ -37,7 +37,7 @@ class Orders extends BaseController {
     $this->paypalController = new PaypalController();
 
     $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
-                              'js' => ['https://www.gstatic.com/charts/loader.js'
+                              'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
                                       , '/orders.js'
                                       , '/graph.js']];
 
@@ -46,9 +46,11 @@ class Orders extends BaseController {
   public function index() {
     if ( empty($this->request->getGet('order_number')) ) {
       $this->data['statistics'] = $this->ordersStatistics();
+    // //   $this->data['statistics'] = [];
     } else {
-      // $this->data['orderDetail'] = $this->getOrderDetail()->where('order_number', $this->request->getGet('order_number'))->first();
-      // $this->data['orders'] = $this->getOrderList();
+    // if ( !empty($this->request->getGet('order_number')) ) {
+      // // $this->data['orderDetail'] = $this->getOrderDetail()->where('order_number', $this->request->getGet('order_number'))->first();
+      // // $this->data['orders'] = $this->getOrderList();
       $this->data['order'] = $this->getOrder();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
@@ -85,11 +87,14 @@ class Orders extends BaseController {
     $orders = $this->order
                     ->select('DATE_FORMAT(created_at, \'%Y-%m-%d\') AS created_at_co')
                     // ->select('CONVERT(AVG(order_amount), FLOAT) AS order_amount')
-                    ->select('CONVERT(SUM(subtotal_amount), FLOAT) AS subtotal_amount')
+                    ->select('CAST(SUM(subtotal_amount) AS DOUBLE) AS subtotal_amount')
                     ->where('buyer_id', session()->userData['buyerId'])
+                    // ->where('created_at >= ', date('Y-m-d 00:00:00', strtotime('-5 days')) )
+                    // ->where('created_at <= ', date('Y-m-d 00:00:00', strtotime('NOW')))
                     // ->where('created_at BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()')
                     ->groupBy('created_at_co')
                     ->find();
+    // echo $this->order->getLastQuery();
     return $orders;
   }
 
@@ -202,7 +207,8 @@ class Orders extends BaseController {
     }
     
     $receipts = $this->receipt
-                ->select("orders_receipt.*, CONVERT(IFNULL(delivery.delivery_price, 0), FLOAT) AS delivery_price")
+                // ->select("orders_receipt.*, CONVERT(IFNULL(delivery.delivery_price, 0), FLOAT) AS delivery_price")
+                ->select("orders_receipt.*, CAST(IFNULL(delivery.delivery_price, 0) AS DOUBLE) AS delivery_price")
                 ->join("delivery", "delivery.id = orders_receipt.delivery_id", "left outer")
                 ->where(['orders_receipt.order_id'=> $this->orderId
                         , 'orders_receipt.display' => 1])
@@ -250,11 +256,13 @@ class Orders extends BaseController {
 
   public function getOrderReceipt() {
     $addWhere = [];
+    $where_1 = '';
     if ( !is_null($this->request->getVar('receipt_type')) ) {
       $addWhere = ['orders_receipt.receipt_type <=' => $this->request->getVar('receipt_type')];
       // $addWhere = ['orders_receipt.receipt_type' => $this->request->getVar('receipt_type')];
-      $where_1 = "AND orders_receipt.receipt_type <= {$this->request->getVar('receipt_type')}";
+      // $where_1 = " AND orders_receipt.receipt_type <= {$this->request->getVar('receipt_type')}";
     }
+
     $receipt = $this->receipt
                       ->select('orders.order_amount')
                       ->select('orders_receipt.receipt_id, orders_receipt.order_id, orders_receipt.receipt_type')
@@ -266,10 +274,22 @@ class Orders extends BaseController {
                       ->select('(orders.order_amount - orders_recipt_sum.rq_amount) AS due_amount')
                       ->select('orders_receipt.delivery_id, orders_receipt.display')
                       ->select('orders_receipt.created_at')
-                      ->select("SUM(CONVERT(IFNULL(delivery.delivery_price, 0), FLOAT)) OVER() AS delivery_price")
+                      // ->select("SUM(CAST(IFNULL(delivery.delivery_price, 0) AS DOUBLE)) OVER() AS delivery_price")
+                      ->select("SUM(CAST(IFNULL(delivery.delivery_price, 0) AS DOUBLE)) AS delivery_price")
                       ->join("orders", "orders.id = orders_receipt.order_id")
-                      ->join("(SELECT order_id, SUM(rq_amount) AS rq_amount FROM orders_receipt WHERE order_id = {$this->orderId} AND payment_status = 100 $where_1) AS orders_recipt_sum"
-                            , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")
+                      // ->join("( SELECT order_id, SUM(rq_amount) AS rq_amount 
+                      //           FROM orders_receipt 
+                      //           WHERE order_id = {$this->orderId} 
+                      //             AND payment_status = 100
+                      //             $where_1
+                      //         ) AS orders_recipt_sum"
+                      //       , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")
+                      ->join("( SELECT order_id, SUM(rq_amount) AS rq_amount 
+                            FROM orders_receipt 
+                            WHERE order_id = {$this->orderId} 
+                              AND payment_status = 100
+                          ) AS orders_recipt_sum"
+                        , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")                            
                       // ->join("delivery", "delivery.id = orders_receipt.delivery_id", "left outer")
                       ->join("(SELECT id, order_id, SUM(delivery_price) AS delivery_price FROM delivery WHERE order_id = {$this->orderId} AND delivery_code = 100) AS delivery"
                             , "delivery.order_id = orders_receipt.order_id AND delivery.id = orders_receipt.delivery_id", "left outer")
@@ -283,14 +303,15 @@ class Orders extends BaseController {
     // echo $this->receipt->getLastQuery();
     // echo "<br/>";
     // echo "<br/>";
-    // print_r($receipt);
+    // // print_r($receipt);
     return $receipt;
   }
 
   public function getTotalShippingCost() {
     $delivery = $this->delivery
                   ->select('*')
-                  ->select('SUM(CONVERT(delivery_price, FLOAT)) OVER() AS shipping_total_cost')
+                  // ->select('SUM(delivery_price) OVER() AS shipping_total_cost')
+                  ->select('SUM(delivery_price) AS shipping_total_cost')
                   ->where(['order_id' => $this->orderId
                           , 'delivery_code >' => 0])
                   ->first();

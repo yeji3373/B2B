@@ -479,7 +479,7 @@
     let totalPrice, discountPrice, subTotalPrice, applyDiscount;
 
     result = getData('/order/checkoutTotalPrice', data, true);
-
+    console.log('result ', result);
     if ( result.code != 500 ) {
       totalPrice = result['order_price_total'];
       discountPrice = result['order_discount_total'];
@@ -504,9 +504,9 @@
 
       // if ( applyDiscount != 1 ) discountPrice = 0; subTotalPrice = totalPrice;
 
-      $('.order-total-price').text($.numberWithCommas(totalPrice));    
-      $('.order-discount-price').text($.numberWithCommas(discountPrice));
-      $('.order-subtotal-price').text($.numberWithCommas(subTotalPrice));
+      $('.order-total-price').text(totalPrice.numberWithCommas);    
+      $('.order-discount-price').text(discountPrice.numberWithCommas);
+      $('.order-subtotal-price').text(subTotalPrice.numberWithCommas);
       $('[name=order-total-price]').val(totalPrice);
       $('[name=order-discount-price]').val(discountPrice);
       $('[name=order-subtotal-price]').val(subTotalPrice);
@@ -521,7 +521,7 @@
       $('#payment-bank1').prop('checked', false).attr('disabled', true);
       // $('#payment-bank2').prop('checked', true).attr('disabled', false);
       $('#payment-bank2').attr('disabled', false);
-      alert("영세로만 판매되는 제품은 제외됨\n국내전용 계좌로만 입금 가능");
+      // alert("영세로만 판매되는 제품은 제외됨\n국내전용 계좌로만 입금 가능");
     } else {
       zeroTax = [];
       $('#payment-bank2').prop('checked', false).attr('disabled', true);
@@ -545,9 +545,9 @@
       $('.only-zero-tax').addClass('bg-secondary bg-opacity-25');
       $('.only-zero-tax .product-name').append('<span class="no-order-msg color-red fw-bold ms-1">주문불가</span>');
 
-      $('.order-total-price').text($.numberWithCommas(Math.ceil(totalPrice * tax)));
-      $('.order-discount-price').text($.numberWithCommas(Math.ceil(discountPrice * tax)));
-      $('.order-subtotal-price').text($.numberWithCommas(Math.ceil(subTotalPrice * tax)));
+      // $('.order-total-price').text($.numberWithCommas(Math.ceil(totalPrice * tax)));
+      $('.order-discount-price').text((Math.ceil(discountPrice * tax)).numberWithCommas);
+      $('.order-subtotal-price').text((Math.ceil(subTotalPrice * tax)).numberWithCommas);
       $('[name=order-total-price]').val(Math.ceil(totalPrice * tax));
       $('[name=order-discount-price]').val(Math.ceil(discountPrice * tax));
       $('[name=order-subtotal-price]').val(Math.ceil(subTotalPrice * tax));
@@ -555,9 +555,9 @@
       $('.only-zero-tax').removeClass('bg-secondary bg-opacity-25');
       $('.no-order-msg').remove();
 
-      $('.order-total-price').text($.numberWithCommas(totalPrice));
-      $('.order-discount-price').text($.numberWithCommas(discountPrice));
-      $('.order-subtotal-price').text($.numberWithCommas(subTotalPrice));
+      $('.order-total-price').text(totalPrice.numberWithCommas);
+      $('.order-discount-price').text(discountPrice.numberWithCommas);
+      $('.order-subtotal-price').text(subTotalPrice.numberWithCommas);
       $('[name=order-total-price]').val(totalPrice);
       $('[name=order-discount-price]').val(discountPrice);
       $('[name=order-subtotal-price]').val(subTotalPrice);

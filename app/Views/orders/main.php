@@ -1,29 +1,57 @@
 <div class="w-100 p-3 border border-dark">
-  <div id="GoogleBarChart" style="height: 17rem; width: 100%"></div>
+  <canvas id="orderStatistics" style="height: 17rem; width: 100%"></canvas>
 </div>
-<?php print_r($statistics); 
-foreach( $statistics AS $o ) : 
-  // echo json_encode($o)."<br/>";
-  echo json_encode([date('Y-m-d', strtotime($o['created_at_co'])), $o['subtotal_amount']]);
-  echo "<br/>";
-endforeach;?>
+
 <script>
-  let data = [];
-  <?php 
+<?php 
   $data = Array();
-  foreach( $statistics AS $o ) : 
-    // array_merge($data, [date('Y-m-d', strtotime($o['created_at_co'])), $o['subtotal_amount']]);
-    array_push($data, 
-    "'".date('Y-m-d', strtotime($o['created_at_co']))."', '".$o['subtotal_amount']."'");
-  //   array_merge($data, $o);
-    // print_r($o);
-    // echo date('Y-m-d', strtotime($o['created_at_co']));
-  endforeach;
+  $labels = Array();
+  $dateStart = date('Y-m-d', strtotime('-5 days'));
+  $showDadys = ceil((strtotime('NOW') -  strtotime($dateStart)) / (24 * 60 * 60));
 
-  // print_r($data);
-  echo "data=".json_encode($data);
-  ?>
+  for($i = 0; $i < $showDadys; $i++ ) {
+    array_push($labels, date('Y-m-d', strtotime($dateStart."+$i days")) );
+    array_push($data, 0);
+  }
 
-  // console.log(data);
-  // // google.charts.setOnLoadCallback(drawLineChart($('#GoogleLineChart'), ['Day', 'Order Price'], data));
+  if ( count($statistics) > 0 ) :
+    foreach( $statistics AS $o ) :
+      foreach($labels AS $j => $l) : 
+        if ( date('Y-m-d', strtotime($l)) == date('Y-m-d', strtotime($o['created_at_co']))) {
+          $data[$j] = $o['subtotal_amount'];
+        }
+      endforeach;
+    endforeach;
+  endif;
+?>
+
+let data = <?=json_encode($data)?>;
+let labels = <?=json_encode($labels)?>;
+const ctx = document.getElementById('orderStatistics');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels : labels,
+    datasets: [{
+      label: 'Order Price',
+      data: data,
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Order Status'
+      }
+    }
+  }
+});
 </script>

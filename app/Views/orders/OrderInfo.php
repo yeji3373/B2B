@@ -101,7 +101,7 @@
                 <?=$order['currency_sign'].number_format($receipt['due_amount'], $order['currency_float'])?>
               </td>
               <td class='border border-end border-dark text-center p-1'>
-                <?=$receipt['payment_status_msg']?>
+                <?=!empty($receipt['payment_status_msg']) ? $receipt['payment_status_msg'] : ''?>
               </td>
               <td class='border border-dark text-center px-1'>
                 <div class='d-flex flex-row justify-content-center'>
