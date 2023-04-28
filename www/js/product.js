@@ -347,7 +347,7 @@
     result = getData('/order/orderForm', [{name: 'margin_level', value: 1}]);
 
     if ( result.indexOf('error') >= 0 ) {
-      result = JSON.parse(result);
+      // result = JSON.parse(result);
       if ( $.inArray('error', result) ) {
         alert(result['error']);
         return;
@@ -473,6 +473,7 @@
       $("#address-prev-head .accordion-button").click();
     }
   }).on('change', '[name=checkout-currency]', function() {
+    console.log("changed");
     let currency = $(this);
     let data =  [ { name: 'exchange', value: currency.data('exchange') },
                   { name: 'rId', value: currency.data('rid') }];
@@ -504,9 +505,9 @@
 
       // if ( applyDiscount != 1 ) discountPrice = 0; subTotalPrice = totalPrice;
 
-      $('.order-total-price').text(totalPrice.numberWithCommas);    
-      $('.order-discount-price').text(discountPrice.numberWithCommas);
-      $('.order-subtotal-price').text(subTotalPrice.numberWithCommas);
+      $('.order-total-price').text($.numberWithCommas(totalPrice));
+      $('.order-discount-price').text($.numberWithCommas(discountPrice));
+      $('.order-subtotal-price').text($.numberWithCommas(subTotalPrice));
       $('[name=order-total-price]').val(totalPrice);
       $('[name=order-discount-price]').val(discountPrice);
       $('[name=order-subtotal-price]').val(subTotalPrice);
@@ -514,23 +515,22 @@
   }).on('change', '[name=taxation]', function() {
     let data =  [ { name: 'exchange', value: $('[name=checkout-currency]:checked').data('exchange') },
                   { name: 'rId', value: $('[name=checkout-currency]:checked').data('rid') }];
-    let zeroTax;
+    // let zeroTax = []; // 영과세 구분 없이 다 주문 가능하게 처리해달라고 요청옴
     if ( $(this).val() == 2 ) { // 1: 영세 2:과세
-      zeroTax = [{ name: 'onlyZeroTax', value: $(this).val() }];
+      // zeroTax = [{ name: 'onlyZeroTax', value: $(this).val() }];
       $('#payment-paypal').prop('checked', false).attr('disabled', true);
       $('#payment-bank1').prop('checked', false).attr('disabled', true);
       // $('#payment-bank2').prop('checked', true).attr('disabled', false);
       $('#payment-bank2').attr('disabled', false);
       // alert("영세로만 판매되는 제품은 제외됨\n국내전용 계좌로만 입금 가능");
     } else {
-      zeroTax = [];
+      // zeroTax = [];
       $('#payment-bank2').prop('checked', false).attr('disabled', true);
       $('#payment-bank1').removeAttr('disabled', false);
     }
-    // console.log($.merge(data, zeroTax));
-    result = getData('/order/checkoutTotalPrice', $.merge(data, zeroTax));
-    // console.log("result ", result);
-    result = JSON.parse(result);
+
+    // result = getData('/order/checkoutTotalPrice', $.merge(data, zeroTax), true);
+    result = getData('/order/checkoutTotalPrice', data, true);
     let totalPrice = result['order_price_total'];
     let discountPrice = result['order_discount_total'];
     let subTotalPrice = result['order_subTotal'];
@@ -546,8 +546,8 @@
       $('.only-zero-tax .product-name').append('<span class="no-order-msg color-red fw-bold ms-1">주문불가</span>');
 
       // $('.order-total-price').text($.numberWithCommas(Math.ceil(totalPrice * tax)));
-      $('.order-discount-price').text((Math.ceil(discountPrice * tax)).numberWithCommas);
-      $('.order-subtotal-price').text((Math.ceil(subTotalPrice * tax)).numberWithCommas);
+      $('.order-discount-price').text($.numberWithCommas(Math.ceil(discountPrice * tax)));
+      $('.order-subtotal-price').text($.numberWithCommas(Math.ceil(subTotalPrice * tax)));
       $('[name=order-total-price]').val(Math.ceil(totalPrice * tax));
       $('[name=order-discount-price]').val(Math.ceil(discountPrice * tax));
       $('[name=order-subtotal-price]').val(Math.ceil(subTotalPrice * tax));
@@ -555,9 +555,9 @@
       $('.only-zero-tax').removeClass('bg-secondary bg-opacity-25');
       $('.no-order-msg').remove();
 
-      $('.order-total-price').text(totalPrice.numberWithCommas);
-      $('.order-discount-price').text(discountPrice.numberWithCommas);
-      $('.order-subtotal-price').text(subTotalPrice.numberWithCommas);
+      $('.order-total-price').text($.numberWithCommas(totalPrice));
+      $('.order-discount-price').text($.numberWithCommas(discountPrice));
+      $('.order-subtotal-price').text($.numberWithCommas(subTotalPrice));
       $('[name=order-total-price]').val(totalPrice);
       $('[name=order-discount-price]').val(discountPrice);
       $('[name=order-subtotal-price]').val(subTotalPrice);
@@ -606,7 +606,7 @@ function setCartSpq(cartId, productQty, productPrice, ref = false) {
                   {name: 'order_qty', value: productQty},
                   {name: 'order_price', value: productPrice}];
   result = getData('/order/editCartList', editData);
-  result = JSON.parse(result);
+  // result = JSON.parse(result);
   
   if ( !ref ) { // return 안받고 곧바로 처리
     if ( result['Code'] == 200 ) { 

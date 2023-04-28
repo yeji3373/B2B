@@ -67,7 +67,7 @@ function activeToggle(target) {
 
 
 $(function() {
-  function numberWithCommas(x) {
+  $.numberWithCommas = function(x) {
 	  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 	}
 

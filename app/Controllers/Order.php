@@ -53,7 +53,7 @@ class Order extends BaseController
   }
 
   public function index() {
-    $this->CartController->initialCartList();
+    // $this->CartController->initialCartList(); // 초기화 할지 안할지 고민하기
 
     $brands = $this->brands->where('available', '1')->get()->getResultArray();
     $this->data['brands'] = $brands;
@@ -402,21 +402,26 @@ class Order extends BaseController
     
     if ( $data['exchange'] == 1 ) {
       $currency = $this->currency->currencyJoin()->where('cRate_idx', $data['rId'])->first();
-      $exchange = $currency['exchange_rate'];
-    } else $exchange = 1;
+      $exchange_rate = $currency['exchange_rate'];
+    } else $exchange_rate = 1;
     unset($data['exchange']);
     unset($data['rId']);
 
-    $totalPrice = $this->CartController->getCartTotalPrice($data, $exchange);
+    $totalPrice = $this->CartController->getCartTotalPrice($data, $exchange_rate);
 
-    if ( !empty($currency) ) {
+    if ( !empty($currency) && !empty($totalPrice) ) {
       $totalPrice = array_merge($totalPrice,
                             [ 'currency_code' => $currency['currency_code'], 
                               'currency_float' => $currency['currency_float'], 
                               'currency_sign' => $currency['currency_sign'],
-                              'exchange_rate' => $currency['exchange_rate']
+                              'exchange_rate' => $currency['exchange_rate'],
                             ]);
     }
+
+    if ( empty($totalPrice) ) {
+      $totalPrice['msg'] = "exchange_rate ".$exchange_rate." data ".json_encode($data);
+    }
+
     return json_encode($totalPrice);
     // return json_encode($currency);
   }

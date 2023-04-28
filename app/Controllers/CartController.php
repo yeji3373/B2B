@@ -71,26 +71,20 @@ class CartController extends BaseController {
     return $select;
   }
 
-  public function getCartTotalPrice( $where = array(), $exchange = 1 ) {
+  public function getCartTotalPrice( $where = array(), $exchangeRate = 1 ) {
     $cartSubTotal = NULL;
-    $whereCondition = array();
-    
-    $this->cart
-          ->joins()
-          ->select("cart.apply_discount AS applyDiscount")
-          ->joinsDefaultWhere();
-    
-    if ( count($where) > 0 ) $whereCondition = $where;
-    if ( $exchange > 1 ) :
+    $whereCondition = count($where) > 0 ? $where : array();    
+
+    if ( $exchangeRate > 1 ) : // 환율 혹은 달러에서 한화로 변경할 경우, 한화의 환율을 적용
       $this->cart
-          ->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}) AS `order_price_total`")
+          ->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}) AS `order_price_total`")
           ->select("IF ( `cart`.`apply_discount` = 1, 
-                    ROUND(((SUM({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * cart.order_qty) * {$exchange}), 0),
+                    ROUND(((SUM({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * cart.order_qty) * {$exchangeRate}), 0),
                     0 
                   ) AS `order_discount_total`")
           ->select("IF ( `cart`.`apply_discount` = 1, 
-                          ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchange}), 0),
-                          ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}), 0)
+                          ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchangeRate}), 0),
+                          ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}), 0)
                         ) AS order_subTotal");
     else : 
       $this->cart
@@ -106,10 +100,13 @@ class CartController extends BaseController {
     endif;
 
     $this->cart
-          ->where('cart.buyer_id', session()->userData['buyerId'])
-          ->where('supply_price.margin_level = cart.prd_section')
-          ->where($whereCondition)
-          ->groupBy('cart.buyer_id');
+        ->select("cart.apply_discount AS applyDiscount")
+        ->joins()    
+        ->joinsDefaultWhere()
+        ->where('cart.buyer_id', session()->userData['buyerId'])
+        ->where('supply_price.margin_level = cart.prd_section')
+        ->where($whereCondition)
+        ->groupBy('cart.buyer_id');
 
     $cartSubTotal = $this->cart->first();
 
