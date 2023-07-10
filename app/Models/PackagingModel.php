@@ -11,6 +11,6 @@ class PackagingModel extends Model {
   protected $allowedFields = ['order_id'];
 
   protected $useTimestamps = true;
-  protected $createdField = '';
+  protected $createdField = 'created_at';
   protected $dateFormat = 'datetime';
 }

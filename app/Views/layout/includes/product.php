@@ -8,11 +8,16 @@
     <div class='d-flex flex-row border border-top-0 justify-content-between py-1 px-2 list-group-item'>
       <!-- <div class='d-flex flex-row align-items-center product-item'> -->
       <div class='d-flex flex-row align-items-start product-item mx-0 my-auto'>
+        <div class='position-relative thumbnail-group'>
+        <?php if ( strpos(esc($product['img_url']), 'no-image') === false ) : ?>
+        <div class='thumbnail-zoom border border-1 rounded-1 d-none' style="background-image: url('<?=esc($product['img_url'])?>')"></div>
+        <?php endif; ?>
         <?=img(esc($product['img_url']), false, ['class'=>'thumbnail me-2']);?>
+        </div>
         <div class='d-flex flex-column name-type-group'>
           <div class='name-group'>
-            <span class='brand_name'><?=$product['brand_name']?></span>
-            <span class='product_name'><?=$product['name_en']?></span>
+            <span class='brand_name'><?=htmlspecialchars(stripslashes($product['brand_name']))?></span>
+            <span class='product_name'><?=htmlspecialchars(stripslashes($product['name_en']))?></span>
             <span class=''>
               <?php
                 echo trim($product['spec']);
@@ -29,9 +34,9 @@
                 if ( $product['box'] == 2 ) {
                   if ( $product['container'] == 0 ) {
                     if ( !empty($product['spec_detail']) ) {
-                      $box_component_spec = explode('/', $product['spec_detail']);
-                      $box_component_pcs = explode('/', $product['spec_pcs']);
-                      $box_component = explode('/', $product['contents_of_box']);
+                      $box_component_spec = explode(',', $product['spec_detail']);
+                      $box_component_pcs = explode(',', $product['spec_pcs']);
+                      $box_component = explode(',', $product['contents_of_box']);
                       // echo 'aaaa '.(!empty($box_component));
                       $temp = '';
 
@@ -101,7 +106,7 @@
               }
 
               if ( $product['package'] == 1 ) {
-                echo "<span class='fw-bold text-capitalize'>".lang('Order.set')." : ".$product['package_detail']."</span>";
+                echo "<span class='fw-bold text-capitalize'>".lang('Order.compo')." : ".$product['package_detail']."</span>";
               }
             ?>            
           </div>
@@ -173,5 +178,5 @@
     </div>
   <?php endforeach; ?>
   </div>
-  <?php echo $pager->links($pageGroup, 'pager'); ?>
+  <?php echo $productPager->links($pageGroup, 'pager'); ?>
 <?php endif; ?>

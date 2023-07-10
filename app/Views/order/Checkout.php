@@ -29,13 +29,13 @@
           <?php if ( !empty($buyer) && !empty($buyer['tax_check']) ) : ?>
           <div class='py-2 px-4 mt-2 border rounded currency-kr-tax-choice'>
             <div class='d-flex flex-row flex-wrap'>
-              <label class='title'>수출신고</label>
+              <label class='title'><?=lang('Order.ExportCheck')?></label>
               <div class='w-75 radio-group'>
                 <label for='checkout-export-tax-0'>
-                  <input type='radio' name='taxation' id='checkout-export-tax-0' value='1' checked> 영세
+                  <input type='radio' name='taxation' id='checkout-export-tax-0' value='1' checked> <?=lang("Order.zeroTax")?>
                 </label>
                 <label for='checkout-export-tax-vat'>
-                  <input type='radio' name='taxation' id='checkout-export-tax-vat' value='2'> 과세
+                  <input type='radio' name='taxation' id='checkout-export-tax-vat' value='2'> <?=lang('Order.taxation')?>
                 </label>
               </div>
             </div>
@@ -127,7 +127,7 @@
                   <div class='accordion-body'>
                     Barcode : <?=$cart['barcode']?><br/>
                     Qty : <?=$cart['order_qty']?><br/>
-                    Unit Pirce : <?=$cart['prd_price']?><Br/>
+                    Unit Pirce : <?=session()->currency['currencySign'].$cart['prd_price']?><Br/>
                     Discount Price : 
                     <?php if ( $cart['apply_discount'] == 1 ) :
                       // echo lang('Order.off', [((1 - $cart['dis_rate']) * 100)])."<br/>";
@@ -135,7 +135,7 @@
                     else :
                       echo session()->currency['currencySign']."0<br/>";
                     endif; ?>
-                    Total Price : <?=$cart['order_price']?><br/>
+                    Total Price : <?=session()->currency['currencySign'].$cart['order_price']?><br/>
                     <!-- Grand Total Price : <?//=$cart['order_discount_price']?> -->
                   </div>
                 </div>

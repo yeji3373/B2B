@@ -17,8 +17,8 @@
           <div class='d-flex flex-row justify-content-between'>
             <span class='consignee'><?=$address['consignee']?></span>
             <div>
-              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-edit' data-id='<?=$address['idx']?>'>수정</div>
-              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-del' data-id='<?=$address['idx']?>'>삭제</div>
+              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-edit' data-id='<?=$address['idx']?>'><?=lang('Order.edit')?></div>
+              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-del' data-id='<?=$address['idx']?>'><?=lang('Order.del')?></div>
             </div>
           </div>
           <div>
@@ -59,7 +59,7 @@
         aria-labelledby='address-new-head' data-bs-parent='#address-accordion'>
       <div class='accordion-body address-new-form'>
         <div>
-          <label>수령자 이름</label>
+          <label><?=lang('Order.consignee')?></label>
           <!-- <input type='text' name='consignee' value='<?//=isset($prevAddrList) ? $prevAddrList[0]['consignee'] : ''?>' required> -->
           <input type='text' name='consignee' value required>
         </div>

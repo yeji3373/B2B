@@ -29,7 +29,7 @@
   //   }
   //   $(this).addClass('active');
   }).on('click', '.pi-view', function() {
-    console.log($("[name=receipt_id]").val());
+    // console.log($("[name=receipt_id]").val());
     $form = $(this).closest('form');
     appendData($('.pi-viewer > div') 
                 , getData('/orders/getOrderData', $form.serializeArray())

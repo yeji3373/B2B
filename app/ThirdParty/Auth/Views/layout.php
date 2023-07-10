@@ -99,8 +99,8 @@
       background-color: #eee;
       font-weight: bold;
       margin-bottom: 30px;
-    }
-
+    }    
+    .notification li { display: inline; }
     button {
       background-color: #caff4b;
       box-shadow: none;

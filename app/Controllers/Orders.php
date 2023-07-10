@@ -38,26 +38,29 @@ class Orders extends BaseController {
 
     $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
-                                      , '/orders.js'
-                                      , '/graph.js']];
+                                      , '/orders.js']];
 
   }
 
   public function index() {
-    if ( empty($this->request->getGet('order_number')) ) {
+    $this->data['order'] = $this->getOrder();
+    $this->data['orders'] = $this->getOrderList();
+
+    if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
       $this->data['statistics'] = $this->ordersStatistics();
-    // //   $this->data['statistics'] = [];
+      $this->data['orderBrand'] = $this->order->select('brand.brand_name, COUNT(brand.brand_id) AS cnt')
+                                    ->join('orders_detail', 'orders_detail.order_id = orders.id')
+                                    ->join('product', 'product.id = orders_detail.prd_id')
+                                    ->join('brand', 'brand.brand_id = product.brand_id')
+                                    ->where('orders.buyer_id', session()->userData['buyerId'])
+                                    ->groupby('brand.brand_id')
+                                    ->findAll(10);
     } else {
-    // if ( !empty($this->request->getGet('order_number')) ) {
-      // // $this->data['orderDetail'] = $this->getOrderDetail()->where('order_number', $this->request->getGet('order_number'))->first();
-      // // $this->data['orders'] = $this->getOrderList();
-      $this->data['order'] = $this->getOrder();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
       $this->data['shippinCost'] = $this->getTotalShippingCost();
       $this->data['buyer'] = $this->getBuyer();
-      $this->data['packaging'] = $this->packaging
-                                      ->where('order_id', $this->orderId)->first();
+      $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
       $this->data['packagingStatus'] = $this->packagingStatus
                                             ->select('packaging_status.*')
                                             ->select('packaging.complete')
@@ -73,9 +76,9 @@ class Orders extends BaseController {
                                                   , 'packaging_status.display' => 1])
                                             ->orderBy('packaging_status.order_by')
                                             ->findAll();
-    }
     
-    $this->data['orders'] = $this->getOrderList();
+    }
+
     $this->basicLayout('orders/List', $this->data);
   }
 

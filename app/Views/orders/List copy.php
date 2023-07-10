@@ -23,7 +23,7 @@
         <?php endif ?>
       </div>
     </section>
-    <?php if ( !empty($_GET['order_number']) && !empty($order) ) : ?>
+    <?php if ( !empty($_GET['order_number']) ) : ?>
     <section class='order-info-container py-2 px-4 border'>
       <?=view('orders/OrderInfo') ?>
       <div class='pi-viewer'>
@@ -34,8 +34,8 @@
       <?=view('orders/Detail')?>
     </section>
     <?php else : ?>
-    <section class='order-empty-container grid-column-span-2'>
-      <?=view('orders/main')?>
+    <section class='order-empty-container border grid-column-span-2'>
+      <!-- <?//=view('orders/main')?> -->
     </section>
     <?php endif; ?>
   </div>

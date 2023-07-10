@@ -47,6 +47,8 @@ class Autoload extends AutoloadConfig
         'Paypal'        => APPPATH . 'ThirdParty/Paypal',
         'FtpFile'       => APPPATH . 'ThirdParty/FtpFile',
         'Status'        => APPPATH . 'ThirdParty/Status',
+        'Cypix'         => APPPATH . 'ThirdParty/Cypix',
+        'Cafe24'        => APPPATH . 'ThirdParty/Cafe24',
         // 'Dompdf'        => APPPATH . 'ThirdParty/dompdf/src',
         // 'Dompdf/Cpdf'   => APPPATH . 'ThirdParty/dompdf/lib',
     ];

@@ -1,6 +1,11 @@
 <div class="w-100 p-3 border border-dark">
   <canvas id="orderStatistics" style="height: 17rem; width: 100%"></canvas>
 </div>
+<div class='w-100 mt-3'>
+  <div class='border border-dark p-3' style='width: 40%; height: 35rem;'>
+    <canvas id='orderBrands'><canvas>
+  </div>
+</div>
 
 <script>
 <?php 
@@ -23,7 +28,17 @@
       endforeach;
     endforeach;
   endif;
+
+  $brandLabels = Array();
+  $brandData = Array();
+  if ( !empty($orderBrand) ) {
+    foreach( $orderBrand AS $brandCnt ) :
+      array_push($brandLabels, strtoupper($brandCnt['brand_name']));
+      array_push($brandData, $brandCnt['cnt']);
+    endforeach;
+  }
 ?>
+// console.log(<?//=json_encode($orderBrand)?>);
 
 let data = <?=json_encode($data)?>;
 let labels = <?=json_encode($labels)?>;
@@ -34,7 +49,7 @@ new Chart(ctx, {
   data: {
     labels : labels,
     datasets: [{
-      label: 'Order Price',
+      label: 'Order Amount',
       data: data,
       borderWidth: 2
     }]
@@ -49,7 +64,33 @@ new Chart(ctx, {
     plugins: {
       title: {
         display: true,
-        text: 'Order Status'
+        text: 'Daily order amount'
+      }
+    }
+  }
+});
+
+const orderBrand = $("#orderBrands");
+new Chart(orderBrand, {
+  type: 'polarArea',
+  data: {
+    labels : <?=json_encode($brandLabels)?>,
+    datasets: [{
+      data: <?=json_encode($brandData)?>,
+      // borderWidth: 1
+    }]
+  },
+  options: {
+    // responsive: true,
+    // scales: {
+    //   y: {
+    //     beginAtZero: false
+    //   }
+    // },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Order volume by brand'
       }
     }
   }

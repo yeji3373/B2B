@@ -1,12 +1,13 @@
 <main class='my-1 mx-auto w-auto products'>
-  <form id='' accept-charset='utf-8' method='post' class='d-none'>
-    <?= csrf_field() ?>
-    <input type='hidden' name='brand_id' value='<?php isset($search['brand_id']) ?? $search['brand_id']?>'>
-    <input type='hidden' name='name' class='key' value='<?php isset($search['name']) ?? $search['name']?>'>
-    <input type='hidden' name='barcode' class='key' value='<?php isset($search['barcode']) ?? $search['barcode']?>'>
-    <input type='hidden' name='sample' value='<?php isset($search['sample']) ?? $search['sample']?>'>
-    <input type='hidden' name='page' value>
-  </form>
+  <!-- <form id='' accept-charset='utf-8' method='POST' class='d-none'> -->
+    <!-- <?//=csrf_field() ?> -->
+    <!-- <input type='hidden' name='brand_id' value='<?//php// isset($search['brand_id']) ?? $search['brand_id']?>'> -->
+    <!-- <input type='hidden' name='brand_name' value='<?//php isset($search['brand_name']) ?? $search['brand_name']?>'> -->
+    <!-- <input type='hidden' name='name' class='key' value='<?//=isset($_POST['name']) ? $_POST['name'] : ''?>'>
+    <input type='hidden' name='barcode' class='key' value='<?//=isset($_POST['barcode']) ? $_POST['barcode'] : '' ?>'>
+    <input type='hidden' name='sample' value='<?//php isset($search['sample']) ?? $search['sample']?>'> -->
+    <!-- <input type='hidden' name='page' value> -->
+  <!-- </form> -->
   <section>
     <div class='m-auto d-flex position-relative w-90'>
       <div class='border border-dark brand-section me-2 rounded w-14'>
@@ -25,15 +26,17 @@
           </div>
         </div>        
         <ul class='list-group list-group-flush border-top border-dark brand-list-group'>
-          <li class='list-group-item brand-item active'><span><?=lang('Order.allBrands')?></span></li>
+          <li class='list-group-item brand-item <?=(!isset($_GET['brand_name']) || empty($_GET['brand_name'])) ? 'active' : ''?>' data-name=''><span><?=lang('Order.allBrands')?></span></li>
           <?php foreach($brands as $brand) : 
-            echo "<li class='list-group-item brand-item ".$brand['brand_name']."' data-id='".$brand['brand_id']."' data-name='".$brand['brand_name']."'>".
+            echo "<li class='list-group-item brand-item ". (((isset($_GET['brand_name']) && !empty($_GET['brand_name'])) && $_GET['brand_name'] == $brand['brand_name']) ? 'active' : '')."' 
+                      data-id='".$brand['brand_id']."' data-name='".$brand['brand_name']."'>".
                     "<div class='d-flex flex-column'>".
-                      "<div>".$brand['brand_name']."</div>";
+                      "<div>".htmlspecialchars(stripslashes($brand['brand_name']))."</div>";
                     "</div>".
                   "</li>";
             endforeach?>
         </ul>
+        <?=$brandPager->links($brandGroup, 'pager'); ?>
       </div>
       <div class='border border-dark product-section me-2 rounded w-40'>
         <div class='px-2 py-1 mb-0 h-5rm'>
@@ -41,10 +44,23 @@
           <div class='input-group w-100'>
             <select class='form-select w-auto flex-grow-0 productSearchOpts'>
               <option value><?=lang('Order.selectOps')?></option>
-              <option value='barcode'><?=lang('Order.barcode')?></option>
-              <option value='name'><?=lang('Order.productName')?></option>
+              <option value='barcode' <?=(isset($_GET['barcode']) && $_GET['barcode'] != '') ? 'selected' : ''?> ><?=lang('Order.barcode')?></option>
+              <option value='name' <?=(isset($_GET['name']) && $_GET['name'] != '') ? 'selected' : ''?>><?=lang('Order.productName')?></option>
             </select>
-            <input type='text' class='form-control col-7' id='productSearch' placeholder='<?=lang('Order.searchKeyword')?>'>
+            <input type='text' 
+                  class='form-control col-7' 
+                  id='productSearch' 
+                  placeholder='<?=lang('Order.searchKeyword')?>' 
+                  value='<?php
+                          if ( isset($_GET['barcode']) && !empty($_GET['barcode'] ) ) :
+                            echo $_GET['barcode'];
+                          elseif ( isset($_GET['name']) && !empty($_GET['name'] ) ) : 
+                            echo $_GET['name'];
+                          else : 
+                            echo "";
+                          endif;
+                        ?>'>
+            <input class='btn btn-primary shadow-none search-btn' type='button' value='Search'>
           </div>
         </div>
         <div class='product-search-result border-top border-dark'>

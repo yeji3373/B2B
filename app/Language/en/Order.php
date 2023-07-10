@@ -25,6 +25,8 @@ return [
   'onsale'              => 'On Sale',
   'soldout'             => 'Sold out',
   'set'                 => '세트구성',
+  'compo'               => 'Compo.',
+  'composition'         => 'Composition',
 
   'noStock'             => 'Sold out',
   
@@ -56,13 +58,18 @@ return [
   /* msg */
 
   'isEmpty'             => 'Is empty',
-
+  'edit'                => 'Edit',
+  'del'                 => 'Del',
+  'delete'              => 'Delete',
 
   /* orders */
   'orderDate'           => 'Order date',  // 주문날짜
   'orderNumber'         => 'Order number',  // 주문번호
   'paymentType'         => 'Payment type',  // 결제 수단
   'currency'            => 'Currency',  // 결제 통화
+  'ExportCheck'         => 'Export declaration',
+  'zeroTax'             => 'Zero tax',
+  'taxation'            => 'Taxation',
   'includeVat'          => 'VAT',
   'orderQty'            => 'Qty',
   'productPrice'        => 'Unit price',  

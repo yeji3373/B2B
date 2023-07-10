@@ -24,13 +24,13 @@
       <p>
       <!-- <input minlength="5" type="password" name="password" value="" placeholder=" " required /> -->
         <!-- <input minlength="5" type="password" name="password" pattern='.{5,}' value="" placeholder=" " required /> -->
-        <input type="password" name="password" value="" placeholder=" "  parttern='(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}'
+        <input type="password" name="password" value="" placeholder=" "
               title="최소 하나의 숫자와, 하나의 대문자 및 소문자, 최소 5자 이상의 문자를 포함해야 합니다." required />
         <label><?= lang('Auth.password') ?></label>
       </p>
       <p>
         <input minlength="5" type="password" name="password_confirm" value="" placeholder=" " required />
-        <label><?= lang('Auth.passwordAgain') ?></label>
+        <label><?= lang('Auth.passwordConfirm')?></label>
       </p>
     </fieldset>
     <fieldset>

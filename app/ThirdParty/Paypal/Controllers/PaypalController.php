@@ -37,6 +37,16 @@ class PaypalController extends Controller
       'Authorization: Bearer '.$this->config->accessToken,
       'Content-Type: application/json'
     ];
+    $this->authorization();
+  }
+
+  public function authorization() {
+    if ( $this->config->accessTokenExpiry >= time() ) {
+      if ( empty($this->config->accessToken) ) {
+        // echo "empty ";
+        $this->config->getOauth();
+      }
+    }
   }
 
   public function paypal($req) {
@@ -48,12 +58,12 @@ class PaypalController extends Controller
         $this->config->getOauth();
       }
     }
-
     $this->makeInvoice();
   }
 
   protected function makeInvoice() {
     $header = array_merge($this->header, ['Prefer: return=representation']);
+    // print_r($this->orderInfo);
     $invoiceData = invoice_detail($this->orderInfo);
 
     $generate = $this->curlRequest(
@@ -62,13 +72,19 @@ class PaypalController extends Controller
       $invoiceData,
       'POST'
     );
+    // echo "<br/><br/>";
+    // print_r($generate);
 
-    if ( $generate['code'] == 201 || $generate['code'] == 200 ) {
+    if ( $generate['code'] == 201 ) {   // successful request returns code 
+      $this->invoiceId = $generate['data']['id'];
+      $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
+      $this->sendInvoice();
+    } else if ( $generate['code'] == 200 ) {
       $this->invoiceId = $generate['data']['id'];
       $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
       $this->sendInvoice();
     } else {
-      print_r($generate);
+      // print_r($generate);
       $this->result['error'] = 'invoice make error '.$generate['data']['name'].' : '.json_encode($generate['data']['details']);
       $this->result['code'] = $generate['code'];
       
@@ -83,15 +99,18 @@ class PaypalController extends Controller
       '{"send_to_invoicer": true}',
       'POST'
     );
-    print_r($send);
-    if ( $send['code'] == 200 || $send['code'] == 201 ) {
+    // echo "<br/><br/>";
+    // print_r($send);
+    
+    // successful code 202 : 인보이스 발행 날짜가 미래인 경우
+    if ( $send['code'] == 200 || $send['code'] == 201 || $send['code'] == 202 ) { 
       $this->result['payment_url'] = $send['data']['href'];
       $this->result['payment_invoice_id'] = $this->invoiceId;
       $this->result['payment_invoice_number'] = $this->invoiceNumber;
+      $this->result['data'] = $send;
     } else {
       $this->result['error'] = 'invoice send error '.$send['data']['name'].' : '.json_encode($send['data']['details']);
-    } 
-    
+    }    
     $this->result['code'] = $send['code'];
     
     return $this->result;
@@ -113,9 +132,10 @@ class PaypalController extends Controller
     return $this->result;
   }
 
+  public function test() { return "aaaaaaaaaaaaaaaaaaaa"; }
 
   // protected function curlRequest($url, array $header, $params, $config, $method = 'GET') {
-  protected function curlRequest($url, array $header, $params, $method = 'GET') {
+  public static function curlRequest($url, array $header = [], $params, $method = 'GET') {
     $ch = curl_init();
 
     if ( isset($header['auth'])  ) {

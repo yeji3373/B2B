@@ -40,11 +40,10 @@ class LoginController extends Controller
 	/**
 	 * Displays login form or redirects if user is already logged in.
 	 */
-	public function login()
-	{
+	public function login() {
 		if ($this->session->isLoggedIn) {
 			// return redirect()->to('account');
-      		return redirect()->to('/');
+      return redirect()->to('/');
 		}
 
 		return view($this->config->views['login'], ['config' => $this->config]);
@@ -55,8 +54,7 @@ class LoginController extends Controller
 	/**
 	 * Attempts to verify user's credentials through POST request.
 	 */
-	public function attemptLogin()
-	{
+	public function attemptLogin() {
 		// validate request
 		$rules = [
 			'id'		    => 'required|min_length[2]',
@@ -169,8 +167,7 @@ class LoginController extends Controller
 	/**
 	 * Log the user out.
 	 */
-	public function logout()
-	{
+	public function logout() {
 		$this->session->remove(['isLoggedIn', 'userData', 'currency']);
 
 		return redirect()->to('login');

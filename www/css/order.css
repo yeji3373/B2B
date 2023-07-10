@@ -16,11 +16,22 @@
 .brand-list-group .brand-item .leadtime { font-size: 0.7rem; }
 .brand-list-group .brand-item.active { font-weight: 600; }
 
-.brand-keyword-search-result { z-index: 10; }
+.brand-keyword-search-result { z-index: 10; max-height: 27rem; overflow-y: auto; }
 
 /* orders product 공통 */
 .products { position: relative; }
 .products .thumbnail { width: 3.2rem; height: 3.5rem; }
+.products .thumbnail-zoom { 
+  width: 9rem;
+  height: 9rem;
+  position: absolute;  
+  top: -0.6rem;
+  left: -0.6rem;
+  background-position: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
 .products .brand_name { position: relative; text-transform: uppercase; }
 .products .brand_name::after { content: '\005D'; }
 .products .brand_name::before { content: '\005B'; }
@@ -153,7 +164,7 @@
 
 /* checkout 주문내역 및 합계 */
 #checkout-main .cart-list-section .box-header { font-weight: bold; background-color: #ffd1d1; }
-#checkout-main .cart-list { height: 55vh; overflow-y: auto; }
+#checkout-main .cart-list { height: 64.9vh; overflow-y: auto; }
 #checkout-main .cart-list .thumbnail { width: 2.2rem; height: 2.3rem; }
 #checkout-main .cart-list .brand-name { position: relative; text-transform: uppercase; }
 #checkout-main .cart-list .brand-name::after { content: '\005D'; }
@@ -163,6 +174,7 @@
 
 #checkout-main .cart-list .accordion-button { font-size: 0.8rem; }
 #checkout-main .cart-list .accordion-button .product-opts { font-size: 0.7rem; }
+#checkout-main .cart-list .accordion-body { font-size: 0.78rem; }
 
 #checkout-main .cart-total-price .box-header .currency-unit { border: 0; background-color: transparent; margin: 0; padding: 0; width: 2.5rem; text-align: center; }
 #checkout-main .cart-total-price .box-header .currency-unit:focus { outline: none !important; }

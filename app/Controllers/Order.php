@@ -53,28 +53,43 @@ class Order extends BaseController
   }
 
   public function index() {
-    // $this->CartController->initialCartList(); // 초기화 할지 안할지 고민하기
-
-    $brands = $this->brands->where('available', '1')->get()->getResultArray();
-    $this->data['brands'] = $brands;
-   
+    // $this->CartController->initialCartList(); // 초기화 할지 안할지 고민하기   
+    $this->brandList();
     $this->cartList();
     $this->productList();
     $this->cartTotalPrice();
     // $this->applyDiscountCart();
     $this->basicLayout('product/list', $this->data);
   }
+
+  public function brandList() {
+    // $this->searchData = $this->request->getGet();
+    $page = null;
+    $brandGroup = 'brand';
+
+    // // if ( isset($this->searchData['page_brand']) && !empty($this->searchData['page_brand']) ) $page = $this->searchData['page_brand'];
+    // if ( isset($this->searchData['brand_id']) ) {
+    //   $this->brands->where('brand_id', $this->searchData['brand_id']);
+    // }
+    $brands = $this->brands->where('available', '1')->paginate(20, $brandGroup, $page);
+    $this->data['brandPager'] = $this->brands->pager;
+    $this->data['brandGroup'] = $brandGroup;
+    $this->data['brands'] = $brands;
+  }
   
   public function productList() {
-    $this->searchData = $this->request->getPost();
+    $params = $this->request->getVar();
     $page = null;
-    $pageGroup = 'default';
+    $pageGroup = 'prd';
     $total = 0; 
     $buyer = $this->getBuyerInfo();
 
-    if ( isset($this->searchData['page']) && !empty($this->searchData['page']) ) $page = $this->searchData['page'];
+    // if ( isset($this->searchData['page']) && !empty($this->searchData['page']) ) $page = $this->searchData['page'];
+    // if ( $this->request->getGet('brand_id') ) {
+    //   $this->product->where('brand_id', $this->request->getGet('brand_id'));
+    // }
 
-    $products = $this->getProduct($this->searchData)
+    $products = $this->getProduct($params)
                     ->select('cart.idx AS cart_idx')
                     ->join('( SELECT * FROM cart WHERE buyer_id = "'.session()->userData['buyerId'].'" GROUP BY prd_id) AS cart'
                           , 'cart.prd_id = product.id'
@@ -88,15 +103,15 @@ class Order extends BaseController
     // echo "<br/><br/>";
 
     $this->data['products'] = $products;
-    $this->data['pager'] =  $this->products->pager;
-    $this->data['search'] = $this->searchData;
+    $this->data['productPager'] = $this->products->pager;
+    $this->data['search'] =  $this->request->getPost();
     $this->data['pageGroup'] = $pageGroup;
     // $this->data['tax'] = $this->tax;
     $this->data['total'] = $total;
 
     if ( $this->request->isAJAX() ) {
       return view('/layout/includes/product', $this->data);
-    }
+    } else return $this->data;
   }
 
   public function cartList() {
@@ -159,11 +174,11 @@ class Order extends BaseController
       $where = ['buyer_id' => session()->userData['buyerId']];
       if ( !empty($data['prd_id']) ) $where = array_merge($where, ['prd_id' => $data['prd_id']]);
     } else $where = ['idx' => $data['cart_idx']];
-    $cart = $this->cart
-                  ->where($where)
-                  ->first();
 
+    $cart = $this->cart->where($where)->first();
+    
     if ( !empty($cart) ) {
+      // echo "있음<br/>";
       $this->cart->where($where);
       if ( empty($data['oper']) ) {
         $this->cart
@@ -172,14 +187,15 @@ class Order extends BaseController
             ->update();
         
         if ( $this->cart->affectedRows() ) {
-          $this->applyDiscountCart();
+          // $this->applyDiscountCart();
           $code = 200;
-          $msg = $this->cart->getLastQuery();
+          // $msg = $this->cart->getLastQuery();
         } else {
           $code = 500; 
-          // $msg = lang('Order.unknownError', [ 'error' => 'update' ]);
-          $msg = $this->cart->getLastQuery();
+          $msg = lang('Order.unknownError', [ 'error' => 'update' ]);
+          // $msg = $this->cart->getLastQuery();
         }
+        // echo $msg;
       } else {
         if ( $data['oper'] == 'del' ) {
           $this->cart->delete();
@@ -210,10 +226,8 @@ class Order extends BaseController
           }
         }
       }
-
     } else {
       $code = 500;
-      // $msg = $this->cart->error();
       $msg = $this->cart->error()['message'].' is null '.json_encode($data);
     }
 
@@ -227,7 +241,7 @@ class Order extends BaseController
     $msg = '';
     $data = $this->request->getPost();
     
-    if ( !empty(session()->userData['buyerId']) ) {
+    if ( !empty(session()->userData['buyerId']) ) { // common.js에 ajax 호출할때마다 로그인 체크 진행 후로 처리 한 후에 if조건 없애기
       $data['prd_section'] = (!empty($this->getBuyerInfo()) ? $this->getBuyerInfo()['margin_level'] : 2);
       $data['buyer_id'] = session()->userData['buyerId'];
 
@@ -236,19 +250,18 @@ class Order extends BaseController
         unset($data['brd_id']);
       }
 
-      $cartWhere = ['buyer_id' => session()->userData['buyerId']];
+      // $cartWhere = ['buyer_id' => session()->userData['buyerId']];
+      $cartWhere = ['buyer_id' => $data['buyer_id']];
       if ( !empty($data['prd_id']) ) {
         $cartWhere = array_merge($cartWhere, ['prd_id' => $data['prd_id']]);
       }
       if ( !empty($data['stock_req']) && isset($data['stock_req']) ) {
         $cartWhere = array_merge($cartWhere, ['stock_req' => $data['stock_req']]);
       }
-
       if ( !empty($data['cart_idx']) && isset($data['cart_idx']) ) {
         $cartWhere = array_merge($cartWhere, ['idx' => $data['cart_idx']]);
         $data['stock_req_parent'] = $data['cart_idx'];
       }
-
       if ( !empty($data['prd_id']) ) {
         $productPrice = $this->productPrice
                             ->where(['product_idx' => $data['prd_id']
@@ -271,7 +284,7 @@ class Order extends BaseController
                         // ->join('supply_price', 'supply_price.product_price_idx = product_price.idx AND supply_price.margin_idx = margin.idx AND supply_price.available = 1')
                         // ->join('brand_opts', 'brand_opts.brand_id = brand.brand_id', 'left outer')
                         ->where('margin_rate.brand_id', $data['brand_id'])
-                        ->where('margin_level < ', $data['prd_section'])
+                        ->where('margin.margin_level < ', $data['prd_section'])
                         ->orderBy('margin_rate.brand_id ASC, margin.margin_level ASC')
                         ->first();
       // if ( $data['prd_section'] > 1 ) {
@@ -298,8 +311,8 @@ class Order extends BaseController
       if ( empty($cart) ) {
         if ( $this->cart->save($data) ) {
           $code = 200;
-          $msg = 'success';
-          // $msg = $this->cart->getInsertID();
+          // $msg = 'success';
+          $msg = $this->cart->getInsertID();
         } else {
           $code = 500;
           $msg = $this->cart->error();
@@ -458,11 +471,17 @@ class Order extends BaseController
     }
   }
 
-  public function getProduct() {
+  public function getProduct($params) {
     helper('querystring');
-    $this->searchData = $this->request->getPost(); 
-    $whereCondition = product_query_return($this->searchData);
+    // $this->searchData = $this->request->getPost(); 
+    // $whereCondition = product_query_return($this->searchData);
 
+    if ( isset($params['brand_name']) ) {
+      $this->products->where('brand.brand_name', $params['brand_name']);
+    }
+
+    $whereCondition = product_query_return($params);
+    
     $products = $this->products->productJoin()
               ->select($this->CartController->calcRetailPrice().' AS retail_price')
               ->select($this->CartController->calcSupplyPrice().' AS product_price')

@@ -10,16 +10,19 @@ function product_query_return($params = []) {
   }
 
   if ( !empty($params['name']) ) {
-    $name = explode(' ', $params['name']);
-    $name_where = '( ';
+    // $name = explode(' ', $params['name']);
+    // $name_where = '( ';
 
-    foreach($name as $i => $v) :
-      if ( $i > 0 ) $name_where.= ' OR ';
-      $name_where.= 
-        'REPLACE(CONCAT('.$table.'.name_en, '.$table.'.type_en), \' \', \'\') LIKE \'%'.$v.'%\' 
-          OR REPLACE(CONCAT('.$table.'.name, '.$table.'.type), \' \', \'\') LIKE \'%'.$v.'%\'';
-      if ( (count($name) - 1) == $i ) $name_where.= ' )';
-    endforeach;
+    // foreach($name as $i => $v) :
+    //   if ( $i > 0 ) $name_where.= ' OR ';
+    //   $name_where.= 
+    //     'REPLACE(CONCAT('.$table.'.name_en, '.$table.'.type_en), \' \', \'\') LIKE \'%'.$v.'%\'
+    //       OR REPLACE(CONCAT('.$table.'.name, '.$table.'.type), \' \', \'\') LIKE \'%'.$v.'%\'';
+    //   if ( (count($name) - 1) == $i ) $name_where.= ' )';
+    // endforeach;
+    
+    $name_where='(  REPLACE('.$table.'.name_en, \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', $params['name']).'%\'
+                    OR REPLACE('.$table.'.name, \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', $params['name']).'%\' )';
     array_push($where, $name_where);
   }
 

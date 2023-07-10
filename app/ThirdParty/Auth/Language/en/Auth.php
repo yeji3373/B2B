@@ -9,6 +9,7 @@ return [
     'email' 	      			  => 'E-mail address',
     'password'	  	    	  => 'Password',
     'passwordAgain'	    	  => 'Password again',
+    'passwordConfirm'       => 'Password confirm',
     'vendors'               => 'Company Information',
     'vendorName'            => 'Name of the company',
     'businessNumber'        => 'Business license number',

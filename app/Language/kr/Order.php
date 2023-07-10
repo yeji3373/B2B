@@ -24,7 +24,8 @@ return [
   'bundleSpec'          => '묶음구성',
   'onsale'              => 'On Sale',
   'soldout'             => 'Sold out',
-  'set'                 => '세트구성',
+  'set'                 => 'Set',
+  'composition'         => '구성',
 
   'noStock'             => '재고없음',
   
@@ -58,6 +59,9 @@ return [
 
   /* orders */
   'orderNumber'         => 'Order Number',
+  'ExportCheck'         => '수출 신고',
+  'zeroTax'             => '영세',
+  'taxation'            => '과세',
   'includeVat'          => 'VAT 포함',
   'orderQty'            => '주문수량',
   'productPrice'        => '상품 가격',

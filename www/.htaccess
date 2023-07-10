@@ -36,6 +36,23 @@ Options All -Indexes
 	# Ensure Authorization header is passed along
 	RewriteCond %{HTTP:Authorization} .
 	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  # # http to https redirect (cafe24 hosting - localhosting 때 주석처리 할 것)
+  # RewriteCond %{ENV:HTTPS} !=on
+  # RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
+  # # RewriteRule ^index\.php$ - [L]
+  # # RewriteRule %{REQUEST_FILENAME} !-f
+  # # RewriteRule %{REQUEST_FILENAME} !-d
+  # # RewriteRule . /index.php [L]
+
+  # Redirect trailling domain url
+  # RewriteCond %{HTTP_HOST} ^(www\.koreacosmeticmal\.cafe24\.com|koreacosmeticmal\.cafe24\.com)
+  # RewriteRule (.*) http://koreacosmeticmall.com/$1 [R=301, L]
+  
+  # RewriteCond %{HTTP_HOST} koreacosmeticmal\.cafe24\.com
+  # RewriteRule ^(.+) %{HTTP_HOST}$1 [C]
+  # RewriteRule ^([^.]+)\.koreacosmeticmal\.cafe24\.com(.*) http://$1.koreacosmeticmall.com/$2 [L]
+  # RewriteRule ^koreacosmeticmal\.cafe24\.com(.*) http://koreacosmeticmall.com/$1 [L]
 </IfModule>
 
 <IfModule !mod_rewrite.c>

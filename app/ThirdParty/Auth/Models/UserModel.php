@@ -26,23 +26,27 @@ class UserModel extends Model
 	// we need different rules for registration, account update, etc
 	protected $dynamicRules = [
 		'registration' => [
-			'name'              => 'required|min_length[2]',
-			'email'             => 'required|valid_email|is_unique[users.email]',
-			'password'			    => 'required|min_length[5]',
-			'password_confirm'	=> 'matches[password]'
+			'name'              => 'trim|required|min_length[2]',
+			'email'             => 'trim|required|valid_email|is_unique[users.email]',
+			'password'			    => 'trim|required|min_length[5]|max_length[20]|regex_match[/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,20}$/]',
+			'password_confirm'	=> 'trim|matches[password]'
 		],
 		'updateAccount' => [
-			'id'      => 'required|is_natural_no_zero',
-			'name'	  => 'required|min_length[2]'
+			'id'      => 'trim|required|is_natural_no_zero',
+			'name'	  => 'trim|required|min_length[2]'
 		],
 		'changeEmail' => [
-			'id'			      => 'required|is_natural_no_zero',
-			'new_email'		  => 'required|valid_email|is_unique[users.email]',
-			'activate_hash'	=> 'required'
+			'id'			      => 'trim|required|is_natural_no_zero',
+			'new_email'		  => 'trim|required|valid_email|is_unique[users.email]',
+			'activate_hash'	=> 'trim|required'
 		]
 	];
 
-	protected $validationMessages = [];
+	protected $validationMessages = [
+    // 'registration' = [
+    //   'password_confirm' => 
+    // ]
+  ];
 
 	protected $skipValidation = false;
 

@@ -61,10 +61,11 @@ class Checkout extends BaseController
     if ( $req['payment_id'] == 1 ) $this->isPaypal = true;
     
     $this->addressConduct();
-
-    // if ( !empty($this->orderNumber) ) {
-    //   return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber);
-    // }
+    if ( session()->has('success') ) {
+      if ( !empty($this->orderNumber) ) {
+        return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber);
+      }
+    }
   }
 
   public function addressConduct() {
@@ -199,12 +200,12 @@ class Checkout extends BaseController
       $receiptData['display'] = 1; // 1차 영수증은 무조건 보여주기
       
       if ( $this->receipt->save($receiptData) ) {
-        // $this->cartController->removeCart(['buyer_id' => session()->userData['buyerId']]);
+        $this->cartController->removeCart(['buyer_id' => session()->userData['buyerId']]);
+        session()->setFlashdata('success', 'yyyyyyy');
+        return redirect()->to(site_url('orders'));
       } else {
         return redirect()->to(site_url('order'))->with('error', "처리중 오류 발생");
       }
-
-      return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber);
     } else { 
       return redirect()->to(site_url('order'))->with('error', lang('Order.unknownError'));
     }
@@ -223,7 +224,7 @@ class Checkout extends BaseController
     if ( $prd_id != NULL || $order_qty > 0 || $orderId != NULL ) {
       $stockSet = $this->stockSet->where('available', 1)->first();
       
-      echo "<br/>bbbb ".$prd_id.' '.$order_qty.' '.$orderId.'<br/>';
+      // echo "<br/>prd id : ".$prd_id.' order qty : '.$order_qty.' order id : '.$orderId.'<br/>';
       $stocks = $this->stocks
                       ->stockJoin()
                       ->select('stocks_detail.id, stocks_detail.stocks_id
@@ -231,135 +232,78 @@ class Checkout extends BaseController
                               , stocks_detail.available AS available')
                       ->select('stocks.prd_id, stocks.available AS stocks_available')
                       ->where(['stocks.prd_id' => $prd_id, 'stocks_detail.available' => 1])
-                      ->orderBy('stocks.id')
+                      ->orderBy('stocks_detail.id ASC')
                       ->findAll();
-      print_r($stocks);
-      echo "<br/>";
-      if ( !empty($stock) ) { // detail에 재고가 있을 경우.
+      // print_r($stocks);
+      // echo "<br/>";
+      if ( !empty($stocks) ) { // detail에 재고가 있을 경우.
         $temp_qty = $order_qty;
 
         foreach ( $stocks AS $stock ) {
-          echo '<br/>temp_qty '.$temp_qty.'<br/>';
-          $stockReq = $this->stocks
-                          ->select('IFNULL(SUM(req_qty), 0) AS req_qty_sum')
-                          ->where(['stocks_id' => $stock['stocks_id']])
-                          ->where('stock_id', $stock['id'])
-                          ->groupBy('stock_id')
-                          ->first();
-          if ( $stock['supplied_qty'] < $temp_qty ) {
-            
+          if ( $temp_qty > 0 ) {
+            echo '<br/>temp_qty '.$temp_qty.'<br/>';
+            $stockReq = $this->stockReq
+                            ->select('IFNULL(SUM(req_qty), 0) AS req_qty_sum')
+                            ->where(['stocks_id' => $stock['stocks_id']])
+                            ->where('stock_id', $stock['id'])
+                            ->groupBy('stock_id')
+                            ->first();
+            // print_r($stockReq);
+            // echo "<br/>";
+            if ( empty($stockReq) ) $stockReq['req_qty_sum'] = 0;
+            // echo "stock supplied qty : {$stock['supplied_qty']}<br/>";
+            // echo "req_qty_sum : {$stockReq['req_qty_sum']}<br/>";
+            $remain_stock = $stock['supplied_qty'] - $stockReq['req_qty_sum'];
+            // echo "remain stocks : $remain_stock<br/>";
+            if (  $remain_stock < $temp_qty ) {
+              $this->stockReq->save(['order_id' => $orderId
+                                    , 'req_qty' => $remain_stock
+                                    , 'prd_id'  => $prd_id
+                                    , 'stocks_id' => $stock['stocks_id']
+                                    , 'stock_id'  => $stock['id']
+                                    , 'stock_type'  => 1]);
+              $this->stocksDetail->save(['id'=> $stock['id']
+                                    , 'available' => 0]);
+              $temp_qty = $temp_qty - $remain_stock;
+            } else if ( $remain_stock > $temp_qty ) {
+              $this->stockReq->save(['order_id' => $orderId
+                                    , 'req_qty' => $temp_qty
+                                    , 'prd_id'  => $prd_id
+                                    , 'stocks_id' => $stock['stocks_id']
+                                    , 'stock_id'  => $stock['id']
+                                    , 'stock_type'  => 1]);
+              $temp_qty = 0;
+              return;
+            } else if ( $remain_stock == $temp_qty ) {
+              $this->stockReq->save(['order_id' => $orderId
+                                    , 'req_qty' => $temp_qty
+                                    , 'prd_id'  => $prd_id
+                                    , 'stocks_id' => $stock['stocks_id']
+                                    , 'stock_id'  => $stock['id']
+                                    , 'stock_type'  => 1]);
+              $this->stocksDetail->save(['id'=> $stock['id']
+                                        , 'available' => 0]);
+              $temp_qty = 0;
+              return;
+            }
           }
         }
       } else { // detail에 재고가 없을 경우.
-
-      }
-
-      if ( !$sReq ) { // 재고요청이 아닐 때
-        // echo $this->stocksDetail->getLastQuery();
-        if ( !empty($stocks) ) {
-          $temp_qty = $order_qty;
-          foreach($stocks AS $stock) {
-            echo '<br/>temp_qty '.$temp_qty.'<br/>';
-            if ( !$disable ) {
-              $stockReq = $this->stockReq
-                                ->select('IFNULL(SUM(req_qty), 0) AS req_qty_sum')
-                                ->where(['stocks_id' => $stock['stocks_id']])
-                                ->where('stock_id', $stock['id'])
-                                ->groupBy('stock_id')
-                                ->first();
-              echo $this->stockReq->getLastQuery().'<br/>';
-              print_r($stockReq);
-              echo '<br/>';
-              if ( empty($stockReq) ) {
-                if ( $stock['supplied_qty'] < $temp_qty ) {
-                  $temp_qty = $stock['supplied_qty'];
-                  $remain_qty = $order_qty - $stock['supplied_qty'];              
-                } 
-                if ( $stock['supplied_qty'] == $temp_qty ) {
-                  $this->stocksDetail
-                        ->where(['id' => $stock['id']])
-                        ->set(['available' => 0])
-                        ->update();
-                }
-              } else {
-                if ( $stock['supplied_qty'] <= $stockReq['req_qty_sum'] ) {
-                  $this->stocksDetail
-                        ->where(['id' => $stock['id']])
-                        ->set(['available' => 0])
-                        ->update();
-                } else {
-                  if ( $temp_qty > ($stock['supplied_qty'] - $stockReq['req_qty_sum']) ) {
-                    $temp_qty = $stock['supplied_qty'] - $stockReq['req_qty_sum'];
-                    $remain_qty = $order_qty - ($stock['supplied_qty'] - $stockReq['req_qty_sum']);
-                  }
-                }
-              }
-
-              $this->stockReq
-                    ->insert(['order_id' => $orderId
-                              , 'req_qty' => $temp_qty
-                              , 'prd_id' => $prd_id
-                              , 'stocks_id' => $stock['stocks_id']
-                              , 'stock_id' => $stock['id']
-                              , 'stock_type' => $pendStock]);
-
-              if ( $remain_qty > 0 ) $temp_qty = $remain_qty;
-            }
-          }
-        // } else {
-        //   $stock = $this->stocks
-        //               // ->select('stocks.id')
-        //               // // ->select('stocks_detail.stocks_id')
-        //               // ->join('stocks', 'stocks.id = stocks_detail.stocks_id')
-        //               // ->where(['stocks.available' => 1])
-        //               // ->where(['stocks.prd_id' => $prd_id])
-        //               ->where(['available' => 1, 'prd_id' => $prd_id])
-        //               ->first();
-        //     echo "<br/>aaaaa";
-        //     echo "<br/>";
-        //     print_r($stock);
-        //     echo "<br/>";
-        //     echo "<br/>";
-        //   if ( !empty($stock)) {
-        //     $saveCondition = ['order_id' => $orderId, 
-        //                       'req_qty' => $order_qty, 
-        //                       'stock_type' => 2, 
-        //                       'stocks_id' => $stock['id'], 
-        //                       'prd_id' => $prd_id];
-        //     $this->stockReq->save($saveCondition);
-        //   }
-
-        //   // if ( $this->stockReq->insertID ) {
-        //   //   // $findStock['code'] = 200; // 재고요청으로 등록 성공
-        //   // } else {
-        //   //   print_r($this->stockReq->error());
-        //   //   // $findStock['code'] = 401; // 유효한 재고 수량이 아예 없을 때
-        //   // }
-        }
-      } else { // 재고요청일 때
-        echo "<br/>else<br/>";
-        echo 'prd_id '.$prd_id."<br/>";
-        $stock = $this->stocks
-                    ->where(['available' => 1, 'prd_id' => $prd_id])
-                    ->first();
-        echo $this->stocks->getLastQuery();
-        echo "<br/>";
-        print_r($stock);
-        echo "<br/>";
+        echo "유효한 재고가 없음. order request 상품<br/>";
+        $stock = $this->stocks->where(['prd_id' => $prd_id
+                                      , 'available' => 1])->first();
         if ( !empty($stock) ) {
           $this->stockReq->save(['order_id' => $orderId
-                                  , 'req_qty' => $order_qty
-                                  , 'stocks_id' => $stock['id']
-                                  , 'stock_type' => 2
-                                  , 'prd_id' => $prd_id]);
+                                , 'req_qty' => $order_qty
+                                , 'prd_id' => $prd_id
+                                , 'stocks_id' => $stock['id']
+                                , 'stock_type' => 2]);
+        // } else {
+        //   return session()->setFlashdata('error', 'order request error');
         }
       }
-      
-      // $findStock['stocks_id'] = $stocks_id;
-      // $findStock['remainded'] = $remain_qty;
+      return;
     }
-    // print_r($findStock);
-    // return $findStock;
   }
 
   public function getCart() {
@@ -368,8 +312,7 @@ class Checkout extends BaseController
     //   $where = array_merge($where, ['cart.onlyZeroTax'=> $this->request->getVar('taxation')]);
     // }
 
-    $carts = $this->cartController
-                  ->getCartList()
+    $carts = $this->cartController->getCartList()
                   ->select('cart.prd_id')
                   ->select('supply_price.idx AS supply_price_id')
                   ->select('supply_price_compare.idx AS supply_price_compare_id')

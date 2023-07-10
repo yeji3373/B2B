@@ -4,6 +4,10 @@ use Config\Servies;
 
 if ( !function_exists('invoice_detail') || !empty($userData) ) {
   function invoice_detail($userData, $currencyUnit = 'USD') {
+    $config = config('Paypal');
+    
+    if ( !empty($userData['currency_code']) ) $currencyUnit = $userData['currency_code'];
+
     $default = [
       'detail'   => [
         'invoice_number'  => $userData['buyerName'].'_'.date('YmdHms', time()),
@@ -23,12 +27,12 @@ if ( !function_exists('invoice_detail') || !empty($userData) ) {
           'postal_code'       => '22827',
           'country_code'      => 'KR'
         ],
-        // 'email_address' => 'v2plus1v@hotmail.com',
+        'email_address' => $config->invoicerEmail,
         'phones'    => [
           [
             'country_code'      => '082',
-            // 'national_number'  => '7048005454ext.202',
             'national_number'  => '7048005454',
+            'extension_number'  => '202',
             'phone_type'        => 'MOBILE'
           ]
         ],
@@ -89,7 +93,17 @@ if ( !function_exists('invoice_detail') || !empty($userData) ) {
         'allow_tip' => false,
         'tax_calculated_after_discount' => true,
         'tax_inclusive' => false
-      ]
+      ],
+      // 'amount' => [
+      //   'breakdown' => [
+      //     'shipping' => [
+      //       'amount' => [
+      //         'currency_code' => $currencyUnit,
+      //         'value' => $userData['shippingFee']
+      //       ]
+      //     ]
+      //   ]
+      // ]
     ];
 
     return json_encode($default);

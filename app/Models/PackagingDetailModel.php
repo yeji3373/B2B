@@ -11,6 +11,7 @@ class PackagingDetailModel extends Model {
   protected $allowedFields = ['packaging_id', 'status_id', 'in_progress'];
 
   protected $useTimestamps = true;
-  protected $createdField = '';
+  protected $createdField = 'created_at';
+  protected $updatedField = 'updated_at';
   protected $dateFormat = 'datetime';
 }
