@@ -53,7 +53,7 @@ class Order extends BaseController
   }
 
   public function index() {
-    // $this->CartController->initialCartList(); // 초기화 할지 안할지 고민하기   
+    $this->CartController->initialCartList(); // 초기화 할지 안할지 고민하기   
     $this->brandList();
     $this->cartList();
     $this->productList();
@@ -123,7 +123,7 @@ class Order extends BaseController
                         ->getCartList()
                         ->where('cart.buyer_id', session()->userData['buyerId'])
                         ->where('supply_price.margin_level = cart.prd_section')
-                        ->where('cart.updated_at >=', $this->CartController->checkDate)
+                        // ->where('cart.updated_at >=', $this->CartController->checkDate)
                         ->orderBy('cart.prd_id ASC, cart.idx ASC')
                         ->findAll();
     }
