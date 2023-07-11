@@ -1,13 +1,4 @@
 <main class='my-1 mx-auto w-auto products'>
-  <!-- <form id='' accept-charset='utf-8' method='POST' class='d-none'> -->
-    <!-- <?//=csrf_field() ?> -->
-    <!-- <input type='hidden' name='brand_id' value='<?//php// isset($search['brand_id']) ?? $search['brand_id']?>'> -->
-    <!-- <input type='hidden' name='brand_name' value='<?//php isset($search['brand_name']) ?? $search['brand_name']?>'> -->
-    <!-- <input type='hidden' name='name' class='key' value='<?//=isset($_POST['name']) ? $_POST['name'] : ''?>'>
-    <input type='hidden' name='barcode' class='key' value='<?//=isset($_POST['barcode']) ? $_POST['barcode'] : '' ?>'>
-    <input type='hidden' name='sample' value='<?//php isset($search['sample']) ?? $search['sample']?>'> -->
-    <!-- <input type='hidden' name='page' value> -->
-  <!-- </form> -->
   <section>
     <div class='m-auto d-flex position-relative w-90'>
       <div class='border border-dark brand-section me-2 rounded w-14'>
