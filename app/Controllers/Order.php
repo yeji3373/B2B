@@ -49,7 +49,8 @@ class Order extends BaseController
     $this->CartController = new CartController();
 
 
-    $this->data['header'] = ['css' => ['/address.scss', '/order.scss', '/stock.scss'],
+    $this->data['header'] = ['css' => ['/address.scss', '/order.scss'
+                                      , '/inventory.scss', '/stock.scss'],
                               'js' => ['/product.js', '/stock.js']];
   }
 
