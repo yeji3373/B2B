@@ -39,8 +39,9 @@ return [
   'unselectBtn'         => 'Unselect',
   'stockRequestBtn'     => '재고요청',
   'stockReqCancelBtn'   => '재고요청 취소',
-  'orderBtn'            => '주문하기',  
-
+  'checkout'            => '주문하기',  
+  'inventoryCheckRq'    => '재고확인요청',
+  'changeQtyBtn'        => '수량변경',
   'previouslyAddrss'    => '등록된 주소',
   'addNewAddress'       => 'Add a new address',
   'orderList'           => 'Products in orders',

@@ -23,22 +23,57 @@
 .orders-main .order-info-container [class $='-info-section'] .info-sec .sub-sec .sub-inner-sec.quarter-grid-column { grid-template-columns: 1fr 1fr 1fr 1fr; }
 
 .orders-main .order-info-container .packaging-info-section .packagin-status { 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  margin: 0 auto; 
-  font-size: 0.7rem; 
-  width: 4vw; 
-  height: 4vw; 
+  /* display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  font-size: 0.7rem;
+  width: 4vw;
+  height: 4vw;
   border-radius: 50%;
   border-width: 2px;
   border-style: solid;
-  color: #dee2e6;
+  color: #dee2e6; */
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  /* @media (max-width: 768px) {
+    font-size: 8px;
+  } */
+}
+.orders-main .order-info-container .packaging-info-section .packagin-status:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  border-bottom: 0.4rem solid #dee2e6;
+  width: 100%;
+  top: calc(0.6rem - 0.2rem);
+  left: 50%;
+  z-index: 2;
+}
+.orders-main .order-info-container .packaging-info-section .packagin-status .circle {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background-color: #dee2e6;
+  margin-bottom: 6px;
 }
 .orders-main .order-info-container .packaging-info-section .packagin-status.ing { 
   color: royalblue; 
 }
-
+.orders-main .order-info-container .packaging-info-section .packagin-status.ing .circle {
+  background-color: royalblue;
+}
+.orders-main .order-info-container .packaging-info-section .packagin-status.ing::before {
+  border-bottom-color: royalblue;
+}
 .orders-main .order-detail-container .list-group .thumbnail { width: 3rem; }
 .orders-main .order-detail-container .list-group .list-group-item .apply-discount-value { display: none; }
 .orders-main .order-detail-container .list-group .list-group-item.apply-discount .text-line-through { text-decoration: line-through; }

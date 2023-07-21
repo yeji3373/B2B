@@ -188,7 +188,8 @@
               <?=( $status['in_progress'] == 1 ) 
                 || ( (empty($status['in_progress']) && empty($status['complete']) && $i == 0) ) ? 'ing': ''?>
               '>
-              <?=$status['status_name']?>
+              <div class='circle'></div>
+              <div class='status-name'><?=$status['status_name']?></div>
             </div>
           <?php endforeach;
           endif; ?>

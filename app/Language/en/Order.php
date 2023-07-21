@@ -40,7 +40,8 @@ return [
   'unselectBtn'         => 'Unselect',
   'stockRequestBtn'     => 'Request an order',
   'stockReqCancelBtn'   => 'Cancel order request',
-  'orderBtn'            => 'Checkout',  
+  'checkout'            => 'Checkout',  
+  'inventoryCheckRq'    => '재고체크요청',
   'changeQtyBtn'        => 'Change Qty',
 
   'previouslyAddrss'    => 'Registered shipping address',

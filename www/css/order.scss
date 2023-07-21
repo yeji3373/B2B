@@ -82,7 +82,7 @@
 .products .product-invoice-section .name-group { font-size: 0.85rem; }
 .products .product-invoice-section .name-group i { font-size: 0.7rem; }
 .products .product-invoice-section .list-group-item .qty-change-btn { font-size: 0.5rem; width: fit-content; align-self: end; }
-.products .product-invoice-section .product-selected { width: 100%; height: 75%; }
+.products .product-invoice-section .product-selected { width: 100%; height: 85%; }
 .products .product-invoice-section .product-selected .list-group-item { grid-template-columns: 1fr 21%; border-width: 0 1px 1px 1px; border-style: solid; border-color: var(--bs-border-color); }
 .products .product-invoice-section .product-selected .list-group-item .product-info { font-size: 0.73rem; }
 .products .product-invoice-section .product-selected .list-group-item .product-info .product-info-item { display: flex; flex-direction: row; min-height: 1.3rem; align-items: center; }
@@ -97,7 +97,7 @@
 .products .product-invoice-section .product-selected .list-group-item .qty-group input:focus-visible { outline: 0; }
 /* .products .product-invoice-section .product-selected .list-group-item .prd-item-discount-price { borde} */
 /* .products .product-invoice-section .product-price { } */
-.products .product-invoice-section .product-price-detail { border-bottom: 1px dotted black; margin-bottom: 0.6rem; }
+/* .products .product-invoice-section .product-price-detail { border-bottom: 1px dotted black; margin-bottom: 0.6rem; } */
 /* orders */
 
 .products .pre-order {
@@ -110,6 +110,18 @@
   background-color: #00000069;
   display: none;
   overflow-y: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.products .pre-order.show {
+  display: flex;
+}
+
+.products .pre-order main {
+  border-radius: 5px;
+  margin: auto;
+  overflow-y: auto;
 }
 
 .products .pre-order #checkout-main {
@@ -117,8 +129,17 @@
   height: 100%;
   padding: 2rem 3.5rem;
   background-color: white;
-  overflow-y: auto;
-  margin: auto;
+}
+
+.products .pre-order #inventoryCheck-main {
+  width: 50%;
+  height: 100%;
+  background-color: white;
+  padding: 1rem;
+}
+
+.products .pre-order #inventoryCheck-main #address-accordion div[class*='-addr'] .address-new-form > div label {
+
 }
 
 .products .pre-order #pre-order .title { font-size: 1.1rem; margin: 0 0 0.8rem; padding: 0; font-weight: bold; }
@@ -156,59 +177,48 @@
 
 /* checkout start */
 /* checkout 주소입력 */
-#checkout-main label.title { width: 23%; margin-right: 0.5rem; }
+/* #checkout-main label.title { width: 23%; margin-right: 0.5rem; }
 
 #checkout-main div[class*='-addr'] .address-new-form > div { display: flex; flex-direction: row; flex-wrap: nowrap; margin-bottom: 0.5rem; }
 #checkout-main div[class*='-addr'] .address-new-form > div label { width: 23%; margin-right: 0.5rem; }
-#checkout-main div[class*='-addr'] .address-new-form .region-list { height: 25rem; overflow-y: auto; }
+#checkout-main div[class*='-addr'] .address-new-form .region-list { height: 25rem; overflow-y: auto; } */
 
-/* checkout 주문내역 및 합계 */
-#checkout-main .cart-list-section .box-header { font-weight: bold; background-color: #ffd1d1; }
-#checkout-main .cart-list { height: 64.9vh; overflow-y: auto; }
-#checkout-main .cart-list .thumbnail { width: 2.2rem; height: 2.3rem; }
-#checkout-main .cart-list .brand-name { position: relative; text-transform: uppercase; }
-#checkout-main .cart-list .brand-name::after { content: '\005D'; }
-#checkout-main .cart-list .brand-name::before { content: '\005B'; }
-#checkout-main .cart-list .product-type { position: relative; }
-#checkout-main .cart-list .product-type::before { content: '\0023';}
+/* 재고요청 내역 및 합계 시작 */
+main[id*='-main'] .brand-name { position: relative; text-transform: uppercase; }
+main[id*='-main'] .brand-name::after { content: '\005D'; }
+main[id*='-main'] .brand-name::before { content: '\005B'; }
 
-#checkout-main .cart-list .accordion-button { font-size: 0.8rem; }
-#checkout-main .cart-list .accordion-button .product-opts { font-size: 0.7rem; }
-#checkout-main .cart-list .accordion-body { font-size: 0.78rem; }
+main[id*='-main'] .cart-list-section .box-header { font-weight: bold; background-color: #ffd1d1; }
+main[id*='-main'] .cart-list { height: 64.9vh; overflow-y: auto; }
+main[id*='-main'] .cart-list .thumbnail { width: 2.2rem; height: 2.3rem; }
+main[id*='-main'] .cart-list .product-type { position: relative; }
+main[id*='-main'] .cart-list .product-type::before { content: '\0023';}
 
-#checkout-main .cart-total-price .box-header .currency-unit { border: 0; background-color: transparent; margin: 0; padding: 0; width: 2.5rem; text-align: center; }
-#checkout-main .cart-total-price .box-header .currency-unit:focus { outline: none !important; }
-#checkout-main .cart-total-price p { padding: 0; margin-bottom: 0.3rem; }
-#checkout-main .cart-total-price p span { display: inline-block; width: 13rem; }
-/* #checkout-main .cart-total-price .order-discount-price { position: relative; } */
-/* #checkout-main .cart-total-price .order-discount-price::before { content: '\2010';} */
-#checkout-main .cart-total-price .order-subtotal { font-weight: bold; }
-#checkout-main .cart-total-price .order-subtotal .order-subtotal-price { font-size: 1.5rem; }
-#checkout-main .cart-total-price .checkout-btn { background-color: #ff6666;}
+main[id*='-main'] .cart-list .accordion-button { font-size: 0.8rem; }
+main[id*='-main'] .cart-list .accordion-button .product-opts { font-size: 0.7rem; }
+main[id*='-main'] .cart-list .accordion-body { font-size: 0.78rem; }
 
-#checkout-main .radio-group label { width: auto; min-width: 25%; }
-#checkout-main .radio-group label:not(:first-child), 
-#checkout-main .radio-group label:not(:nth-child(3n)) { margin-left: 2rem; }
-#checkout-main .radio-group label:nth-child(n+4) { padding-top: 0.5rem; }
+main[id*='-main'] .cart-total-price .box-header .currency-unit { border: 0; background-color: transparent; margin: 0; padding: 0; width: 2.5rem; text-align: center; }
+main[id*='-main'] .cart-total-price .box-header .currency-unit:focus { outline: none !important; }
+main[id*='-main'] .cart-total-price p { padding: 0; margin-bottom: 0.3rem; }
+main[id*='-main'] .cart-total-price p span { display: inline-block; width: 13rem; }
+/* main[id*='-main'] .cart-total-price .order-discount-price { position: relative; } */
+/* main[id*='-main'] .cart-total-price .order-discount-price::before { content: '\2010';} */
+main[id*='-main'] .cart-total-price .order-subtotal { font-weight: bold; }
+main[id*='-main'] .cart-total-price .order-subtotal .order-subtotal-price { font-size: 1.5rem; }
+main[id*='-main'] .cart-total-price .checkout-btn { background-color: #ff6666;}
 
-#checkout-main .currency-kr-tax-choice { display: none; }
-#checkout-main .currency-kr-tax-choice .btn.selected { background-color: black; color: white; }
-/* checkout end */
+main[id*='-main'] .radio-group label { width: auto; min-width: 25%; }
+main[id*='-main'] .radio-group label:not(:first-child), 
+main[id*='-main'] .radio-group label:not(:nth-child(3n)) { margin-left: 2rem; }
+main[id*='-main'] .radio-group label:nth-child(n+4) { padding-top: 0.5rem; }
 
-/* address form */
-#address-accordion .prev-addr .accordion-body { max-height: 48vh; overflow-y: auto; }
-#address-accordion .prev-addr .accordion-body > div:not(:first-child) { margin-top: 0.5rem; }
-#address-accordion .prev-addr .accordion-body .prev-addr-sel { cursor: pointer; }
-#address-accordion .prev-addr .accordion-body .prev-addr-sel.selected { border-width: 2px !important; border-color: #0d6efd !important; }
-#address-accordion .prev-addr .zipcode, 
-#address-accordion .prev-addr .phone_code,
-#address-accordion .prev-addr .phone { position: relative; }
-#address-accordion .prev-addr .zipcode::before { content: '\3012';}
-#address-accordion .prev-addr .phone_code::before { content: '\2706\002B';}
-#address-accordion .prev-addr .phone::before { content: '\002D';}
-/* address form */
+main[id*='-main'] .currency-kr-tax-choice { display: none; }
+main[id*='-main'] .currency-kr-tax-choice .btn.selected { background-color: black; color: white; }
 
-.products .pre-order #checkout-main form > section { padding: 0 !important; }
+main[id*='-main'] textarea { width: 100%; height: 9rem; border-color: gray; }
+.products .pre-order main[id*='-main'] form > section { padding: 0 !important; }
+/* 재고요청 내역 및 합계 end */
 
 
 /* .products .stock_modal { display: none; width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: #50505082; z-index: 3; overflow: hidden;}

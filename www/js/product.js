@@ -428,27 +428,43 @@ $(document).ready(function() {
     return;
   } else return;
 
-}).on('click', '.pre-order-btn', function() {
-  result = getData('/order/orderForm', [{name: 'margin_level', value: 1}]);
+// }).on('click', '.pre-order-btn', function() {
+//   result = getData('/order/orderForm', [{name: 'margin_level', value: 1}]);
+
+//   if ( result.indexOf('error') >= 0 ) {
+//     // result = JSON.parse(result);
+//     if ( $.inArray('error', result) ) {
+//       alert(result['error']);
+//       return;
+//     }
+//   }
+
+//   appendData($('.pre-order'), result, true);
+//   $(".pre-order").addClass('show');
+//   $("body").css('overflow', 'hidden');
+//   $(".prev-addr-sel:first").click();
+}).on('click', '.inventory_check_request-btn', function() {
+  let target = $(this).data('bsTarget');
+  result = getData('/order/requestInventoryCheck');
 
   if ( result.indexOf('error') >= 0 ) {
-    // result = JSON.parse(result);
-    if ( $.inArray('error', result) ) {
-      alert(result['error']);
-      return;
-    }
+    return;
   }
 
   appendData($('.pre-order'), result, true);
-  $(".pre-order").show();
-  $("body").css('overflow', 'hidden');
+  $(target).attr('data-bs-confirm', $(this).attr('aria-confirm')).addClass('show');
   $(".prev-addr-sel:first").click();
+  $("body").css('overflow', 'hidden');
+
 }).on('click', '.pre-order', function(e) {
+  let confirmMsg = "Do you want to cancel the payment?";
+  console.log( $(e.target).attr('class'), ' ' ,$(this).attr('class'));
   if ( $(e.target).attr('class') == $(this).attr('class') ) {
-    // let cancelPaypal = confirm("결제 취소하시겠습니까?");
-    let cancelPaypal = confirm("Do you want to cancel the payment?");
+    if ( $(e.target).data('bsConfirm') != '' ) confirmMsg = $(e.target).data('bsConfirm');
+
+    let cancelPaypal = confirm(confirmMsg);
     if ( cancelPaypal ) {
-      $(".pre-order").toggle();
+      $(".pre-order").removeClass('show');
       $("body").css('overflow', 'auto');
     }
     else return;
@@ -492,6 +508,13 @@ $(document).ready(function() {
     }
   }
   // $(".checkout-btn").prop('disabled', true);
+}).on('click', '.accordion-button', function() {
+  console.log($(this).parent().siblings('.accordion-collapse').attr('class'));
+  if ( $(".accordion-button").index(this) == 0 ) {
+    if ( $(".prev-addr-sel").length ) {
+      $('.prev-addr-sel:first').click();
+    }
+  }
 }).on('click', '#address-new-head .accordion-button', function() {
   if ( $('[name=address_id]').val() != '' && $('.prev-addr-sel.selected').length > 0 ) {
     $('[name=address_id]').val('');
@@ -535,7 +558,7 @@ $(document).ready(function() {
   $('.new-addr [name=phone]').val($('.prev-addr-sel.selected .phone').text());
 }).on('click', '.prev-addr-del', function() {
   let idx = $('.prev-addr-del').index(this);
-  result = getData('/order/addressOperate', 
+  result = getData('/address/addressOperate', 
                   [ {name: 'idx', value: $(this).data('id')},
                     {name: 'oper', value: 'del'} ], 
                   true);
@@ -700,9 +723,10 @@ function setCartSpq(cartId, productQty, productPrice, ref = false) {
   let editData = [{name: 'cart_idx', value: cartId},
                   {name: 'order_qty', value: productQty},
                   {name: 'order_price', value: productPrice}];
-  console.log($.param(editData));
+  // console.log($.param(editData));
   result = JSON.parse(getData('/order/editCartList', editData));
   // result = JSON.parse(result);
+  
   
   if ( !ref ) { // return 안받고 곧바로 처리
     if ( result['Code'] == 200 ) { 

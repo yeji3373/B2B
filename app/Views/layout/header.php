@@ -4,16 +4,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <link rel="shortcut icon" type="image/png" href="/favicon.ico"/> -->
-  <!-- <link rel="stylesheet" href="/css/layout.css" /> -->
+
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap-utilities.min.css"/>
-  <link rel="stylesheet" href="/css/common.css" />
-  <!-- <link rel="stylesheet" href="/css/order.css" /> -->
+  <link rel="stylesheet" href="/css/common.scss" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script type="text/javascript" src="/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="/js/common.js"></script>
-  <!-- <script type="text/javascript" src="/js/product.js"></script> -->
 
   <?php if (isset($header) && !empty($header)) : ?>
   <?php foreach ($header as $key=>$val) : 

@@ -48,7 +48,8 @@ class Order extends BaseController
     
     $this->CartController = new CartController();
 
-    $this->data['header'] = ['css' => ['/order.css', '/stock.css'],
+
+    $this->data['header'] = ['css' => ['/address.scss', '/order.scss', '/stock.scss'],
                               'js' => ['/product.js', '/stock.js']];
   }
 
@@ -368,6 +369,17 @@ class Order extends BaseController
     }
   }
 
+  public function requestInventoryCheck() {
+    $country = new CountryModel();
+
+    $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->orderBy('idx DESC')->findAll(0, 1);
+    $this->data['regions'] = $country->findAll();
+    $this->data['itus'] = $this->getItus()->findAll();
+    $this->cartList();
+    
+    return view('order/InventoryCheck', $this->data);
+  }
+
   public function orderForm() {
     $country = new CountryModel();
     $payments = new PaymentMethodModel();
@@ -437,38 +449,6 @@ class Order extends BaseController
 
     return json_encode($totalPrice);
     // return json_encode($currency);
-  }
-
-  public function addressOperate() {
-    $code = 200;
-    $msg = '';
-    $type = '';
-    $data = $this->request->getVar();
-
-    $this->address->where(['buyer_id' => session()->userData['buyerId'], 'idx' => $data['idx']]);
-
-    if ( $data['oper'] == 'del') {
-      $type = 'Deleted';
-      $this->address->delete();
-    } else if ($data['oper'] == 'edit') {
-      unset($data['idx']);
-      $type = 'Edit';
-      $this->address
-            ->set($data)
-            ->update();
-    }
-
-    if ( $this->address->affectedRows() ) {
-      $code = 200;
-      $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'success']);
-    } else {
-      $code = 500;
-      $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'error']);
-    }
-
-    if ( $this->request->isAJAX() ) {
-      return json_encode(['code' => $code, 'Msg' => $msg]);
-    }
   }
 
   public function getProduct($params) {

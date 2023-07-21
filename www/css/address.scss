@@ -1,0 +1,35 @@
+/* #address-accordion .prev-addr .accordion-body { max-height: 48vh; overflow-y: auto; }
+#address-accordion .prev-addr .accordion-body > div:not(:first-child) { margin-top: 0.5rem; }
+#address-accordion .prev-addr .accordion-body .prev-addr-sel { cursor: pointer; }
+#address-accordion .prev-addr .accordion-body .prev-addr-sel.selected { border-width: 2px !important; border-color: #0d6efd !important; }
+#address-accordion .prev-addr .zipcode, 
+#address-accordion .prev-addr .phone_code,
+#address-accordion .prev-addr .phone { position: relative; }
+#address-accordion .prev-addr .zipcode::before { content: '\3012';}
+#address-accordion .prev-addr .phone_code::before { content: '\2706\002B';}
+#address-accordion .prev-addr .phone::before { content: '\002D';}
+
+#address-accordion label.title { width: 23%; margin-right: 0.5rem; }
+
+
+#address-accordion .address-new-form > div { display: flex; flex-direction: row; flex-wrap: nowrap; margin-bottom: 0.5rem; }
+#address-accordion .address-new-form > div label { width: 23%; margin-right: 0.5rem; }
+#address-accordion .address-new-form .region-list { height: 25rem; overflow-y: auto; } */
+
+#address-accordion [class*='-button'] { cursor: pointer; }
+
+#address-accordion .accordion-body { max-height: 48vh; background-color: #f8f8f8; }
+#address-accordion .accordion-body .body-item { display: flex; flex-direction: row; flex-wrap: nowrap; padding: 0.35rem 0; border-bottom: 1px dotted #c6c6c6; align-items: center; }
+#address-accordion .zipcode, 
+#address-accordion .phone_code,
+#address-accordion .phone { position: relative; }
+#address-accordion .zipcode::before { content: '\3012';}
+#address-accordion .phone_code::before { content: '\2706\002B';}
+#address-accordion .phone::before { content: '\002D';}
+#address-accordion label { min-width: 15%; margin-right: 0.5rem; }
+#address-accordion input, #address-accordion select, #address-accordion textarea { border-color: #acacac; }
+
+#address-accordion .prev-addr-sel:not(:first-child) { margin-top: 0.5rem; }
+#address-accordion .prev-addr-sel.selected { border-width: 2px !important; border-color: #0d6efd !important; }
+#address-accordion .address-new-form .region-list { height: 25rem; overflow-y: auto; }
+

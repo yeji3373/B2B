@@ -1,7 +1,7 @@
 <div class='d-flex flex-column flex-wrap accordion' id='address-accordion'>
   <?php if ( isset($prevAddrList) && !empty($prevAddrList) ) : ?>
   <!-- 등록되어있는 주소 -->
-  <div class='w-100 d-flex flex-column accordion-item prev-addr'>
+  <div class='w-100 d-flex flex-column accordion-item prev-addr overflow-auto'>
     <div class='w-100 accordion-header' id='address-prev-head'>
       <div class='accordion-button'
           data-bs-toggle='collapse' data-bs-target='#address-prev-body'
@@ -58,12 +58,12 @@
         class='accordion-collapse collapse <?=empty($prevAddrList) ? 'show' : ''?>'
         aria-labelledby='address-new-head' data-bs-parent='#address-accordion'>
       <div class='accordion-body address-new-form'>
-        <div>
+        <div class='body-item'>
           <label><?=lang('Order.consignee')?></label>
           <!-- <input type='text' name='consignee' value='<?//=isset($prevAddrList) ? $prevAddrList[0]['consignee'] : ''?>' required> -->
           <input type='text' name='consignee' value required>
         </div>
-        <div>
+        <div class='body-item'>
           <label>Country/Region</label>
           <div class='position-relative w-50'>
             <input type='text' name='region' class='regionSelected dropdown-toggle w-100' 
@@ -79,26 +79,26 @@
             </ul>
           </div>
         </div>
-        <div>
+        <div class='body-item'>
           <label>Street address</label>
           <div class='w-75'>
             <input type='text' class='w-100 mb-2' name='streetAddr1' required>
             <input type='text' class='w-100' name='streetAddr2'>
           </div>
         </div>
-        <div>
+        <div class='body-item'>
           <label>City</label>
           <input type='text' name='city' required>
         </div>
-        <!-- <div>
+        <!-- <div class='body-item'>
           <label>State/Province/Region</label>
           <input type='text' name='' value>
         </div> -->
-        <div>
+        <div class='body-item'>
           <label>Zip/Postal code</label>
           <input type='text' name='zipcode' maxlength='10'>
         </div>
-        <div>
+        <div class='body-item border-0'>
           <label>Phone number</label>
           <div class='d-flex flex-direction-row align-items-center'>
             +<select class='col-1 me-2 w-auto' name='phone_code' required>
