@@ -16,8 +16,6 @@
 #address-accordion .address-new-form > div label { width: 23%; margin-right: 0.5rem; }
 #address-accordion .address-new-form .region-list { height: 25rem; overflow-y: auto; } */
 
-.adfafd {}
-
 #address-accordion [class*='-button'] { cursor: pointer; }
 
 #address-accordion .accordion-body { max-height: 48vh; background-color: #f8f8f8; }
