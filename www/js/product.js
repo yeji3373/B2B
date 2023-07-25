@@ -445,10 +445,14 @@ $(document).ready(function() {
 //   $(".prev-addr-sel:first").click();
 }).on('click', '.inventory_check_request-btn', function() {
   let target = $(this).data('bsTarget');
-  result = getData('/order/requestInventoryCheck');
+  result = getData('/inventory/requestInventoryCheck');
 
   if ( result.indexOf('error') >= 0 ) {
-    return;
+    result = JSON.parse(result);
+    if ( $.inArray('error', result) ) {
+      alert(result['error']);
+      return;
+    }
   }
 
   appendData($('.pre-order'), result, true);
@@ -509,42 +513,19 @@ $(document).ready(function() {
   }
   // $(".checkout-btn").prop('disabled', true);
 }).on('click', '.accordion-button', function() {
-  console.log($(this).parent().siblings('.accordion-collapse').attr('class'));
-  if ( $(".accordion-button").index(this) == 0 ) {
-    if ( $(".prev-addr-sel").length ) {
-      $('.prev-addr-sel:first').click();
-    }
-  }
-}).on('click', '#address-new-head .accordion-button', function() {
-  if ( $('[name=address_id]').val() != '' && $('.prev-addr-sel.selected').length > 0 ) {
-    $('[name=address_id]').val('');
-    $('.prev-addr-sel.selected').removeClass('selected');
-    addressFormInit();
-  }
-}).on("click", '.prev-addr-edit, .prev-addr-sel', function(e) {
+  console.log($(".accordion-button").index($(this)));
+//   console.log($(this).parent().siblings('.accordion-collapse').attr('class'));
+//   if ( $(".accordion-button").index($(this)) == 0 ) {
+//     if ( $(".prev-addr-sel").length ) {
+//       $('.prev-addr-sel:first').click();
+//     }
+//   }
+}).on('click', '.prev-addr-sel', function() {
   addressFormInit();
-  // console.log("e target ", $(e.target));
-  // console.log($(this).attr("class") == $(e.target).attr("class"));
-  // console.log("aaaaaaaa ", $('.prev-addr-sel .phone_code').text());
-  if ( $(this).hasClass('prev-addr-edit') ) {
-    $("#address-new-head .accordion-button").click();
-  }
-
-  if ( $(this).hasClass('prev-addr-sel') ) {
-    // console.log(e.target, ' ', $(this));
-    if ( e.target.classList.contains('prev-addr-del') ) {
-      return;
-    } else {
-      if ( !$(this).hasClass('selected') ) {
-        console.log("a");
-        if ( $('.prev-addr-sel.selected').length > 0 ) {
-          console.log("b");
-          $('.prev-addr-sel.selected').removeClass('selected');
-        }
-        $(this).addClass('selected');
-      }
-    } 
-  }
+  $('.prev-addr-sel').removeClass('selected');
+  $(".pre-order form").find('input[name=address_id]').val($(this).data('id'));
+  $(this).addClass('selected');
+}).on("click", '.prev-addr-edit', function() {
   $(".new-addr [name=address_id]").val($('.prev-addr-sel.selected').data('id'));
   $('.new-addr [name=consignee]').val($('.prev-addr-sel.selected .consignee').text());
   $('.new-addr [name=region]').val($('.prev-addr-sel.selected .region').text());
@@ -556,13 +537,15 @@ $(document).ready(function() {
   $('.new-addr [name=zipcode]').val($('.prev-addr-sel.selected .zipcode').text());
   $('.new-addr [name=phone_code]').val($('.prev-addr-sel.selected .phone_code').text());
   $('.new-addr [name=phone]').val($('.prev-addr-sel.selected .phone').text());
+
+  $("#address-new-head .accordion-button").click();
 }).on('click', '.prev-addr-del', function() {
   let idx = $('.prev-addr-del').index(this);
   result = getData('/address/addressOperate', 
                   [ {name: 'idx', value: $(this).data('id')},
                     {name: 'oper', value: 'del'} ], 
                   true);
-
+                  
   alert(result['Msg']);
 
   if ( result['code'] == 200 ) {

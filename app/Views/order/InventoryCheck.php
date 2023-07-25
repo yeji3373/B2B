@@ -16,10 +16,10 @@
               <label class='w-10 pe-1'>선택</label>
               <div class='w-90 d-flex flex-column ps-1'>
                 <select class='mb-1 w-100' aria-target='.requirements-group'>
-                  <option>요청사항 선택</option>
+                  <option aria-appended='true'>요청사항 선택</option>
                   <?php if (!empty($requirements)) :
                     foreach ($requirements AS $requirement): ?>
-                    <option value='<?=$requirement['idx']?>'><?=$requirement['requirement_en']?></option>
+                    <option value='<?=$requirement['idx']?>' data-placeholder='<?=$requirement['placeholder']?>'><?=$requirement['requirement_en']?></option>
                   <?php endforeach;
                     endif; ?>
                 </select>
@@ -29,7 +29,7 @@
           </div>
       </div>
     </div>
-    <div class='inventory-footer mt-3'>
+    <div class='inventory-footer mt-3 d-flex justify-content-end'>
       <input type='submit' class='btn btn-primary' value='Submit'>
     </div>
   </form>

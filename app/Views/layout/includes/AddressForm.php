@@ -1,6 +1,6 @@
 <div class='d-flex flex-column flex-wrap accordion' id='address-accordion'>
-  <?php if ( isset($prevAddrList) && !empty($prevAddrList) ) : ?>
   <!-- 등록되어있는 주소 -->
+  <?php if ( isset($prevAddrList) && !empty($prevAddrList) ) : ?>
   <div class='w-100 d-flex flex-column accordion-item prev-addr overflow-auto'>
     <div class='w-100 accordion-header' id='address-prev-head'>
       <div class='accordion-button'
@@ -12,33 +12,31 @@
     <div id='address-prev-body' class='accordion-collapse collapse show' aria-labelledby='address-prev-head' data-bs-parent='#address-accordion'>
       <div class='accordion-body d-flex flex-column'>
       <?php foreach ($prevAddrList as $address) : ?>
-        <!-- <?//php print_r($address) ?> -->
-        <div class='border rounded py-1 px-3 bg-opacity-10 bg-secondary prev-addr-sel' data-id='<?=$address['idx']?>'>
-          <div class='d-flex flex-row justify-content-between'>
-            <span class='consignee'><?=$address['consignee']?></span>
+        <div class='w-100'>
+          <div class='d-flex flex-row justify-content-between align-items-center mb-1'>
+            <span><?=$address['consignee']?></span>
             <div>
               <div class='btn btn-outline-primary btn-sm py-1 prev-addr-edit' data-id='<?=$address['idx']?>'><?=lang('Order.edit')?></div>
               <div class='btn btn-outline-primary btn-sm py-1 prev-addr-del' data-id='<?=$address['idx']?>'><?=lang('Order.del')?></div>
             </div>
           </div>
-          <div>
-            <span class='region' data-id='<?=$address['region_id']?>' data-ccode='<?=$address['country_code']?>'><?=$address['region']?></span> / <span class='city'><?=$address['city']?></span>
+          <div class='d-flex flex-column border rounded py-1 px-3 bg-opacity-10 bg-secondary prev-addr-sel' data-id='<?=$address['idx']?>'>
+            <span class='consignee d-none'><?=$address['consignee']?></span>
+            <div>
+              <span class='region' data-id='<?=$address['region_id']?>' data-ccode='<?=$address['country_code']?>'><?=$address['region']?></span> / <span class='city'><?=$address['city']?></span>
+            </div>
+            <div>
+              <span class='streetAddr1'><?=$address['streetAddr1']?></span>
+              <span class='streetAddr2'><?=$address['streetAddr2']?></span>
+            </div>
+            <?php if ( isset($address['zipcode']) ) : ?>
+            <div class='zipcode'><?=$address['zipcode']?></div>
+            <?php endif ?>
+            <div class='d-flex flex-row'>
+              <span class='phone_code'><?=$address['phone_code']?></span>
+              <span class='phone'><?=$address['phone']?></span>
+            </div>
           </div>
-          <div>
-            <span class='streetAddr1'><?=$address['streetAddr1']?></span>
-            <span class='streetAddr2'><?=$address['streetAddr2']?></span>
-          </div>
-          <?php if ( isset($address['zipcode']) ) : ?>
-          <div class='zipcode'><?=$address['zipcode']?></div>
-          <?php endif ?>
-          <div class='d-flex flex-row'>
-            <span class='phone_code'><?=$address['phone_code']?></span>
-            <span class='phone'><?=$address['phone']?></span>
-          </div>
-          <!-- <div class='d-flex flex-row mt-2'>
-              <div class='btn btn-outline-primary'>수정</div>
-              <div class='btn btn-primary ms-3'>선택</div>
-          </div> -->
         </div>
       <?php endforeach ?>
       </div>

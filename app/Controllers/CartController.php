@@ -11,7 +11,7 @@ class CartController extends BaseController {
   protected $data;
   
   public $basedDiscountVal = 7000; // B구간일 때 A구간 변경되는 금액
-  public $basedMinimumOrderVal = 44;
+  public $basedMinimumOrderVal = 1000;
   public $checkDate;
 
   public function __construct() {
@@ -111,6 +111,16 @@ class CartController extends BaseController {
     $cartSubTotal = $this->cart->first();
 
     return $cartSubTotal;
+  }
+
+  public function checkMinimumAmount() {
+    $return = false;
+    if ( !empty($this->getCartTotalPrice()) ) {
+      if ( $this->getCartTotalPrice()['order_price_total'] >= $this->basedMinimumOrderVal ) {
+        $return = true;
+      }
+    } 
+    return $return;
   }
 
   public function initialCartList() {

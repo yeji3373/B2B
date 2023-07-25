@@ -14,7 +14,7 @@ use App\Models\PaymentMethodModel;
 use App\Models\ProductPriceModel;
 use App\Models\StockDetailModel;
 use App\Models\BuyerCurrencyModel;
-use App\Models\RequirementModel;
+
 
 use Auth\Models\UserModel;
 
@@ -31,7 +31,6 @@ class Order extends BaseController
 
   protected $data;
   protected $searchData;
-  // protected $tax = 1.1;
 
   public function __construct() {
     helper('date');
@@ -74,9 +73,10 @@ class Order extends BaseController
     // if ( isset($this->searchData['brand_id']) ) {
     //   $this->brands->where('brand_id', $this->searchData['brand_id']);
     // }
-    $brands = $this->brands->where('available', '1')->paginate(20, $brandGroup, $page);
-    $this->data['brandPager'] = $this->brands->pager;
-    $this->data['brandGroup'] = $brandGroup;
+    $brands = $this->brands->where('available', '1')->findAll();
+    // $brands = $this->brands->where('available', '1')->paginate(20, $brandGroup, $page);
+    // $this->data['brandPager'] = $this->brands->pager;
+    // $this->data['brandGroup'] = $brandGroup;
     $this->data['brands'] = $brands;
   }
   
@@ -99,8 +99,8 @@ class Order extends BaseController
                           , 'left outer')
                     ->where('margin.margin_level', $buyer['margin_level'])
                     ->where('supply_price.margin_level', $buyer['margin_level'])
-                    ->orderBy('product.id')
-                    ->paginate(null, $pageGroup, $page);
+                    ->orderBy('brand.brand_id ASC, product.id ASC')
+                    ->paginate(50, $pageGroup, $page);
 
     // echo $this->products->getLastQuery();
     // echo "<br/><br/>";
@@ -109,7 +109,7 @@ class Order extends BaseController
     $this->data['productPager'] = $this->products->pager;
     $this->data['search'] =  $this->request->getPost();
     $this->data['pageGroup'] = $pageGroup;
-    // $this->data['tax'] = $this->tax;
+    // // $this->data['tax'] = $this->tax;
     $this->data['total'] = $total;
 
     if ( $this->request->isAJAX() ) {
@@ -371,19 +371,6 @@ class Order extends BaseController
     }
   }
 
-  public function requestInventoryCheck() {
-    $country = new CountryModel();
-    $requirement = new RequirementModel();
-
-    $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->orderBy('idx DESC')->findAll(0, 1);
-    $this->data['regions'] = $country->findAll();
-    $this->data['itus'] = $this->getItus()->findAll();
-    $this->data['requirements'] = $requirement->where('display', 1)->findAll();
-    // $this->cartList();
-    
-    return view('order/InventoryCheck', $this->data);
-  }
-
   public function orderForm() {
     $country = new CountryModel();
     $payments = new PaymentMethodModel();
@@ -393,14 +380,11 @@ class Order extends BaseController
     //   $where['supply_price.margin_level'] = $this->request->getPost('margin_level');
     // } else $where['supply_price.margin_level'] = 2;
 
-    $cartTotal = $this->CartController->getCartTotalPrice($where);
-
-    if ( $cartTotal['order_price_total'] < $this->CartController->basedMinimumOrderVal ) {
+    if ( $this->CartController->checkMinimumAmount() === false ) {
       if ( $this->request->isAJAX()) {
         return json_encode(['error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
       } 
       return redirect()->to(site_url('/order'))->with('error', lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
-      // return;
     }
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->findAll();

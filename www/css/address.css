@@ -29,7 +29,7 @@
 #address-accordion label { min-width: 15%; margin-right: 0.5rem; }
 #address-accordion input, #address-accordion select, #address-accordion textarea { border-color: #acacac; }
 
-#address-accordion .prev-addr-sel:not(:first-child) { margin-top: 0.5rem; }
+#address-accordion #address-prev-body .accordion-body > div:not(:first-child) { margin-top: 0.5rem; }
 #address-accordion .prev-addr-sel.selected { border-width: 2px !important; border-color: #0d6efd !important; }
 #address-accordion .address-new-form .region-list { height: 25rem; overflow-y: auto; }
 

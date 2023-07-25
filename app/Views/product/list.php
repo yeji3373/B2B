@@ -15,19 +15,20 @@
               <li class='dropdown-header'><?=lang('Order.brandSearch')?></li>
             </ul>
           </div>
-        </div>        
-        <ul class='list-group list-group-flush border-top border-dark brand-list-group'>
-          <li class='list-group-item brand-item <?=(!isset($_GET['brand_name']) || empty($_GET['brand_name'])) ? 'active' : ''?>' data-name=''><span><?=lang('Order.allBrands')?></span></li>
-          <?php foreach($brands as $brand) : 
-            echo "<li class='list-group-item brand-item ". (((isset($_GET['brand_name']) && !empty($_GET['brand_name'])) && $_GET['brand_name'] == $brand['brand_name']) ? 'active' : '')."' 
-                      data-id='".$brand['brand_id']."' data-name='".$brand['brand_name']."'>".
-                    "<div class='d-flex flex-column'>".
-                      "<div>".htmlspecialchars(stripslashes($brand['brand_name']))."</div>";
-                    "</div>".
-                  "</li>";
-            endforeach?>
-        </ul>
-        <?=$brandPager->links($brandGroup, 'pager'); ?>
+        </div>
+        <div class='w-100 h-91 overflow-auto'>
+          <ul class='list-group list-group-flush border-top border-dark brand-list-group'>
+            <li class='list-group-item brand-item <?=(!isset($_GET['brand_name']) || empty($_GET['brand_name'])) ? 'active' : ''?>' data-name=''><span><?=lang('Order.allBrands')?></span></li>
+            <?php foreach($brands as $brand) : 
+              echo "<li class='list-group-item brand-item ". (((isset($_GET['brand_name']) && !empty($_GET['brand_name'])) && $_GET['brand_name'] == $brand['brand_name']) ? 'active' : '')."' 
+                        data-id='".$brand['brand_id']."' data-name='".$brand['brand_name']."'>".
+                      "<div class='d-flex flex-column'>".
+                        "<div>".htmlspecialchars(stripslashes($brand['brand_name']))."</div>";
+                      "</div>".
+                    "</li>";
+              endforeach?>
+          </ul>
+        </div>
       </div>
       <div class='border border-dark product-section me-2 rounded w-40'>
         <div class='px-2 py-1 mb-0 h-5rm'>

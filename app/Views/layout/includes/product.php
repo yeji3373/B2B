@@ -3,7 +3,7 @@
     <?=lang('Order.noResultSearch')?>
   </div>  
 <?php else : ?>
-  <div>
+  <div class='product-list'>
   <?php foreach($products as $product) : ?>
     <div class='d-flex flex-row border border-top-0 justify-content-between py-1 px-2 list-group-item'>
       <!-- <div class='d-flex flex-row align-items-center product-item'> -->
@@ -146,5 +146,4 @@
     </div>
   <?php endforeach; ?>
   </div>
-  <?php echo $productPager->links($pageGroup, 'pager'); ?>
 <?php endif; ?>
