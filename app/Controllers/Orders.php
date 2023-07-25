@@ -36,7 +36,7 @@ class Orders extends BaseController {
 
     $this->paypalController = new PaypalController();
 
-    $this->data['header'] = ['css' => ['/orders.scss', '/taggroup.scss'],
+    $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
                                       , '/orders.js']];
 

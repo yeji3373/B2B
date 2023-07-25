@@ -1,7 +1,6 @@
 @charset "utf-8";
 /* orders */
 /* .brand-section { width: 15rem; } */
-
 .brand-search-group .selectedBrandList .items { margin-right: 0.5rem; }
 .brand-search-group .selectedBrandList .items:last-child { margin-right: 0;}
 .brand-list-group .brand-item {
@@ -88,6 +87,7 @@
 .products .product-invoice-section .product-selected .list-group-item .product-info .product-info-item { display: flex; flex-direction: row; min-height: 1.3rem; align-items: center; }
 .products .product-invoice-section .product-selected .list-group-item .product-info .product-info-item .item-name { position: relative; width: 5rem; }
 .products .product-invoice-section .product-selected .list-group-item .product-info .product-info-item .item-name::after { content: "\003A"; }
+.products .product-invoice-section .product-selected .list-group-item .product-info .product-info-item.type { text-transform: capitalize; }
 
 .products .product-invoice-section .product-selected .list-group-item div[class*='stock-req'] { box-shadow: none; color: white; margin-bottom: 0.5rem; }
 .products .product-invoice-section .product-selected .list-group-item .stock-req { background-color: #c70000;}
@@ -182,44 +182,6 @@
 #checkout-main div[class*='-addr'] .address-new-form > div { display: flex; flex-direction: row; flex-wrap: nowrap; margin-bottom: 0.5rem; }
 #checkout-main div[class*='-addr'] .address-new-form > div label { width: 23%; margin-right: 0.5rem; }
 #checkout-main div[class*='-addr'] .address-new-form .region-list { height: 25rem; overflow-y: auto; } */
-
-/* 재고요청 내역 및 합계 시작 */
-main[id*='-main'] .brand-name { position: relative; text-transform: uppercase; }
-main[id*='-main'] .brand-name::after { content: '\005D'; }
-main[id*='-main'] .brand-name::before { content: '\005B'; }
-
-main[id*='-main'] .cart-list-section .box-header { font-weight: bold; background-color: #ffd1d1; }
-main[id*='-main'] .cart-list { height: 64.9vh; overflow-y: auto; }
-main[id*='-main'] .cart-list .thumbnail { width: 2.2rem; height: 2.3rem; }
-main[id*='-main'] .cart-list .product-type { position: relative; }
-main[id*='-main'] .cart-list .product-type::before { content: '\0023';}
-
-main[id*='-main'] .cart-list .accordion-button { font-size: 0.8rem; }
-main[id*='-main'] .cart-list .accordion-button .product-opts { font-size: 0.7rem; }
-main[id*='-main'] .cart-list .accordion-body { font-size: 0.78rem; }
-
-main[id*='-main'] .cart-total-price .box-header .currency-unit { border: 0; background-color: transparent; margin: 0; padding: 0; width: 2.5rem; text-align: center; }
-main[id*='-main'] .cart-total-price .box-header .currency-unit:focus { outline: none !important; }
-main[id*='-main'] .cart-total-price p { padding: 0; margin-bottom: 0.3rem; }
-main[id*='-main'] .cart-total-price p span { display: inline-block; width: 13rem; }
-/* main[id*='-main'] .cart-total-price .order-discount-price { position: relative; } */
-/* main[id*='-main'] .cart-total-price .order-discount-price::before { content: '\2010';} */
-main[id*='-main'] .cart-total-price .order-subtotal { font-weight: bold; }
-main[id*='-main'] .cart-total-price .order-subtotal .order-subtotal-price { font-size: 1.5rem; }
-main[id*='-main'] .cart-total-price .checkout-btn { background-color: #ff6666;}
-
-main[id*='-main'] .radio-group label { width: auto; min-width: 25%; }
-main[id*='-main'] .radio-group label:not(:first-child), 
-main[id*='-main'] .radio-group label:not(:nth-child(3n)) { margin-left: 2rem; }
-main[id*='-main'] .radio-group label:nth-child(n+4) { padding-top: 0.5rem; }
-
-main[id*='-main'] .currency-kr-tax-choice { display: none; }
-main[id*='-main'] .currency-kr-tax-choice .btn.selected { background-color: black; color: white; }
-
-main[id*='-main'] textarea { width: 100%; height: 9rem; border-color: gray; }
-.products .pre-order main[id*='-main'] form > section { padding: 0 !important; }
-/* 재고요청 내역 및 합계 end */
-
 
 /* .products .stock_modal { display: none; width: 100%; height: 100%; position: fixed; top: 0; left: 0; background-color: #50505082; z-index: 3; overflow: hidden;}
 .products .stock_modal #stock_request { width: 80%; height: 10rem; background-color: white; position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%); z-index: 4; } */

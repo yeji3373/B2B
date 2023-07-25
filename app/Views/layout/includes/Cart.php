@@ -118,7 +118,8 @@
                 <?php if ( $cart['available_stock'] > 0 && empty($cart['stock_req'])) : ?>
                 <?=number_format($cart['available_stock'])?>
                 <?php else:
-                  echo lang('Order.noStock'); ?>
+                  // echo lang('Order.noStock'); 
+                echo "-"; ?>
                 <?php endif ?>
               </span>
             </div>

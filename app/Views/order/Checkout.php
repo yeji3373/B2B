@@ -167,7 +167,7 @@
               </p>
             </div>
             <div class='w-100 text-end'>
-              <button class='btn border-0 w-100 checkout-btn m-auto'><?=lang('Order.orderBtn')?></button>
+              <button class='btn border-0 w-100 checkout-btn m-auto'><?=lang('Order.checkout')?></button>
             </div>
           </div>
         </div>

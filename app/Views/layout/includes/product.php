@@ -90,17 +90,9 @@
                 }
               ?>
             </span>
-            <!-- <?php
-              // echo ($product['box'] == 1 ? "<span>".$product['in_the_box']."pcs/Box</span>" : "");
-              // echo ($product['box'] == 2 ? "<span>".$product['in_the_box']."pcs</span>" : "");
-            ?> -->
           </div>
-          <!-- <div class='font-size-middle'>
-            <?//=($product['barcode'] <= 0 ? '' : 'Barcode: '.$product['barcode'])?>
-          </div> -->
           <div class='font-size-middle'>
             <?php
-              // ($product['shipping_weight'] != "" ? "<span class='me-1'>".lang('Order.productWeight').": ".number_format($product['shipping_weight'])."g</span>" : "" ).
               if ($product['type_en'] != "" ) {
                 echo "<span class='fw-bold type-en text-capitalize'>".lang('Order.productType')." : #".$product['type_en']."</span>";
               }
@@ -112,28 +104,16 @@
           </div>
           <div class='tag-group d-flex flex-row flex-nowrap'>
             <?php
-              if ( !empty($product['available_stock']) && $product['available_stock'] > 0 ) {
-                echo "<span class='tag-item on-sale'>".lang('Order.onsale')."</span>";
-              } else echo "<span class='tag-item sold-out'>".lang('Order.soldout')."</span>";
-              // if ( $product['container'] == 0 && $product['spec_pcs'] > 0 ) {
-              //   echo "<span class='tag-item bundle-item'>".lang('Order.bundle')."</span>";
-              // }
-
+              echo "<span class='tag-item on-sale'>".lang('Order.onsale')."</span>";
               if ( $product['taxation'] == 1 ) {
                 echo "<span class='tag-item taxation'>zero tax</span>";
               }
               // echo ($product['box'] == 1 ? "<span class='tag-item inTheBox'>".$product['in_the_box']."pcs/Box</span>" : "");
               if ($product['sample'] == 1) {
                 echo "<span class='tag-item sample'>".lang('Order.sample')."</span>";
-                // if ( $product['container'] == 1 ) {
-                //   echo "<span class='fw-bold'>".lang('Order.container')."</span>";
-                // }
               }
             ?>
           </div>
-          <?php if ($product['available_stock'] <= 0 ) : ?>
-          <span class='text-danger font-size-middle'><?=lang('Order.nonRefundMsg', ['target'=> '[Request an order]'])?></span>
-          <?php endif; ?>
         </div>        
       </div>
       <div class='d-flex flex-column justify-content-between align-items-end'>
@@ -153,26 +133,14 @@
             <input type='hidden' name='margin_section' value='<?=$product['margin_level']?>'>
             <input type='hidden' name='onlyZeroTax' value='<?=$product['taxation']?>'>
             <input type='hidden' name='bskAction' value='add'>
-          <?php if ( $product['available_stock'] > 0 ) : ?>
             <input type='hidden' name='order_qty' value='<?=$product['moq']?>'>
-          </form>
             <?php if ($product['cart_idx'] == null ) : ?>
-            <?php echo "<button class='btn btn-sm order-req' data-prd-id='".$product['id']."' data-btn='".lang('Order.unselectBtn')."'>".lang('Order.selectBtn')."</button>"; ?>
+            <button class='btn btn-sm order-req' data-prd-id='<?=$product['id']?>' data-btn='<?=lang('Order.unselectBtn')?>'><?=lang('Order.selectBtn')?></button>
             <?php else : ?>
             <input type='hidden' class='cart_idx' value='<?=$product['cart_idx']?>'>
             <button class='btn btn-sm bsk-del-btn' data-class='order-req' data-btn='<?=lang('Order.selectBtn')?>'><?=lang('Order.unselectBtn')?></button>
             <?php endif; ?>
-          <?php else : ?>
-            <input type='hidden' name='order_qty' value='10'>
-            <input type='hidden' name='stock_req' value='1'>
           </form>
-            <?php if ( $product['cart_idx'] == null ) : ?>
-            <button class='btn btn-sm stock-order-req' data-prd-id="<?=$product['id']?>" data-btn='<?=lang('Order.stockReqCancelBtn')?>'><?=lang('Order.stockRequestBtn')?></button>
-            <?php else : ?>
-            <input type='hidden' class='cart_idx' value='<?=$product['cart_idx']?>'>
-            <button class='btn btn-sm stock-order-req bsk-del-btn' data-class='stock-order-req' data-btn='<?=lang('Order.stockRequestBtn')?>'><?=lang('Order.stockReqCancelBtn')?></button>
-            <?php endif ?>
-          <?php endif; ?>
         </div>
       </div>
     </div>

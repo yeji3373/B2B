@@ -10,27 +10,23 @@
       </div>
       <div class='mt-3 w-100'>
         <h7>요청사항</h7>
-        <div class='accordion border border-1 rounded-1 p-3'>
-          <div class='d-flex flex-column mb-3'>
+        <div class='requirements accordion border border-1 rounded-1'>
+          <div class='accordion-body d-flex flex-column py-2'>
             <div class='w-100 d-flex'>
               <label class='w-10 pe-1'>선택</label>
               <div class='w-90 d-flex flex-column ps-1'>
-                <select class='mb-1 w-100'>
+                <select class='mb-1 w-100' aria-target='.requirements-group'>
                   <option>요청사항 선택</option>
+                  <?php if (!empty($requirements)) :
+                    foreach ($requirements AS $requirement): ?>
+                    <option value='<?=$requirement['idx']?>'><?=$requirement['requirement_en']?></option>
+                  <?php endforeach;
+                    endif; ?>
                 </select>
-                <div class='w-100'>
-                선택한 값 append
-                </div>
+                <div class='w-100 requirements-group d-flex flex-wrap'></div>
               </div>
             </div>
           </div>
-          <div class='d-flex'>
-            <label class='w-10 pe-1'>기타</label>
-            <div class='w-90'>
-              <textarea class='request-textarea'></textarea>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <div class='inventory-footer mt-3'>

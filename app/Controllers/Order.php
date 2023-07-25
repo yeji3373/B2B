@@ -14,6 +14,7 @@ use App\Models\PaymentMethodModel;
 use App\Models\ProductPriceModel;
 use App\Models\StockDetailModel;
 use App\Models\BuyerCurrencyModel;
+use App\Models\RequirementModel;
 
 use Auth\Models\UserModel;
 
@@ -49,9 +50,9 @@ class Order extends BaseController
     $this->CartController = new CartController();
 
 
-    $this->data['header'] = ['css' => ['/address.scss', '/order.scss'
-                                      , '/inventory.scss', '/stock.scss'],
-                              'js' => ['/product.js', '/stock.js']];
+    $this->data['header'] = ['css' => ['/address.css', '/order.css'
+                                      , '/inventory.css', '/stock.css'],
+                              'js' => ['/product.js', '/inventory.js', '/stock.js']];
   }
 
   public function index() {
@@ -372,11 +373,13 @@ class Order extends BaseController
 
   public function requestInventoryCheck() {
     $country = new CountryModel();
+    $requirement = new RequirementModel();
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->orderBy('idx DESC')->findAll(0, 1);
     $this->data['regions'] = $country->findAll();
     $this->data['itus'] = $this->getItus()->findAll();
-    $this->cartList();
+    $this->data['requirements'] = $requirement->where('display', 1)->findAll();
+    // $this->cartList();
     
     return view('order/InventoryCheck', $this->data);
   }

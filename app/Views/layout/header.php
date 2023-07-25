@@ -7,7 +7,7 @@
 
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap-utilities.min.css"/>
-  <link rel="stylesheet" href="/css/common.scss" />
+  <link rel="stylesheet" href="/css/common.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script type="text/javascript" src="/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="/js/common.js"></script>

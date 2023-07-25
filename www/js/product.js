@@ -458,7 +458,7 @@ $(document).ready(function() {
 
 }).on('click', '.pre-order', function(e) {
   let confirmMsg = "Do you want to cancel the payment?";
-  console.log( $(e.target).attr('class'), ' ' ,$(this).attr('class'));
+  // console.log( $(e.target).attr('class'), ' ' ,$(this).attr('class'));
   if ( $(e.target).attr('class') == $(this).attr('class') ) {
     if ( $(e.target).data('bsConfirm') != '' ) confirmMsg = $(e.target).data('bsConfirm');
 
