@@ -84,9 +84,11 @@ class Order extends BaseController
     $params = $this->request->getVar();
     $page = null;
     $pageGroup = 'prd';
-    $total = 0; 
+    $total = 0;
     $buyer = $this->getBuyerInfo();
 
+    $offset = 30;
+    $start = empty($params['start']) ? 0 : $offset + $params['start'];
     // if ( isset($this->searchData['page']) && !empty($this->searchData['page']) ) $page = $this->searchData['page'];
     // if ( $this->request->getGet('brand_id') ) {
     //   $this->product->where('brand_id', $this->request->getGet('brand_id'));
@@ -100,20 +102,25 @@ class Order extends BaseController
                     ->where('margin.margin_level', $buyer['margin_level'])
                     ->where('supply_price.margin_level', $buyer['margin_level'])
                     ->orderBy('brand.brand_id ASC, product.id ASC')
-                    ->paginate(50, $pageGroup, $page);
-
+                    // ->paginate(50, $pageGroup, $page);
+                    ->findAll($offset, $start);
+    
     // echo $this->products->getLastQuery();
     // echo "<br/><br/>";
 
     $this->data['products'] = $products;
-    $this->data['productPager'] = $this->products->pager;
+    // $this->data['productPager'] = $this->products->pager;
     $this->data['search'] =  $this->request->getPost();
-    $this->data['pageGroup'] = $pageGroup;
+    // $this->data['pageGroup'] = $pageGroup;
     // // $this->data['tax'] = $this->tax;
-    $this->data['total'] = $total;
+    // $this->data['total'] = $total;
 
     if ( $this->request->isAJAX() ) {
-      return view('/layout/includes/product', $this->data);
+      if ( !empty($params['request_unit']) && $params['request_unit'] == true ) {
+        return view('/layout/includes/productItem', $this->data);
+        // $this->data['param'] = $params;
+        // return json_encode(['result', $params]);
+      } else return view('/layout/includes/product', $this->data);
     } else return $this->data;
   }
 

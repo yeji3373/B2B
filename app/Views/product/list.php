@@ -1,5 +1,9 @@
 <main class='my-1 mx-auto w-auto products'>
   <section>
+    <form id='search-form'>
+      <input type='hidden' name='brand_id'>
+      <input type='hidden' name='request_unit'>
+    </form>
     <div class='m-auto d-flex position-relative w-90'>
       <div class='border border-dark brand-section me-2 rounded w-14'>
         <div class='p-2 mb-0'>

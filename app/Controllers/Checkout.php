@@ -68,32 +68,32 @@ class Checkout extends BaseController
     }
   }
 
-  public function addressConduct() {
-    $req = $this->request->getVar();
-    $req['buyer_id'] = session()->userData['buyerId'];
-    if ( empty($req['address_id']) ) {
-      $address = $this->address
-                ->where([
-                  'consignee' => $req['consignee'],
-                  'region_id' => $req['region_id'],
-                  'streetAddr1' => $req['streetAddr1'],
-                  'buyer_id' => $req['buyer_id'],
-                ])->findAll();
-      if ( empty($address) ) {
-        if ( $this->address->insert($req) ) {
-          $this->orderInfo['address_id'] = $this->address->getInsertID();
-        }
-      }
-    } else { // update
-      // if ( $req['edit'] == true ) {
+  // public function addressConduct() {
+  //   $req = $this->request->getVar();
+  //   $req['buyer_id'] = session()->userData['buyerId'];
+  //   if ( empty($req['address_id']) ) {
+  //     $address = $this->address
+  //               ->where([
+  //                 'consignee' => $req['consignee'],
+  //                 'region_id' => $req['region_id'],
+  //                 'streetAddr1' => $req['streetAddr1'],
+  //                 'buyer_id' => $req['buyer_id'],
+  //               ])->findAll();
+  //     if ( empty($address) ) {
+  //       if ( $this->address->insert($req) ) {
+  //         $this->orderInfo['address_id'] = $this->address->getInsertID();
+  //       }
+  //     }
+  //   } else { // update
+  //     // if ( $req['edit'] == true ) {
 
-      // } else {
-        $this->orderInfo['address_id'] = $req['address_id'];
-      // }
-    }
+  //     // } else {
+  //       $this->orderInfo['address_id'] = $req['address_id'];
+  //     // }
+  //   }
 
-    $this->setOrders();
-  }
+  //   $this->setOrders();
+  // }
 
   public function setOrders() {
     $req = $this->request->getVar();

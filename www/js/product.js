@@ -9,6 +9,24 @@ $(document).ready(function() {
   //   // }, 1000);
   //   $(this).parent().find('.thumbnail-zoom').addClass('d-none');
   // });
+  $('.product-search-result .product-list').scroll(function() {
+    // let scrollPer = Math.floor(($(this).scrollTop() / $(this).prop('scrollHeight')) * 100);
+    let scrollPer = Math.round((Math.ceil($(".product-search-result .product-list").scrollTop() + $(".product-search-result .product-list").height()) / $(this).prop('scrollHeight')) * 100);
+
+    if ( scrollPer > 90 && $(this).data('append') == 'true' ) {
+      $(this).attr('data-appended', true);
+      console.log(scrollPer);
+      result = getData('/order/productList'
+                    , {'unit': true, 
+                      'start': 2, 
+                      'brand_name': new URLSearchParams(window.location.search).get('brand_name')});
+      
+      if ( result != '' ) {
+        console.log(result);
+        // $(this).append(result);
+      }
+    }
+  });
 }).on('keydown', function(e) {
   // console.log(e.keyCode);
   if ( e.keyCode === 13 ) e.preventDefault();
@@ -77,32 +95,47 @@ $(document).ready(function() {
 }).on('click', '.brand-list-group .brand-item', function() {
   let sorted = $(this).data('name');
 
-  if ( sorted == '' ) {
-    location.replace('/order?' + $.removeUrlParam('brand_name'));
-  } else location.replace('/order?'+$.urlParam({'brand_name': sorted}));
-  // let brand_id = $(this).data('id');
-  // let form_brand_id = $('form [name="brand_id"]').val();
-  // let run = false;
-  
-  // if ( $(this).index() > 0 ) {
-  //   $(".brand-item.active").removeClass('active');
-  //   $(this).addClass("active");
-  // } else {
-  //   $(".brand-item").removeClass("active");
-  //   $(".brand-item").first().addClass("active");
-  //   form_brand_id = "";
-  // }
-  
-  // if ( form_brand_id != brand_id ) {
-  //   form_brand_id = brand_id;
-  //   run = true;
-  // } else run = false;
+  if ( $('.brand-item.active').length ) {
+    $('.brand-item.active').removeClass('active');
+  }
 
-  // $('form [name="brand_id"]').val(form_brand_id);
-  // if ( run ) {
-  //   productResult = getData('/order/productList', dataInit());
-  //   appendData($(".product-search-result"), productResult, true);
-  // }
+  $(this).addClass('active');
+  $('#search-form input[name=brand_id]').val($(this).data('id'));
+  $('#search-form input[name=request_unit]').val(1);
+
+  result = getData('/order/productList', dataInit("#search-form"));
+
+  if ( result != '' ) {
+    
+    console.log(result);
+  }
+
+  // if ( sorted == '' ) {
+  //   location.replace('/order?' + $.removeUrlParam('brand_name'));
+  // } else location.replace('/order?'+$.urlParam({'brand_name': sorted}));
+  // // let brand_id = $(this).data('id');
+  // // let form_brand_id = $('form [name="brand_id"]').val();
+  // // let run = false;
+  
+  // // if ( $(this).index() > 0 ) {
+  // //   $(".brand-item.active").removeClass('active');
+  // //   $(this).addClass("active");
+  // // } else {
+  // //   $(".brand-item").removeClass("active");
+  // //   $(".brand-item").first().addClass("active");
+  // //   form_brand_id = "";
+  // // }
+  
+  // // if ( form_brand_id != brand_id ) {
+  // //   form_brand_id = brand_id;
+  // //   run = true;
+  // // } else run = false;
+
+  // // $('form [name="brand_id"]').val(form_brand_id);
+  // // if ( run ) {
+  // //   productResult = getData('/order/productList', dataInit());
+  // //   appendData($(".product-search-result"), productResult, true);
+  // // }
 }).on('keyup', '#productSearch', function(e) {
   let opts = $(".productSearchOpts option:selected").val();
   let search = $(this).val();
@@ -125,7 +158,7 @@ $(document).ready(function() {
     }
     if ( search == '') return;
     
-    location.replace('/order?' + $.urlParam(selOpts));
+    // location.replace('/order?' + $.urlParam(selOpts));
   }
 //   if ( e.keyCode == 32 || search.length > 2 ) { 
 //     setTimeout(() => {
@@ -445,7 +478,7 @@ $(document).ready(function() {
 //   $(".prev-addr-sel:first").click();
 }).on('click', '.inventory_check_request-btn', function() {
   let target = $(this).data('bsTarget');
-  result = getData('/inventory/requestInventoryCheck');
+  result = getData('/inventory/request', [], false, 'GET');
 
   if ( result.indexOf('error') >= 0 ) {
     result = JSON.parse(result);
@@ -457,7 +490,13 @@ $(document).ready(function() {
 
   appendData($('.pre-order'), result, true);
   $(target).attr('data-bs-confirm', $(this).attr('aria-confirm')).addClass('show');
-  $(".prev-addr-sel:first").click();
+  if ( $('.prev-addr-sel').length ) {
+    $(".prev-addr-sel:eq(0)").click();
+  } else $('input[name=address_operate]').val(1);
+
+  if ( $('.pre-order form input[name=request-total-price]').length ) {
+    $('.pre-order form input[name=request-total-price]').val(parseFloat($('.sub-total-price').text()));
+  }
   $("body").css('overflow', 'hidden');
 
 }).on('click', '.pre-order', function(e) {
@@ -495,33 +534,24 @@ $(document).ready(function() {
   });
   $regionList.hide();
   $searchedRegion.show();
-}).on('click', '.checkout-btn', function(e) {
-  console.log("안내창 띄우기?");
-  /* submit check */
-  // validRequiredCheck($("form"));
-  if ( $('[name=address_id]').val() == '' ) {
-    if ( $('.prev-addr-sel').length > 0 ) {
-      if ( $('.prev-addr-sel.selected').length == 0 ) {
-      if ( $('#address-prev-body').hasClass('show') ) {
-        // $("#address-new-head .accordion-button").click();
-        alert('Please select or enter an address');
-        return false;
-        // e.preventDefault();
-      }
-      }
-    }
-  }
-  // $(".checkout-btn").prop('disabled', true);
-}).on('click', '.accordion-button', function() {
-  console.log($(".accordion-button").index($(this)));
-//   console.log($(this).parent().siblings('.accordion-collapse').attr('class'));
-//   if ( $(".accordion-button").index($(this)) == 0 ) {
-//     if ( $(".prev-addr-sel").length ) {
-//       $('.prev-addr-sel:first').click();
+// }).on('click', '.checkout-btn', function(e) {
+//   console.log("안내창 띄우기?");
+//   /* submit check */
+//   // validRequiredCheck($("form"));
+//   if ( $('[name=address_id]').val() == '' ) {
+//     if ( $('.prev-addr-sel').length > 0 ) {
+//       if ( $('.prev-addr-sel.selected').length == 0 ) {
+//         if ( $('#address-prev-body').hasClass('show') ) {
+//           // $("#address-new-head .accordion-button").click();
+//           alert('Please select or enter an address');
+//           return false;
+//           // e.preventDefault();
+//         }
+//       }
 //     }
 //   }
 }).on('click', '.prev-addr-sel', function() {
-  addressFormInit();
+  // addressFormInit();
   $('.prev-addr-sel').removeClass('selected');
   $(".pre-order form").find('input[name=address_id]').val($(this).data('id'));
   $(this).addClass('selected');
@@ -538,10 +568,11 @@ $(document).ready(function() {
   $('.new-addr [name=phone_code]').val($('.prev-addr-sel.selected .phone_code').text());
   $('.new-addr [name=phone]').val($('.prev-addr-sel.selected .phone').text());
 
+  $("#address-accordion input[name=address_operate]").val(1);
+  $("#address-accordion .accordion-item.new-addr").addClass('edit-address');
   $("#address-new-head .accordion-button").click();
 }).on('click', '.prev-addr-del', function() {
-  let idx = $('.prev-addr-del').index(this);
-  result = getData('/address/addressOperate', 
+  result = getData('/address/edit', 
                   [ {name: 'idx', value: $(this).data('id')},
                     {name: 'oper', value: 'del'} ], 
                   true);
@@ -549,19 +580,40 @@ $(document).ready(function() {
   alert(result['Msg']);
 
   if ( result['code'] == 200 ) {
-    $('.prev-addr-sel').eq(idx).remove();
-    if ( $('[name=address_id]').val() == $(this).data('id') ) $('[name=address_id]').val('');
+    // $('.prev-addr-sel').eq(idx).remove();
+    $(this).closest('.registed-address').remove();
+    // if ( $('[name=address_id]').val() == $(this).data('id') ) $('[name=address_id]').val('');
     if ( $('.prev-addr-sel').length == 0 ) {
+      if ( $('[name=address_id]').val() != '' ) $('[name=address_id]').val('');
       $("#address-new-head .accordion-button").click();
       $(".prev-addr").addClass('d-none');
+    } else {
+      if ( !$('.prev-addr-sel:eq(0)').hasClass('selected') ) $('.prev-addr-sel:eq(0)').click();
     }
-  }    
-}).on('click', '#address-new-head .accordion-button', function() {
-  if ( $(this).attr('aria-expanded') == 'true' ) {
-    console.log("열림");
+  }
+}).on('click', '#address-accordion .accordion-button', function() {
+  if ( $(this).closest('.accordion-item').hasClass('prev-addr') ) {
+    if ( $('#address-accordion').find('.prev-addr-sel').length ) {
+      $("#address-accordion input[name=address_operate]").val(0);
+      $(".accordion-item.new-addr.edit-address").removeClass('edit-address');
+      if ( !$('.prev-addr-sel.selected').length ) {
+        $('.prev-addr-sel:eq(0)').click();
+      }
+      addressFormInit();
+    }
   } else {
-    console.log("닫힘");
-    $("#address-prev-head .accordion-button").click();
+    $('.prev-addr-sel.selected').removeClass('selected');
+    if ( !$(".accordion-item.new-addr").hasClass("edit-address") ) {
+      $('.new-addr input[name=address_id]').val('');
+      $(".new-addr input[name=address_operate]").val(1);
+    }
+    
+    Array.from($("#address-accordion input, #address-accordion select")).forEach(v => {
+      if ( typeof $(v).attr('aria-required') != undefined 
+          && $(v).attr('aria-required') == 'true' ) {
+        $(v).prop('required', true);
+      }
+    });
   }
 }).on('change', '[name=checkout-currency]', function() {
   console.log("changed");
@@ -678,13 +730,14 @@ $(document).ready(function() {
   $(this).children('.thumbnail-zoom').addClass('d-none');
 });
 
-$(window).ready(function() {
-  $(".prev-addr-sel:first").click();
-});
+// $(window).ready(function() {
+//   $(".prev-addr-sel:first").click();
+// });
 
-function dataInit() {
+function dataInit(target = null) {
   let formData = null;
-  formData = $("form:first").serializeArray();
+  if ( target == null ) formData = $("form:first").serializeArray();
+  else formData = $('form' + target).serializeArray();
   return formData;
 }
 
@@ -775,6 +828,8 @@ function addressFormInit() {
   // $('.prev-addr-sel.selected').removeClass('selected');
   $(".address-new-form input").val('');
   $(".address-new-form select option:selected").prop('selected', false);
+  $("input, select").prop('required', false);
+
 }
 
 function hideStockModal() {

@@ -35,29 +35,34 @@ class AddressController extends BaseController {
     $type = '';
     $data = $this->request->getVar();
 
-    $this->address->where(['buyer_id' => session()->userData['buyerId'], 'idx' => $data['idx']]);
+    $address = $this->address->where(['buyer_id' => session()->userData['buyerId'], 'idx' => $data['idx']]);
 
-    if ( $data['oper'] == 'del') {
-      $type = 'Deleted';
-      $this->address->delete();
-    } else if ($data['oper'] == 'edit') {
-      unset($data['idx']);
-      $type = 'Edit';
-      $this->address
-            ->set($data)
-            ->update();
-    }
+    if ( !empty($address) ) :
+      if ( $data['oper'] == 'del') {
+        $type = 'Deleted';
+        $this->address->where($address)->delete();
+      } else if ($data['oper'] == 'edit') {
+        unset($data['idx']);
+        $type = 'Edit';
+        $this->address
+              ->set($data)
+              ->update();
+      }
 
-    if ( $this->address->affectedRows() ) {
-      $code = 200;
-      $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'success']);
-    } else {
+      if ( $this->address->affectedRows() ) {
+        $code = 200;
+        $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'success']);
+      } else {
+        $code = 500;
+        $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'error']);
+      }
+    else :
       $code = 500;
       $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'error']);
-    }
+    endif;
 
-    if ( $this->request->isAJAX() ) {
-      return json_encode(['code' => $code, 'Msg' => $msg]);
-    }
+    // if ( $this->request->isAJAX() ) {
+    return json_encode(['code' => $code, 'Msg' => $msg]);
+    // }
   }
 }
