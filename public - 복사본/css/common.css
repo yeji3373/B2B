@@ -1,0 +1,177 @@
+@charset "utf-8";
+/* layout */
+html { font-size: 15px;}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+main { 
+  width: 100%;
+  /* min-height: 100vh; */
+  min-height: 90vh;
+}
+a { color: black; }
+
+input[type=button], button, input[type=submit] {
+  display: block;
+  box-sizing: border-box;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  padding: 0.5rem 1rem;
+  border-color: #e5e5e5;
+  cursor: pointer;
+}
+input, select, textarea { 
+  border: 1px solid;
+  padding: 3px 4px;
+  border-radius: 3px;
+}
+
+input:focus, select:focus, select:active, textarea:focus {
+  outline: none;
+}
+
+/* form {
+  margin-bottom: 2.7rem;
+} */
+form.hasInputAnimate input:not([type=radio], [type=checkbox], [type=submit]), 
+form.hasInputAnimate textarea,
+form.hasInputAnimate select,
+form.hasInputAnimate select option {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem;
+  background-color: #f9f9f9;
+  border-color: #e5e5e5;
+  -webkit-transition: 0.35s ease-in-out;
+  -moz-transition: 0.35s ease-in-out;
+  -o-transition: 0.35s ease-in-out;
+  transition: all 0.35s ease-in-out;
+}
+form.hasInputAnimate p {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0.8rem auto;
+  padding: 0.8rem 0 0;
+}
+form.hasInputAnimate p input:not([type=radio], [type=chekbox], [type=submit]) + label,
+form.hasInputAnimate p textarea + label,
+form.hasInputAnimate p select + label {
+  position: absolute;
+  left: 0.5rem;
+  top: 6%;
+  pointer-events: none;
+  text-align: left;
+  transition: all 0.3s ease-in-out;
+  /* transform: translate(0, 100%); */
+  background: linear-gradient(#fff 15%, #f9f9f9 85%);
+}
+form.hasInputAnimate p input:not([type=radio], [type=checkbox], [type=submit]):focus + label,
+form.hasInputAnimate p input:not([type=radio], [type=checkbox], [type=submit]):not(:placeholder-shown) + label,
+form.hasInputAnimate p input[type=email]:not(:placeholder-shown) + label,
+form.hasInputAnimate p select + label {
+  transform: translate(0, -1%);
+  background: linear-gradient(#fff 15%, #f9f9f9 85%);
+}
+form.hasInputAnimate p input + label { transform: translate(0, 100%); }
+.guide-msg { font-size: 0.7rem; display: flex; }
+.guide-msg i {  position: relative; width: 0.8rem; }
+.guide-msg i::before { 
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '\203B'; 
+}
+/* font color */
+.color-red { color: #f51616; }
+.color-white { color: white; }
+/* font color */
+
+datalist {
+  position: relative;
+  background-color: rebeccapurple;
+}
+
+datalist option {
+  width: 100%;
+}
+
+/* bootstrap disalbled */
+.btn-check:active+.btn:focus, .btn-check:checked+.btn:focus, .btn.active:focus, .btn.show:focus, .btn:active:focus,
+.btn-check:focus+.btn, .btn:focus, [type='checkbox']:focus {
+  box-shadow: none;
+}
+.form-control:focus { border-color: initial; box-shadow: none; }
+
+.w-10 { width: 10%; }
+.w-14 { width: 14%; }
+.w-15 { width: 15%; }
+.w-16 { width: 16%; }
+.w-19 { width: 19%; }
+.w-20 { width: 20%; }
+.w-30 { width: 30%; }
+.w-38 { width: 38%; }
+.w-40 { width: 40%; }
+.w-45 { width: 45%; }
+.w-48 { width: 48%; }
+.w-49 { width: 49%; }
+.w-60 { width: 60%; }
+.w-70 { width: 70%; }
+.w-80 { width: 80%; }
+.w-85 { width: 85%; }
+.w-90 { width: 90%; }
+
+.h-09 { height: 9%; }
+.h-84 { height: 84%; }
+.h-91 { height: 91%; }
+.h-5rm { height: 5rem; }
+/* currency code check */
+.currency-code { position: relative; }
+.USD .currency-code::before, .currency-code.usd::before { content: '\0024'; }
+.KRW .currency-code::before, .currency-code.krw::before { content: '\20A9'; }
+
+
+/* empty */
+.isEmpty { width: 100%; padding: 3rem 0; text-align: center; }
+
+/* div in header */
+.box-header { font-size: 1.1rem; }
+
+/* 유니코드 넣기 */
+/* () */
+.parenthesis { position: relative; }
+.parenthesis::before { content: '\0028'; }
+.parenthesis::after { content: '\0029'; }
+/* [] */
+.bracket { position: relative; } 
+.bracket::after { content: '\005D'; }
+.bracket::before { content: '\005B'; }
+/* <> */
+/* .chevron { position: relative; } 
+.chevron::after { content: '\005D'; }
+.chevron::before { content: '\005B'; } */
+.plus-sign { position: relative; }
+.plus-sign::before { content: '\FE62'; }
+/* 유니코드 넣기 */
+
+
+/* tag group 관리 */
+/* .tag-group { margin-top: 0.2rem; } */
+.tag-group .tag-item { font-size: 0.6rem; font-weight: bold; text-transform: uppercase; padding: 0.2rem 0.3rem; border-radius: 3px; line-height: 1; }
+.tag-group .tag-item:not(:last-child) { margin-right: 0.15rem; }
+.tag-group .tag-item.on-sale { color: #11bec3; border: 1px solid;}
+.tag-group .tag-item.sold-out { color: #058a5e; border: 1px solid; }
+.tag-group .tag-item.case-item { color: #6f6969; border: 1px solid; }
+.tag-group .tag-item.bundle-item { color: #6495ed; border: 1px solid; }
+.tag-group .tag-item.taxation { color: coral; border: 1px solid; }
+.tag-group .tag-item.sample { color: #4a8bff; border: 1px solid;}
+
+
+/* button */
+[class*='btn'] { cursor: pointer; }
+/* button */
+
+.grid-half { grid-template-columns: repeat(2, 1fr);}
+.grid-column-span-2 { grid-column: auto / span 2 ;}
