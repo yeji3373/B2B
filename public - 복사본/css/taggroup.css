@@ -1,8 +1,0 @@
-.tag-group { margin-top: 0.2rem; }
-.tag-item { font-size: 0.6rem; font-weight: bold; text-transform: uppercase; padding: 0.25rem 0.3rem; border-radius: 3px; line-height: 1; }
-.tag-item:not(:last-child) { margin-right: 0.15rem; }
-.tag-item.sample-item { border: 1px solid #11bec3; color: #11bec3;}
-.tag-item.inTheBox { border: 1px solid #058a5e; color: #058a5e;}
-.tag-item.case-item { border: 1px solid #6f6969; color: #6f6969; }
-.tag-item.bundle-item { border: 1px solid #6495ed; color: #6495ed; }
-.tag-item.taxation { border: 1px solid coral; color: coral; }
