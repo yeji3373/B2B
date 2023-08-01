@@ -35,7 +35,7 @@
     </section>
     <?php else : ?>
     <section class='order-empty-container grid-column-span-2'>
-      <?=view('orders/main')?>
+      <?=view('layout/Chart/LineChart')?>
     </section>
     <?php endif; ?>
   </div>
