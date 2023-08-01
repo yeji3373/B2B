@@ -106,8 +106,8 @@ $(document).ready(function() {
   result = getData('/order/productList', dataInit("#search-form"));
 
   if ( result != '' ) {
-    
-    console.log(result);
+    console.log(result); 
+    appendData($('.product-search-result .product-list'), result, true);    
   }
 
   // if ( sorted == '' ) {

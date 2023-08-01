@@ -16,6 +16,8 @@ namespace App\Controllers;
 use App\Models\OrderModel;
 use App\Models\NoticeModel;
 
+use App\Controllers\Orders;
+
 class Home extends BaseController {
   protected $data;
   
@@ -23,34 +25,30 @@ class Home extends BaseController {
     $this->order = new OrderModel();
     $this->notice = new NoticeModel();
 
-    $this->data['header'] = [ 'js' => ['https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js']
+    $this->ordersController = new Orders();
+
+    $this->data['header'] = [ 'js' => ['https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js'
+                                      , 'https://cdn.jsdelivr.net/npm/chart.js']
                             , 'css' => ['https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css', '/main.css']];
   }
 
   public function index() {
+    if ( session()->isLoggedIn ) {
+      return call_user_func_array(array($this, 'main'), []);
+    }
     return $this->basicLayout('dash/index', $this->data);
   }
 
-  // public function dashboard() {
-  //   // echo $this->request->getLocale();
-  //   $this->data = $this->dashboardData();
-  //   return $this->basicLayout('dash/main', $this->data);
-  // }
-
-  // public function dashboardData() {
-  //   $this->data['order'] = $this->getOrderStatus();
-  //   $this->data['notices'] = $this->notice->limit(5)->findAll();
-
-  //   return $this->data;
-  // }
-
-  // public function getOrderStatus() {
-  //   $orders = $this->order
-  //                   ->select('created_at, DATE_FORMAT(created_at, \'%Y-%m-%d\') AS created_at_co, AVG(order_amount) AS order_amount, SUM(subtotal_amount) AS subtotal_amount')
-  //                   ->where('buyer_id', session()->userData['buyerId'])
-  //                   ->where('created_at BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()')
-  //                   ->groupBy('created_at_co')
-  //                   ->find();
-  //   return $orders;
-  // }
+  public function main() {
+    $this->data['notices'] = $this->notice->board(['board_type.available' => 1
+                                                , 'board.type_idx' => 1])
+                                          ->orderBy('board.fixed DESC, board.sort ASC, board.idx ASC')
+                                          ->findAll(8);
+    $this->data['qna'] = $this->notice->board(['board_type.available' => 1
+                                              , 'board.type_idx' => 2])
+                                      ->orderBy('board.fixed DESC, board.sort ASC, board.idx ASC')
+                                      ->findAll(8);
+    $this->data['statistics'] = $this->ordersController->ordersStatistics();
+    return $this->basicLayout('dash/main', $this->data);
+  }
 }

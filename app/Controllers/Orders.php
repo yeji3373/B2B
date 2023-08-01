@@ -8,6 +8,7 @@ use App\Models\DeliveryModel;
 use App\Models\BuyerModel;
 use App\Models\PackagingModel;
 use App\Models\PackagingStatusModel;
+use App\Models\PaymentMethodModel;
 
 use Auth\Models\UserModel;
 
@@ -32,6 +33,7 @@ class Orders extends BaseController {
     $this->buyer = new BuyerModel();
     $this->packaging = new PackagingModel();
     $this->packagingStatus = new PackagingStatusModel();
+    $this->paymentMethodModel = new PaymentMethodModel();
     $this->status = config('Status');
 
     $this->paypalController = new PaypalController();
@@ -43,10 +45,10 @@ class Orders extends BaseController {
   }
 
   public function index() {
-    $this->data['order'] = $this->getOrder();
     $this->data['orders'] = $this->getOrderList();
 
-    if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
+    // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
+    if ( empty($this->request->getGet('order_number')) ) {
       $this->data['statistics'] = $this->ordersStatistics();
       $this->data['orderBrand'] = $this->order->select('brand.brand_name, COUNT(brand.brand_id) AS cnt')
                                     ->join('orders_detail', 'orders_detail.order_id = orders.id')
@@ -56,11 +58,13 @@ class Orders extends BaseController {
                                     ->groupby('brand.brand_id')
                                     ->findAll(10);
     } else {
-      $this->data['receipts'] = $this->getOrderReceipts();
+      $this->data['order'] = $this->getOrder();
+      $this->data['paymentMethod'] = $this->getPaymentMethod();
+      // $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
-      $this->data['shippinCost'] = $this->getTotalShippingCost();
-      $this->data['buyer'] = $this->getBuyer();
-      $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
+      // $this->data['shippinCost'] = $this->getTotalShippingCost();
+      // $this->data['buyer'] = $this->getBuyer();
+      // $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
       $this->data['packagingStatus'] = $this->packagingStatus
                                             ->select('packaging_status.*')
                                             ->select('packaging.complete')
@@ -87,18 +91,8 @@ class Orders extends BaseController {
   // }
 
   public function ordersStatistics() {
-    $orders = $this->order
-                    ->select('DATE_FORMAT(created_at, \'%Y-%m-%d\') AS created_at_co')
-                    // ->select('CONVERT(AVG(order_amount), FLOAT) AS order_amount')
-                    ->select('CAST(SUM(subtotal_amount) AS DOUBLE) AS subtotal_amount')
-                    ->where('buyer_id', session()->userData['buyerId'])
-                    // ->where('created_at >= ', date('Y-m-d 00:00:00', strtotime('-5 days')) )
-                    // ->where('created_at <= ', date('Y-m-d 00:00:00', strtotime('NOW')))
-                    // ->where('created_at BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()')
-                    ->groupBy('created_at_co')
-                    ->find();
-    // echo $this->order->getLastQuery();
-    return $orders;
+    return $this->order->orderStatistics()->getResultArray();
+    
   }
 
   public function getOrderList() {
@@ -122,45 +116,59 @@ class Orders extends BaseController {
     return $orders;
   }
 
+  public function getPaymentMethod() {
+    $where = [];
+    if ( !empty($this->getOrder()) ) {
+      $where['id'] = $this->getOrder()['payment_id'];
+    }
+    $paymentMethod = $this->paymentMethodModel->where($where)->first();
+    return $paymentMethod;
+  }
+
   public function getOrder() {
     $order = $this->order
-                    ->select('orders.id, orders.order_number, orders.order_amount, orders.discount_amount')
-                    ->select('orders.subtotal_amount, orders.order_amount, orders.discount_amount')
-                    ->select('orders.currency_code, orders.taxation')
-                    ->select('orders.payment_id, orders.address_id')
-                    ->select('DATE_FORMAT(orders.created_at, "%Y-%m-%d") AS orderDate')
-                    ->select('payment_method.payment')
-                    ->select('payment_method.payment_info, payment_method.bank_name, payment_method.account_no, payment_method.swift_code')
-                    ->select('payment_method.show_info, payment_method.has_payment_url, payment_method.payment_desc')
-                    ->select('buyers_address.idx AS address_id, buyers_address.consignee')
-                    ->select('buyers_address.region, buyers_address.country_code')
-                    ->select('buyers_address.streetAddr1, buyers_address.streetAddr2')
-                    ->select('buyers_address.city, buyers_address.zipcode')
-                    ->select('buyers_address.phone_code, buyers_address.phone')
-                    ->select('buyers_address.deleted_at')
-                    ->select('currency.currency_sign, currency.currency_float')
-                    ->select('delivery.delivery_code, SUM(delivery_price) AS delivery_price')
-                    ->join('payment_method', 'payment_method.id = orders.payment_id')
-                    ->join('buyers_address', 'buyers_address.idx = orders.address_id')
-                    ->join('currency', 'currency.currency_code = orders.currency_code')
-                    ->join('delivery', 'delivery.order_id = orders.id')
-                    ->where('orders.order_number', $this->request->getVar('order_number'))
-                    ->where('orders.buyer_id', session()->userData['buyerId'])
-                    ->where('payment_method.available', 1)
-                    ->first();
+                ->select('orders.*')
+                ->select('currency.currency_sign, currency.currency_float')
+                ->join('currency', 'currency.currency_code = orders.currency_code')
+                ->where(['order_number' => $this->request->getVar('order_number')
+                        ,'buyer_id' => session()->userData['buyerId']])
+                ->first();
+    // $order = $this->order
+    //                 ->select('orders.id, orders.order_number, orders.order_amount, orders.discount_amount')
+    //                 ->select('orders.subtotal_amount, orders.order_amount, orders.discount_amount')
+    //                 ->select('orders.currency_code, orders.taxation')
+    //                 ->select('orders.payment_id, orders.address_id')
+    //                 ->select('DATE_FORMAT(orders.created_at, "%Y-%m-%d") AS orderDate')
+    //                 ->select('payment_method.payment')
+    //                 ->select('payment_method.payment_info, payment_method.bank_name, payment_method.account_no, payment_method.swift_code')
+    //                 ->select('payment_method.show_info, payment_method.has_payment_url, payment_method.payment_desc')
+    //                 ->select('buyers_address.idx AS address_id, buyers_address.consignee')
+    //                 ->select('buyers_address.region, buyers_address.country_code')
+    //                 ->select('buyers_address.streetAddr1, buyers_address.streetAddr2')
+    //                 ->select('buyers_address.city, buyers_address.zipcode')
+    //                 ->select('buyers_address.phone_code, buyers_address.phone')
+    //                 ->select('buyers_address.deleted_at')
+    //                 ->select('currency.currency_sign, currency.currency_float')
+    //                 ->select('delivery.delivery_code, SUM(delivery_price) AS delivery_price')
+    //                 ->join('payment_method', 'payment_method.id = orders.payment_id')
+    //                 ->join('buyers_address', 'buyers_address.idx = orders.address_id')
+    //                 ->join('currency', 'currency.currency_code = orders.currency_code')
+    //                 ->join('delivery', 'delivery.order_id = orders.id')
+    //                 ->where('orders.order_number', $this->request->getVar('order_number'))
+    //                 ->where('orders.buyer_id', session()->userData['buyerId'])
+    //                 ->where('payment_method.available', 1)
+    //                 ->first();
     
+    // echo $this->order->getLastQuery();
+
     if ( !empty($order) ) {
-      // print_r($order);
-      if ( $order['payment_id'] == 1) $this->isPaypal = TRUE;
+    //   // if ( $order['payment_id'] == 1) $this->isPaypal = TRUE;
       $this->orderId = $order['id'];
     }
 
-    // if ( $this->request->isAJAX() ) {
-    //   return view('/orders/OrderInfo', ['order' => $order]);
-    // }
-
-    // // print_r($order);
-    // // echo "<br/><br/>".$this->order->getLastQuery();
+    if ( $this->request->isAJAX() ) {
+      return view('/orders/OrderInfo', ['order' => $order]);
+    }
     return $order;
   }
   
@@ -183,6 +191,7 @@ class Orders extends BaseController {
                     ->select('currency.currency_sign, currency.currency_float')
                     ->select('margin.margin_level, margin.margin_section, margin_rate.margin_rate')
                     ->select('IFNULL(currency_rate.exchange_rate, 1) AS exchange_rate')
+                    // ->join('orders', 'orders.id = orders_detail.order_id')
                     ->join('product', 'product.id = orders_detail.prd_id')
                     ->join('brand', 'brand.brand_id = product.brand_id')
                     ->join('product_price', 'product_price.idx = orders_detail.prd_price_id')

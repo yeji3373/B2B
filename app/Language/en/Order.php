@@ -67,6 +67,7 @@ return [
   'orderDate'           => 'Order date',  // 주문날짜
   'orderNumber'         => 'Order number',  // 주문번호
   'paymentType'         => 'Payment type',  // 결제 수단
+  'inventoryChecking'   => '재고요청 확인 중',  // 재고요청 확인 중
   'currency'            => 'Currency',  // 결제 통화
   'ExportCheck'         => 'Export declaration',
   'zeroTax'             => 'Zero tax',

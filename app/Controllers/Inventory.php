@@ -14,6 +14,7 @@ use App\Models\RequirementRequestModel;
 use App\Models\DeliveryModel;
 use App\Models\PackagingModel;
 use App\Models\PackagingDetailModel;
+use App\Models\MarginModel;
 
 use App\Controllers\CartController;
 use App\Controllers\AddressController;
@@ -31,6 +32,7 @@ class Inventory extends BaseController {
     $this->buyer = new BuyerModel();
     $this->currency = new CurrencyModel();
     $this->requirmentRequest = new RequirementRequestModel();
+    $this->margin = new MarginModel();
 
     $this->delivery = new DeliveryModel();
     $this->packaging = new PackagingModel();
@@ -70,8 +72,19 @@ class Inventory extends BaseController {
 
   public function requestInventory() {    
     $data = $this->request->getVar();
-    print_r($data['requirement']);
+    // print_r($data['requirement']);
     $request = [];
+
+    $currency = $this->currency->currencyJoin()
+                    ->select('currency.*')
+                    ->select('currency_rate.cRate_idx AS currency_rate_idx
+                            , currency_rate.exchange_rate')
+                    ->where(['currency_rate.default_set' => 1])->first();
+    if ( !empty($currency) ) {
+      if ( $currency['exchange_rate'] != session()->currency['basedExchangeRate'] ) {
+        return redirect()->to('/logout');
+      }
+    }
 
     if ( $data['address_operate'] == true ) {
       $addressId = $this->AddressController->addressConduct();
@@ -83,6 +96,8 @@ class Inventory extends BaseController {
       $request['buyer_id'] = session()->userData['buyerId'];
       $request['order_number'] = date('Ymd', time()).sprintf('%04d', ($this->makeOrderNumber() + 1));
       $request['request_amount'] = $data['request-total-price'];
+      $request['currency_rate_idx'] = $currency['currency_rate_idx'];
+      $request['currency_code'] = $currency['currency_code'];
       $request['address_id']  = $addressId;
 
       if ( $this->order->save($request) ) {
@@ -105,6 +120,8 @@ class Inventory extends BaseController {
         }
 
         $this->setOrderDetail($orderId);
+
+        return redirect()->to(site_url('orders'));
       }
     } else {
       return json_encode(['code' => 500, 'Msg' => 'address 등록 오류']);
@@ -120,13 +137,6 @@ class Inventory extends BaseController {
     if ( !empty($buyer) ) $margin_level = $buyer['margin_level'];
     else return session()->setFlashdata('error', 'buyer 정보가 일치하지 않음');
 
-    $currency = $this->currency->currencyJoin()->where(['currency_rate.default_set' => 1])->first();
-    if ( !empty($currency) ) {
-      if ( $currency['exchange_rate'] != session()->currency['basedExchangeRate'] ) {
-        return redirect()->to('/logout');
-      }
-    }
-
     $cartList = $this->cart
                   ->select('cart.buyer_id, 
                           cart.prd_id,
@@ -139,15 +149,15 @@ class Inventory extends BaseController {
 
     if ( !empty($cartList) ) :
       foreach( $cartList AS $i => $cart ) :
+        $margin = $this->margin->magrin()->where(['brand_id' => $cart['brand_id'], 'margin.idx' => $cart['margin_section_id'], 'available' => 1])->first();
         $prd_price = ROUND(($cart['prd_price'] / session()->currency['basedExchangeRate']), session()->currency['currencyFloat']);
-        $this->orderDetail->save( array_merge($cart, [ 'order_id' => $orderId, 'prd_price' => $prd_price]) );
+
+        $this->orderDetail->save( array_merge($cart, [ 'order_id' => $orderId, 'prd_price' => $prd_price, 'margin_rate_id' => $margin['margin_rate_id']]) );
         // 오류났을 때 order 자체 삭제후 재 요청 처리하기.
 
         if ( $i == (count($cartList) - 1) ) $this->CartController->removeCart(['buyer_id' => session()->userData['buyerId']]);
       endforeach;
     endif;
-
-    return redirect()->to(site_url('orders'));
   }
 
   public function makeOrderNumber() {
