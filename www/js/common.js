@@ -28,6 +28,16 @@ function getData(url, data, parse = false, type = 'POST') {
   } finally {  
     if ( !errors ) {
       if (parse) val = JSON.parse(val);
+
+      if ( typeof val.Code != 'undefined' ) {
+        if ( val.Code == 401 ) {
+          if ( val.Msg == '' ) {
+            val.Msg = '로그인 필요';
+          }
+          alert(val.Msg);
+          location.replace('/login');
+        }
+      }
     } else {
       val = {'Code': 500, 'Msg': val};
     }

@@ -1,8 +1,9 @@
 <main class='my-1 mx-auto w-auto products'>
   <section>
-    <form id='search-form'>
+    <form id='product-form'>
       <input type='hidden' name='brand_id'>
-      <input type='hidden' name='request_unit'>
+      <input type='hidden' name='request_unit' value='0'>
+      <input type='hidden' name='page' value='1'>
     </form>
     <div class='m-auto d-flex position-relative w-90'>
       <div class='border border-dark brand-section me-2 rounded w-14'>
@@ -22,9 +23,9 @@
         </div>
         <div class='w-100 h-91 overflow-auto'>
           <ul class='list-group list-group-flush border-top border-dark brand-list-group'>
-            <li class='list-group-item brand-item <?=(!isset($_GET['brand_name']) || empty($_GET['brand_name'])) ? 'active' : ''?>' data-name=''><span><?=lang('Order.allBrands')?></span></li>
+            <li class='list-group-item brand-item active' data-name=''><span><?=lang('Order.allBrands')?></span></li>
             <?php foreach($brands as $brand) : 
-              echo "<li class='list-group-item brand-item ". (((isset($_GET['brand_name']) && !empty($_GET['brand_name'])) && $_GET['brand_name'] == $brand['brand_name']) ? 'active' : '')."' 
+              echo "<li class='list-group-item brand-item'
                         data-id='".$brand['brand_id']."' data-name='".$brand['brand_name']."'>".
                       "<div class='d-flex flex-column'>".
                         "<div>".htmlspecialchars(stripslashes($brand['brand_name']))."</div>";
@@ -59,7 +60,7 @@
             <input class='btn btn-primary shadow-none search-btn' type='button' value='Search'>
           </div>
         </div>
-        <div class='product-search-result border-top border-dark'>
+        <div class='product-search-result border-top border-dark overflow-auto'>
           <?=view('layout/includes/product');?>
         </div>
       </div>

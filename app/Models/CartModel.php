@@ -10,7 +10,8 @@ class CartModel extends Model {
   protected $useSoftDeletes = false;
 
   protected $allowedFields = [
-    'buyer_id', 'brand_id', 'prd_id', 'stock_req', 'stock_req_parent',
+    'buyer_id', 'brand_id', 'prd_id', 'temp_order_number', 'request_order_date',
+    'stock_req', 'stock_req_parent',
     'onlyZeroTax', 'order_qty', 'prd_section','dis_prd_price', 'dis_price', 
     'dis_section', 'dis_rate', 'apply_discount',
     'chkd', 'product_price_idx', 'margin_section_id', 

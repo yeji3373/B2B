@@ -10,7 +10,7 @@ class RequirementRequestModel extends Model {
   protected $useSoftDeletes = false;
 
   protected $allowedFields = [
-    'order_id', 'requirement_id', 'requirement_detail'
+    'order_id', 'order_detail_id', 'requirement_id', 'requirement_detail'
   ];
 
   protected $useTimestamps = true;

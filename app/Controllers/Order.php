@@ -15,11 +15,9 @@ use App\Models\ProductPriceModel;
 use App\Models\StockDetailModel;
 use App\Models\BuyerCurrencyModel;
 
+use App\Controllers\CartController;
 
 use Auth\Models\UserModel;
-
-use App\Controllers\CartController;
-// use App\Controllers\Api;
 
 use CodeIgniter\I18n\Time;
 
@@ -54,6 +52,10 @@ class Order extends BaseController
                               'js' => ['/product.js', '/inventory.js', '/stock.js']];
   }
 
+  public function __output() {
+    
+  }
+
   public function index() {
     $this->CartController->initialCartList(); // 카트 초기화
     $this->brandList();
@@ -65,34 +67,21 @@ class Order extends BaseController
   }
 
   public function brandList() {
-    // $this->searchData = $this->request->getGet();
     $page = null;
     $brandGroup = 'brand';
 
-    // // if ( isset($this->searchData['page_brand']) && !empty($this->searchData['page_brand']) ) $page = $this->searchData['page_brand'];
-    // if ( isset($this->searchData['brand_id']) ) {
-    //   $this->brands->where('brand_id', $this->searchData['brand_id']);
-    // }
     $brands = $this->brands->where('available', '1')->findAll();
-    // $brands = $this->brands->where('available', '1')->paginate(20, $brandGroup, $page);
-    // $this->data['brandPager'] = $this->brands->pager;
-    // $this->data['brandGroup'] = $brandGroup;
     $this->data['brands'] = $brands;
   }
   
   public function productList() {
-    $params = $this->request->getVar();
-    $page = null;
-    $pageGroup = 'prd';
+    // $params = $this->request->getVar();
+    $params = $this->request->getPost();
     $total = 0;
     $buyer = $this->getBuyerInfo();
 
     $offset = 30;
-    $start = empty($params['start']) ? 0 : $offset + $params['start'];
-    // if ( isset($this->searchData['page']) && !empty($this->searchData['page']) ) $page = $this->searchData['page'];
-    // if ( $this->request->getGet('brand_id') ) {
-    //   $this->product->where('brand_id', $this->request->getGet('brand_id'));
-    // }
+    $start = empty($params['page']) ? 0 : ((($params['page'] - 1) * 1) * $offset);
 
     $products = $this->getProduct($params)
                     ->select('cart.idx AS cart_idx')
@@ -102,39 +91,37 @@ class Order extends BaseController
                     ->where('margin.margin_level', $buyer['margin_level'])
                     ->where('supply_price.margin_level', $buyer['margin_level'])
                     ->orderBy('brand.brand_id ASC, product.id ASC')
-                    // ->paginate(50, $pageGroup, $page);
                     ->findAll($offset, $start);
-    
-    // echo $this->products->getLastQuery();
-    // echo "<br/><br/>";
-
     $this->data['products'] = $products;
-    // $this->data['productPager'] = $this->products->pager;
-    $this->data['search'] =  $this->request->getPost();
-    // $this->data['pageGroup'] = $pageGroup;
-    // // $this->data['tax'] = $this->tax;
-    // $this->data['total'] = $total;
 
     if ( $this->request->isAJAX() ) {
       if ( !empty($params['request_unit']) && $params['request_unit'] == true ) {
         return view('/layout/includes/productItem', $this->data);
-        // $this->data['param'] = $params;
-        // return json_encode(['result', $params]);
       } else return view('/layout/includes/product', $this->data);
-    } else return $this->data;
+    } else {
+      // echo $this->products->getLastQuery(); 
+      return $this->data;
+    }
   }
 
   public function cartList() {
     $this->searchData = $this->request->getPost();
+    $code = 500;
+    $msg = '';
+    $where = [];
     
     if ( !empty(session()->userData) ) {
-      $userIdx = $this->getUserIdx();
+      if ( !empty($this->searchData['cart_id']) ) {
+        $where = ['cart.idx' => $this->searchData['cart_id']];
+      }
+      // $userIdx = $this->getUserIdx();
       $cartList = $this->CartController
                         ->getCartList()
                         ->where('cart.buyer_id', session()->userData['buyerId'])
                         ->where('supply_price.margin_level = cart.prd_section')
                         // ->where('cart.updated_at >=', $this->CartController->checkDate)
                         ->orderBy('cart.prd_id ASC, cart.idx ASC')
+                        ->where($where)
                         ->findAll();
     }
     // // $this->data['cartMinimize'] = false; // cart data 최소화해서 보여줌 여부. default false. false: 전체 다 보여주기;
@@ -143,6 +130,7 @@ class Order extends BaseController
     
     // echo $this->products->getLastQuery();
     if ( $this->request->isAJAX() ) {
+      $this->data['params'] = $this->searchData;
       return view('/layout/includes/Cart', $this->data);
     } else return $this->data;
   }
@@ -251,7 +239,7 @@ class Order extends BaseController
     $msg = '';
     $data = $this->request->getPost();
     
-    if ( !empty(session()->userData['buyerId']) ) { // common.js에 ajax 호출할때마다 로그인 체크 진행 후로 처리 한 후에 if조건 없애기
+    if ( !empty(session()->userData['buyerId']) ) {
       $data['prd_section'] = (!empty($this->getBuyerInfo()) ? $this->getBuyerInfo()['margin_level'] : 2);
       $data['buyer_id'] = session()->userData['buyerId'];
 
@@ -283,36 +271,16 @@ class Order extends BaseController
       }
       
       $marginRate = $this->margin->margin()
-                        // ->select('brand_opts.supply_rate_based, brand_opts.available AS brand_opt_available')
-                        // ->select("IF ( product_price.not_calculating_margin = 0
-                        //               , CONVERT((lead(margin_rate.margin_rate) OVER(PARTITION BY margin_rate.brand_id ORDER BY margin.margin_level ASC) - margin_rate.margin_rate), FLOAT)
-                        //               , ROUND(((lead(supply_price.price) OVER(PARTITION BY supply_price.product_price_idx ORDER BY supply_price.margin_idx ASC) - supply_price.price) / ".session()->currency['basedExchangeRate']."), 2)
-                        //         ) AS apply_rate")
-                        // ->join('brand', 'brand.brand_id = margin_rate.brand_id')
-                        // ->join('product', 'product.brand_id = brand.brand_id')
-                        // ->join('product_price', 'product_price.product_idx = product.id')
-                        // ->join('supply_price', 'supply_price.product_price_idx = product_price.idx AND supply_price.margin_idx = margin.idx AND supply_price.available = 1')
-                        // ->join('brand_opts', 'brand_opts.brand_id = brand.brand_id', 'left outer')
                         ->where('margin_rate.brand_id', $data['brand_id'])
                         ->where('margin.margin_level < ', $data['prd_section'])
                         ->orderBy('margin_rate.brand_id ASC, margin.margin_level ASC')
                         ->first();
-      // if ( $data['prd_section'] > 1 ) {
-      //   $marginRate = $marginRate->limit(($data['prd_section'] - 2), 1);
-      // }
-      // $marginRate = $marginRate->first();
       
       if ( !empty($marginRate) ) {
         $data['dis_section_margin_rate_id'] = $marginRate['margin_rate_id'];
         $data['dis_section'] = $marginRate['margin_level'];
-        // $data['dis_rate'] = $marginRate['margin_rate'];
-        // $data['dis_rate'] = $marginRate['apply_rate'];
-        // $data['dis_prd_price'] = ($data['prd_price'] * (1 - $marginRate['margin_rate']));
-        // $data['order_price'] = ($data['prd_price'] * $data['order_qty']);
-        // $data['dis_price'] = $data['dis_prd_price'] * $data['order_qty'];
       } else {
         $data['dis_section'] = NULL;
-        // $data['dis_rate'] = 0;
       }
       unset($data['margin_section']);
       unset($data['bskAction']);
@@ -321,7 +289,6 @@ class Order extends BaseController
       if ( empty($cart) ) {
         if ( $this->cart->save($data) ) {
           $code = 200;
-          // $msg = 'success';
           $msg = $this->cart->getInsertID();
         } else {
           $code = 500;
@@ -333,10 +300,13 @@ class Order extends BaseController
       }
 
       $this->applyDiscountCart();
+    } else {
+      $code = 401;
+      $msg = '로그인 후 재 진행해주세요';
+    }
 
-      if ( $this->request->isAJAX() ) {
-        return json_encode(['Code' => $code, 'Msg' => $msg]);
-      }
+    if ( $this->request->isAJAX() ) {
+      return json_encode(['Code' => $code, 'Msg' => $msg]);
     }
   }
 

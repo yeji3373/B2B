@@ -6,7 +6,9 @@ $(document).ready(function() {
 
   if ( $(target).length ) {
     if ( $(target).find('.requirement-item').length ) {
-      idx = $(target).find('.requirement-item').data('idx') + 1;
+      console.log($(target).find('.requirement-item').length);
+      // idx = $(target).find('.requirement-item').data('idx') + 1;
+      idx = $(target).find('.requirement-item').length;
     }
 
     if ( !$(this).children('option:selected').attr('aria-appended') ) {

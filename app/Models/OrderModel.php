@@ -12,7 +12,7 @@ class OrderModel extends Model {
   protected $allowedFields = [
     'buyer_id', 'order_number', 'request_amount', 'order_amount', 'discount_amount', 
     'subtotal_amount', 'currency_rate_idx', 'calc_currency_rate_id', 'currency_code',
-    'taxation', 'payment_id', 'complete_payment', 'address_id'
+    'taxation', 'payment_id', 'complete_payment', 'address_id', '', 'available'
   ];
 
   protected $useTimestamps = true;
@@ -27,6 +27,7 @@ class OrderModel extends Model {
     FROM ( 
         SELECT DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at_co, CAST(SUM(order_amount) AS DOUBLE) AS order_amount, CAST(SUM(request_amount) AS DOUBLE ) AS request_amount
         FROM orders
+        WHERE available = 1
         GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d')
       ) getOrder
     RIGHT JOIN (

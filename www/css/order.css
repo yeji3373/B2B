@@ -72,15 +72,12 @@
 .products .product-search-result button.btn.stock-order-req { background-color: #c70000; }
 .products .product-search-result button.btn.stock-order-req.bsk-del-btn { background-color: #8ac500; }
 
-/* .products .product-invoice-section { position: sticky; top: 0.5rem; right: 0; width: 41.5rem; height: 91vh; } */
-/* .products .product-invoice-section { position: sticky; top: 0.5rem; right: 0; max-height: 91vh; height: auto; } */
-.products .brand-section,
-.products .product-section,
-.products .product-invoice-section  { height: 93vh; }
+/* product in cart */
+.products .product-invoice-section .product-item-info { font-size: 0.78rem; }
 .products .product-invoice-section .thumbnail { margin-top: 0.4rem; }
 .products .product-invoice-section .name-group { font-size: 0.85rem; }
 .products .product-invoice-section .name-group i { font-size: 0.7rem; }
-.products .product-invoice-section .list-group-item .qty-change-btn { font-size: 0.5rem; width: fit-content; align-self: end; }
+.products .product-invoice-section .list-group-item .qty-change-btn { font-size: 0.5rem; width: fit-content; align-self: end; white-space: nowrap; }
 .products .product-invoice-section .product-selected { width: 100%; height: 85%; }
 .products .product-invoice-section .product-selected .list-group-item { grid-template-columns: 1fr 21%; border-width: 0 1px 1px 1px; border-style: solid; border-color: var(--bs-border-color); }
 .products .product-invoice-section .product-selected .list-group-item .product-info { font-size: 0.73rem; }
@@ -95,9 +92,50 @@
 
 .products .product-invoice-section .product-selected .list-group-item .qty-group button { border-width: 0; background-color: transparent; padding: 0; margin: 0;}
 .products .product-invoice-section .product-selected .list-group-item .qty-group input:focus-visible { outline: 0; }
-/* .products .product-invoice-section .product-selected .list-group-item .prd-item-discount-price { borde} */
-/* .products .product-invoice-section .product-price { } */
-/* .products .product-invoice-section .product-price-detail { border-bottom: 1px dotted black; margin-bottom: 0.6rem; } */
+
+.products .product-invoice-section .list-group-item.d-grid {
+  cursor: pointer;
+}
+.products .product-invoice-section .list-group-item.d-grid.slideUp {
+  grid-template-columns: 1fr 30%;
+}
+.products .product-invoice-section .list-group-item .product-item-info .product-item-detail-info {
+  padding-left: 3.6rem;
+  display: flex;
+  height: fit-content;
+}
+.products .product-invoice-section .list-group-item.d-grid.slideUp .product-item-info .product-item-detail-info {
+  display: none;
+  height: 0;
+}
+.products .product-invoice-section .list-group-item .cart-qty-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+.products .product-invoice-section .list-group-item .cart-qty-form .cart-qty-group {
+  display: flex;
+  flex-direction: column;
+}
+.products .product-invoice-section .list-group-item.d-grid.slideUp .cart-qty-form {
+  flex-direction: row;
+}
+/* .products .product-invoice-section .list-group-item.d-grid.slideUp .cart-qty-form .cart-qty-group {
+  flex-direction: row;
+  height: fit-content;
+} */
+.products .product-invoice-section .list-group-item.d-grid.slideUp .cart-qty-form .price-group {
+  width: 55%;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: end;
+}
+/* product in cart */
+
+.products .brand-section,
+.products .product-section,
+.products .product-invoice-section  { height: 93vh; }
 /* orders */
 
 .products .pre-order {

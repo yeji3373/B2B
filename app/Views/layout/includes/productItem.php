@@ -127,12 +127,24 @@
         <input type='hidden' name='margin_section' value='<?=$product['margin_level']?>'>
         <input type='hidden' name='onlyZeroTax' value='<?=$product['taxation']?>'>
         <input type='hidden' name='bskAction' value='add'>
-        <input type='hidden' name='order_qty' value='<?=$product['moq']?>'>
+        <input type='hidden' name='order_qty' value='<?=empty($product['moq']) ? 10 : $product['moq']?>'>
         <?php if ($product['cart_idx'] == null ) : ?>
-        <button class='btn btn-sm order-req' data-prd-id='<?=$product['id']?>' data-btn='<?=lang('Order.unselectBtn')?>'><?=lang('Order.selectBtn')?></button>
+        <button class='btn btn-sm order-req' 
+              data-prd-id='<?=$product['id']?>'
+              data-add-class='bsk-del-btn' 
+              data-remove-class='order-req'
+              data-btn='<?=lang('Order.unselectBtn')?>'>
+          <?=lang('Order.selectBtn')?>
+        </button>
         <?php else : ?>
         <input type='hidden' class='cart_idx' value='<?=$product['cart_idx']?>'>
-        <button class='btn btn-sm bsk-del-btn' data-class='order-req' data-btn='<?=lang('Order.selectBtn')?>'><?=lang('Order.unselectBtn')?></button>
+        <button class='btn btn-sm bsk-del-btn' 
+              data-prd-id='<?=$product['id']?>' 
+              data-add-class='order-req' 
+              data-remove-class='bsk-del-btn'
+              data-btn='<?=lang('Order.selectBtn')?>'>
+          <?=lang('Order.unselectBtn')?>
+        </button>
         <?php endif; ?>
       </form>
     </div>

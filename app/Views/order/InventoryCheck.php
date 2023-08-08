@@ -1,5 +1,6 @@
 <main id='inventoryCheck-main'>
   <form method='POST' action='<?=site_url('/inventory/request')?>' accept-charset='UTF-8'>
+  <?=csrf_field() ?>
   <input type='hidden' name='request-total-price'>
     <!-- <div class='inventory-header'>
       <div class='inventory-title'>재고요청 확인</div>

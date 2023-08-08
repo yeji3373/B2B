@@ -55,6 +55,7 @@ class Orders extends BaseController {
                                     ->join('product', 'product.id = orders_detail.prd_id')
                                     ->join('brand', 'brand.brand_id = product.brand_id')
                                     ->where('orders.buyer_id', session()->userData['buyerId'])
+                                    ->where('orders.available', 1)
                                     ->groupby('brand.brand_id')
                                     ->findAll(10);
     } else {
@@ -103,7 +104,8 @@ class Orders extends BaseController {
     }
 
     $orders = $this->order
-                ->where('buyer_id', session()->userData['buyerId'])
+                ->where(['buyer_id'=> session()->userData['buyerId']
+                        , 'available' => 1])
                 ->orderBy('created_at DESC')
                 ->paginate(15, 'default', $page);
 
