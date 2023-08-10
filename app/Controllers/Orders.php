@@ -9,6 +9,7 @@ use App\Models\BuyerModel;
 use App\Models\PackagingModel;
 use App\Models\PackagingStatusModel;
 use App\Models\PaymentMethodModel;
+use App\Models\RequirementRequestModel;
 
 use Auth\Models\UserModel;
 
@@ -34,6 +35,7 @@ class Orders extends BaseController {
     $this->packaging = new PackagingModel();
     $this->packagingStatus = new PackagingStatusModel();
     $this->paymentMethodModel = new PaymentMethodModel();
+    $this->requirement = new RequirementRequestModel();
     $this->status = config('Status');
 
     $this->paypalController = new PaypalController();
@@ -45,6 +47,7 @@ class Orders extends BaseController {
   }
 
   public function index() {
+    
     $this->data['orders'] = $this->getOrderList();
 
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
@@ -62,6 +65,7 @@ class Orders extends BaseController {
       $this->data['paymentMethod'] = $this->getPaymentMethod();
       // $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
+      $this->data['orderRequirement'] = $this->getRequirement();
       // $this->data['shippinCost'] = $this->getTotalShippingCost();
       // $this->data['buyer'] = $this->getBuyer();
       // $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
@@ -174,8 +178,9 @@ class Orders extends BaseController {
   
   public function getOrderDetails() {
     $orderDetails = $this->oDetail
-                    ->select('orders_detail.id AS detail_id, orders_detail.prd_order_qty')
-                    ->select('orders_detail.prd_price_changed, orders_detail.prd_price')
+                    ->select('orders_detail.id AS detail_id')
+                    ->select('ROUND(IF(orders_detail.prd_price_changed = 1, orders_detail.prd_change_price, orders_detail.prd_price), 2) AS prd_price')
+                    ->select('CAST(IF(orders_detail.prd_qty_changed = 1, orders_detail.prd_change_qty, orders_detail.prd_order_qty) AS DOUBLE) AS prd_order_qty')
                     ->select('orders_detail.prd_discount')
                     ->select('orders_detail.order_excepted')
                     // ->select('orders_detail.prd_taxation')
@@ -191,6 +196,7 @@ class Orders extends BaseController {
                     ->select('currency.currency_sign, currency.currency_float')
                     ->select('margin.margin_level, margin.margin_section, margin_rate.margin_rate')
                     ->select('IFNULL(currency_rate.exchange_rate, 1) AS exchange_rate')
+                    // ->select('requirement_request.requirement_detail')
                     // ->join('orders', 'orders.id = orders_detail.order_id')
                     ->join('product', 'product.id = orders_detail.prd_id')
                     ->join('brand', 'brand.brand_id = product.brand_id')
@@ -201,12 +207,29 @@ class Orders extends BaseController {
                     ->join('margin_rate', 'margin_rate.idx = orders_detail.margin_rate_id')
                     ->join('margin', 'margin.idx = margin_rate.margin_idx')
                     ->join('currency_rate', 'currency_rate.cRate_idx = orders.calc_currency_rate_id', 'left outer')
+                    // ->join('requirement_request', 'requirement_request.order_detail_id = orders_detail.id AND orders.id = requirement_request.order_id')
                     ->where('orders_detail.order_id', $this->orderId)
                     ->where(['product.discontinued' => 0, 'product.display' => 1])
                     ->where('product_price.available', 1)
                     ->where('supply_price.margin_level = margin.margin_level')
                     ->findAll();
+                    // echo $this->oDetail->getLastQuery();
     return $orderDetails;
+  }
+  //요구사항
+  public function getRequirement() {
+    $orderRequirement = $this->requirement
+                        ->select('requirement_request.requirement_detail')
+                        ->select('requirement_request.order_detail_id')
+                        ->select('requirement_request.order_id')
+                        ->select('requirement_request.requirement_reply')
+                        ->select('requirement.requirement_en')
+                        ->join('requirement','requirement.idx = requirement_request.requirement_id')
+                        ->where("requirement_request.order_id = {$this->orderId}")
+                        ->orderby('requirement_request.order_detail_id')
+                        ->findAll();
+                      echo $this->requirement->getLastQuery();
+    return $orderRequirement;
   }
 
   public function getOrderReceipts() {
@@ -356,6 +379,7 @@ class Orders extends BaseController {
     $data['order'] = $this->getOrder();
     // echo 'orderId '.$this->orderId.'<br/><br/>';
     $data['orderDetails'] = $this->getOrderDetails();
+    // $data['orderRequirement'] = $this->getRequirement();
     // $data['receipts'] = $this->getOrderReceipts($this->request->getPost('receiptId'));
     $data['receipt'] = $this->getOrderReceipt();
     $data['buyer'] = $this->getBuyer();

@@ -8,17 +8,31 @@
           <div class='name-group'>
             <span class='brand_name bracket text-uppercase'><?=$product['brand_name']?></span>
             <span class='product_name text-uppercase'><?=$product['name_en']?></span>
-            <span class=''>
-              <?=$product['spec'].($product['box'] == 1 || $product['spec_pcs'] > 0 ? "/pc" : "")?>
+            <?=$product['spec'].($product['box'] == 1 || $product['spec_pcs'] > 0 ? "/pc" : "")?>
             </span>
+            <!-- 상세타입이 있는지 여부 -->
             <?php if ( !empty($product['type_en']) ) : ?>
               <span class='fw-bold'><?="#".$product['type_en']?></span>
             <?php endif ?>
+            <span class=''>
           </div>
           <?php if ($product['order_excepted'] == 1) : ?> 
           <div>
-            <span>주문 제외 상품</span>
+            <span>주문 취소</span>
           </div>
+          <?php else : ?>
+            <div class='name-group'>
+              <span class='product_name text-uppercase fw-bold'>qty : <?=$product['prd_order_qty']?></span>
+              <span class='product_name text-uppercase fw-bold'>price : <?=$product['prd_price']?></span>
+            </div>
+            <div class='name-group'>
+              <?php foreach($orderRequirement AS $j => $require) :?>
+                <?php if (($product['detail_id'] == $require['order_detail_id']) && (!empty($require['requirement_reply']))) : ?>
+                  <span class='product_name text-uppercase fw-bold'>※ <?=$require['requirement_en']?></span> :
+                  <span class='product_name text-uppercase fw-bold'><?=$require['requirement_reply']?></span>
+                <?php endif ?>
+              <?php endforeach ?>
+            </div>
           <?php endif;?>
         </div>
       </div>
