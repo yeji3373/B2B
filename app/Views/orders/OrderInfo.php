@@ -25,7 +25,7 @@
       <?php endif ?>
     <?php endif; ?>
   </div>
-  <div class='info-sec p-0'>
+    <div class='info-sec p-0'>
     <label class='py-2 ps-2'><?=lang('Order.currency')?></label>
     <span class='py-2 pm-2'><?=$order['currency_code']?></span>
   </div>
@@ -44,7 +44,28 @@
   <!-- 재고요청 당시 등록한 주소 & 주소 편집 추가
   재고요청 완료 후, 배송정보 -->
 </div>
-
+<div class='p-0 packaging-info-section'>
+    <div class='info-sec p-0'>
+      <label class='py-2 ps-2'>Adress</label>
+      <div class='w-100 sub-sec p-2'>
+        <span class='consignee d-none'><?=$order['consignee']?></span>
+        <div>
+          <span class='region' data-id='<?=$order['region']?>' data-ccode='<?=$order['country_code']?>'><?=$order['region']?></span> / <span class='city'><?=$order['city']?></span>
+        </div>
+        <div>
+          <span class='streetAddr1'><?=$order['streetAddr1']?></span>
+          <span class='streetAddr2'><?=$order['streetAddr2']?></span>
+        </div>
+        <?php if ( isset($order['zipcode']) ) : ?>
+        <div class='zipcode'><?=$order['zipcode']?></div>
+        <?php endif ?>
+        <div class='d-flex flex-row'>
+          <span class='phone_code'><?=$order['phone_code']?></span>
+          <span class='phone'><?=$order['phone']?></span>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class='p-0 packaging-info-section'>
     <div class='info-sec p-0'>
       <label class='py-2 ps-2'>Packaging Status</label>

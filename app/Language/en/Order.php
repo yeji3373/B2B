@@ -85,6 +85,7 @@ return [
   'paymentStatus'       => 'Status',  // 결제 현황
   'paypalInvoice'       => 'Paypal invoice',
   'invoice'             => 'Invoice',
+  'ordermore'           => 'order more',
   // 'pi'                  => 'Proforma Invoice',
   'pi'                  => 'PI',
   'ci'                  => 'CI',
