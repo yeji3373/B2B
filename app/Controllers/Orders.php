@@ -16,7 +16,7 @@ use App\Models\ProductModel;
 use Auth\Models\UserModel;
 
 use Paypal\Controllers\PaypalController;
-use App\Controllers\CartController;
+use App\Controllers\Order;
 
 use Status\Config\Status;
 
@@ -45,7 +45,7 @@ class Orders extends BaseController {
 
     $this->paypalController = new PaypalController();
 
-    $this->CartController = new CartController();
+    $this->OrderController = new Order();
 
     $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
@@ -93,8 +93,6 @@ class Orders extends BaseController {
                                                   , 'packaging_status.display' => 1])
                                             ->orderBy('packaging_status.order_by')
                                             ->findAll();
-      $this->brandList();
-      $this->productList();
     }
 
     $this->basicLayout('orders/List', $this->data);
