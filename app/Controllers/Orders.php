@@ -10,10 +10,13 @@ use App\Models\PackagingModel;
 use App\Models\PackagingStatusModel;
 use App\Models\PaymentMethodModel;
 use App\Models\RequirementRequestModel;
+use App\Models\BrandModel;
+use App\Models\ProductModel;
 
 use Auth\Models\UserModel;
 
 use Paypal\Controllers\PaypalController;
+use App\Controllers\CartController;
 
 use Status\Config\Status;
 
@@ -36,19 +39,24 @@ class Orders extends BaseController {
     $this->packagingStatus = new PackagingStatusModel();
     $this->paymentMethodModel = new PaymentMethodModel();
     $this->requirement = new RequirementRequestModel();
+    $this->products = new ProductModel();
+    $this->brands = new BrandModel();
     $this->status = config('Status');
 
     $this->paypalController = new PaypalController();
 
+    $this->CartController = new CartController();
+
     $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
-                                      , '/orders.js']];
+                                      , '/orders.js', '/product.js']];
 
   }
 
   public function index() {
     
     $this->data['orders'] = $this->getOrderList();
+    $this->CartController->initialCartList(); // 카트 초기화
 
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
     if ( empty($this->request->getGet('order_number')) ) {
@@ -85,7 +93,8 @@ class Orders extends BaseController {
                                                   , 'packaging_status.display' => 1])
                                             ->orderBy('packaging_status.order_by')
                                             ->findAll();
-    
+      $this->brandList();
+      $this->productList();
     }
 
     $this->basicLayout('orders/List', $this->data);
@@ -135,9 +144,16 @@ class Orders extends BaseController {
     $order = $this->order
                 ->select('orders.*')
                 ->select('currency.currency_sign, currency.currency_float')
+                ->select('buyers_address.idx AS address_id, buyers_address.consignee')
+                ->select('buyers_address.region, buyers_address.country_code')
+                ->select('buyers_address.streetAddr1, buyers_address.streetAddr2')
+                ->select('buyers_address.city, buyers_address.zipcode')
+                ->select('buyers_address.phone_code, buyers_address.phone')
+                ->select('buyers_address.deleted_at')
                 ->join('currency', 'currency.currency_code = orders.currency_code')
+                ->join('buyers_address', 'buyers_address.idx = orders.address_id AND buyers_address.buyer_id = orders.buyer_id')
                 ->where(['order_number' => $this->request->getVar('order_number')
-                        ,'buyer_id' => session()->userData['buyerId']])
+                        ,'orders.buyer_id' => session()->userData['buyerId']])
                 ->first();
     // $order = $this->order
     //                 ->select('orders.id, orders.order_number, orders.order_amount, orders.discount_amount')
@@ -215,7 +231,7 @@ class Orders extends BaseController {
                     ->where('product_price.available', 1)
                     ->where('supply_price.margin_level = margin.margin_level')
                     ->findAll();
-                    // echo $this->oDetail->getLastQuery();
+                    //  echo $this->oDetail->getLastQuery();
     return $orderDetails;
   }
   //요구사항
@@ -230,7 +246,7 @@ class Orders extends BaseController {
                         ->where("requirement_request.order_id = {$this->orderId}")
                         ->orderby('requirement_request.order_detail_id')
                         ->findAll();
-                      echo $this->requirement->getLastQuery();
+                      // echo $this->requirement->getLastQuery();
     return $orderRequirement;
   }
 
@@ -431,5 +447,78 @@ class Orders extends BaseController {
     $img = 'data:image/'.$type.';base64,'.base64_encode($data);
 
     return $img;
+  }
+
+  public function requestInventoryCheck() {
+    $page = null;
+    $brandGroup = 'brand';
+
+    $brands = $this->brands->where('available', '1')->findAll();
+    $this->data['brands'] = $brands;
+    
+    return view('orders/Ordermore', $this->data);
+  }
+
+  public function brandList() {
+    $page = null;
+    $brandGroup = 'brand';
+
+    $brands = $this->brands->where('available', '1')->findAll();
+
+    $this->data['brands'] = $brands;
+  }
+
+  public function productList() {
+    $params = $this->request->getVar();
+    $page = null;
+    $pageGroup = 'prd';
+    $total = 0;
+    $buyer = $this->getBuyerInfo();
+
+    $offset = 30;
+    $start = empty($params['start']) ? 0 : $offset + $params['start'];
+
+    $products = $this->getProduct($params)
+                    ->select('cart.idx AS cart_idx')
+                    ->join('( SELECT * FROM cart WHERE buyer_id = "'.session()->userData['buyerId'].'" GROUP BY prd_id) AS cart'
+                          , 'cart.prd_id = product.id'
+                          , 'left outer')
+                    ->where('margin.margin_level', $buyer['margin_level'])
+                    ->where('supply_price.margin_level', $buyer['margin_level'])
+                    ->orderBy('brand.brand_id ASC, product.id ASC')
+                    ->findAll($offset, $start);
+    
+    echo $this->products->getLastQuery();
+
+    $this->data['products'] = $products;
+    $this->data['search'] =  $this->request->getPost();
+
+    if ( $this->request->isAJAX() ) {
+      if ( !empty($params['request_unit']) && $params['request_unit'] == true ) {
+        return view('/layout/includes/productItem', $this->data);
+      } else return view('/layout/includes/product', $this->data);
+    } else return $this->data;
+  }
+
+  public function getBuyerInfo() {
+    $buyer = $this->buyer->where('id', session()->userData['buyerId'])->first();
+    return $buyer;
+  }
+
+  public function getProduct($params) {
+    helper('querystring');
+    if ( isset($params['brand_name']) ) {
+      $this->products->where('brand.brand_name', $params['brand_name']);
+    }
+
+    $whereCondition = product_query_return($params);
+    
+    $products = $this->products->productJoin()
+              ->select($this->CartController->calcRetailPrice().' AS retail_price')
+              ->select($this->CartController->calcSupplyPrice().' AS product_price')
+              ->join('product_opts', 'product_opts.prd_id = product.id', 'left outer');
+
+    if ( !empty($whereCondition) ) $products->where(join(" AND ", $whereCondition));
+    return $products;
   }
 }

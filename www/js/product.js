@@ -724,12 +724,15 @@ function getCartList() {
 }
 
 function setSubTotalPrice() {
+  console.log('?????');
   totalPriceResult = getData('/order/cartTotalPrice');
   totalPriceResult = JSON.parse(totalPriceResult);
 
-  $('.total-price').text(totalPriceResult['order_price_total']);
-  $('.discount-price').text(totalPriceResult['order_discount_total']);
-  $(".sub-total-price").text(totalPriceResult['order_subTotal']);
+  console.log('set subtotal ', totalPriceResult);
+
+  $('.total-price').text($.numberWithCommas(totalPriceResult['order_price_total']));
+  $('.discount-price').text($.numberWithCommas(totalPriceResult['order_discount_total']));
+  $(".sub-total-price").text($.numberWithCommas(totalPriceResult['order_subTotal']));
 }
 
 function setCartSpq(cartId, productQty, productPrice, ref = false) {
