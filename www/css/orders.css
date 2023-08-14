@@ -103,10 +103,62 @@
 .pi-form-container .pi-company-name > div div:last-child { align-self: end; margin-bottom: 0.25rem; }
 .pi-form-container .pi-seller-buyer { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 1.25rem; }
 .pi-form-container table thead tr th, .pi-form-container table tbody tr td { text-align: center; padding: 0.25rem 0; }
-.pi-form-container table th, .pi-form-container table td { border-right: 1px solid black; }
+.pi-form-container table th, .pi-form-conta iner table td { border-right: 1px solid black; }
 .pi-form-container table tbody td, .pi-form-container table tfoot td { border-bottom: 1px solid black; }
 .pi-form-container .invoice-notice table { font-size: 0.8rem; }
 .pi-form-container .invoice-notice table td:first-child { width: 17%; text-align: left; vertical-align: top; }
 .pi-form-container .invoice-notice table td { border-width: 0; text-align: left; font-weight: bold; padding: 0 0 0.25rem; }
 .pi-form-container .sign { width: 30%; margin-left: auto; }
- 
+
+.order_total { font-size: 2rem; margin-left: auto;}
+
+.zipcode::before { content: '\3012';}
+.phone_code::before { content: '\2706\002B';}
+
+.orders-main .pre-order {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  background-color: #00000069;
+  display: none;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.orders-main .pre-order.show {
+  display: flex;
+}
+
+.orders-main .pre-order main {
+  border-radius: 5px;
+  margin: auto;
+  overflow-y: auto;
+}
+
+.orders-main .pre-order #checkout-main {
+  width: 80%;
+  height: 100%;
+  padding: 2rem 3.5rem;
+  background-color: white;
+}
+
+.orders-main .pre-order #inventoryCheck-main {
+  width: 50%;
+  /* height: 100%; */
+  max-height: 100%;
+  background-color: white;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.w-200px {
+  width: 450px;
+}
+
+.btn-small{
+  font-size: 0.5rem;
+}
