@@ -53,10 +53,8 @@ class Orders extends BaseController {
 
   }
 
-  public function index() {
-    
+  public function index() {    
     $this->data['orders'] = $this->getOrderList();
-    $this->CartController->initialCartList(); // 카트 초기화
 
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
     if ( empty($this->request->getGet('order_number')) ) {

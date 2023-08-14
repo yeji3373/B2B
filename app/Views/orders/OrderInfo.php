@@ -78,7 +78,7 @@
                 || ( (empty($status['in_progress']) && empty($status['complete']) && $i == 0) ) ? 'ing': ''?>
               '>
               <div class='circle'></div>
-              <div class='status-name'><?=$status['status_name']?></div>
+              <div class='status-name text-center'><?=$status['status_name_en']?></div>
             </div>
           <?php endforeach;
           endif; ?>
