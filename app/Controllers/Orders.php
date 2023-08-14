@@ -56,7 +56,6 @@ class Orders extends BaseController {
   public function index() {
     
     $this->data['orders'] = $this->getOrderList();
-    $this->CartController->initialCartList(); // 카트 초기화
 
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
     if ( empty($this->request->getGet('order_number')) ) {
@@ -195,10 +194,16 @@ class Orders extends BaseController {
   public function getOrderDetails() {
     $orderDetails = $this->oDetail
                     ->select('orders_detail.id AS detail_id')
-                    ->select('ROUND(IF(orders_detail.prd_price_changed = 1, orders_detail.prd_change_price, orders_detail.prd_price), 2) AS prd_price')
-                    ->select('CAST(IF(orders_detail.prd_qty_changed = 1, orders_detail.prd_change_qty, orders_detail.prd_order_qty) AS DOUBLE) AS prd_order_qty')
+                    ->select('ROUND(IF(orders_detail.prd_price_changed = 1, orders_detail.prd_change_price, orders_detail.prd_price), 2) AS prd_change_price')
+                    // ->select('ROUND(orders_detail.prd_change_price, 2) AS prd_change_price')
+                    ->select('ROUND(orders_detail.prd_price, 2) AS prd_price')
+                    ->select('orders_detail.prd_qty_changed')
+                    ->select('CAST(IF(orders_detail.prd_qty_changed = 1, orders_detail.prd_change_qty, orders_detail.prd_order_qty) AS DOUBLE) AS prd_change_qty')
+                    // ->select('orders_detail.prd_change_qty')
+                    ->select('orders_detail.prd_order_qty')
                     ->select('orders_detail.prd_discount')
                     ->select('orders_detail.order_excepted')
+                    ->select('orders_detail.detail_desc')
                     // ->select('orders_detail.prd_taxation')
                     ->select('product.brand_id, product.barcode, product.productCode')
                     ->select('product.img_url, product.name_en, product.type_en')
@@ -240,6 +245,7 @@ class Orders extends BaseController {
                         ->select('requirement_request.order_id')
                         ->select('requirement_request.requirement_reply')
                         ->select('requirement.requirement_en')
+                        ->select('requirement_request.requirement_id')
                         ->join('requirement','requirement.idx = requirement_request.requirement_id')
                         ->where("requirement_request.order_id = {$this->orderId}")
                         ->orderby('requirement_request.order_detail_id')

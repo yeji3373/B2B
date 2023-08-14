@@ -1,5 +1,12 @@
-// $(document).ready(function() {
-  $(document).on('keyup', '[name=order_number]', function() {
+$(document).ready(function() {
+  if ( $(".detail_id_check").length ) {
+    Array.from($(".detail_id_check")).forEach((v) => {
+      if ( typeof $(v).data('detailId') != 'undefined' ) {
+
+      }
+    });
+  }
+}).on('keyup', '[name=order_number]', function() {
     let orderNumber;
     if ( $(this).val().length > 2 ) {
       orderNumber = $(this).val();
@@ -41,5 +48,9 @@
     
     $('.pi-viewer').hide();
     $('body').removeClass('overflow-hidden');
+  }).on("click", ".detail_id_check .btn", function() {
+    let formData = $(this).closest('.detail_id_check').find('form').serializeArray();
+    result = getData('', formData);
+    
+    return false;
   });
-// });
