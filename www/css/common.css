@@ -176,4 +176,5 @@ datalist option {
 /* button */
 
 .grid-half { grid-template-columns: repeat(2, 1fr);}
+.grid-half2 { grid-template-columns: repeat(3, 1fr);}
 .grid-column-span-2 { grid-column: auto / span 2 ;}

@@ -48,9 +48,20 @@ $(document).ready(function() {
     
     $('.pi-viewer').hide();
     $('body').removeClass('overflow-hidden');
-  }).on("click", ".detail_id_check .btn", function() {
-    let formData = $(this).closest('.detail_id_check').find('form').serializeArray();
-    result = getData('', formData);
     
+  //개별상품별 주문option 결정
+  }).on("click", ".btn-small", function() {
+    let formData = $(this).closest('form').serializeArray();
+    console.log(formData);
+    result = getData('/orders/getOrderOption', formData);
+    console.log(result);
     return false;
   });
+
+  //.on("click", ".detail_id_check .btn", function() {
+  //   let formData = $(this).closest('.detail_id_check').find('form').serializeArray();
+  //   console.log(formData);
+  //   result = getData('/orders/getOrderOption', formData);
+  //   console.log(result);
+  //   return false;
+  // });

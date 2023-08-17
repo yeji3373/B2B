@@ -10,8 +10,10 @@ class OrderModel extends Model {
   protected $useSoftDeletes = false;
 
   protected $allowedFields = [
-    'buyer_id', 'order_number', 'request_amount', 'order_amount', 'discount_amount', 
-    'subtotal_amount', 'currency_rate_idx', 'calc_currency_rate_id', 'currency_code',
+    'buyer_id', 'order_number', 
+    'request_amount', 'inventory_fixed_amount',
+    'order_amount', 'discount_amount', 'subtotal_amount',
+    'currency_rate_idx', 'calc_currency_rate_id', 'currency_code',
     'taxation', 'payment_id', 'complete_payment', 'address_id', '', 'available'
   ];
 

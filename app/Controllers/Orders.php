@@ -49,12 +49,11 @@ class Orders extends BaseController {
 
     $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
-                                      , '/orders.js', '/product.js']];
+                                      , '/orders.js?ver=230816', '/product.js']];
 
   }
 
-  public function index() {
-    
+  public function index() {    
     $this->data['orders'] = $this->getOrderList();
 
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
@@ -92,6 +91,23 @@ class Orders extends BaseController {
                                                   , 'packaging_status.display' => 1])
                                             ->orderBy('packaging_status.order_by')
                                             ->findAll();
+      //현재의 packaging status 조회
+      $this->data['nowPackStatus'] = $this->packagingStatus
+                                          ->select('packaging_status.*')
+                                          ->select('packaging.complete')
+                                          ->select('packaging.in_progress')
+                                          ->join("( SELECT packaging.idx, packaging.order_id
+                                                          , packaging_detail.packaging_id, packaging_detail.status_id
+                                                          , packaging_detail.in_progress, packaging_detail.complete
+                                                    FROM packaging
+                                                    LEFT OUTER JOIN packaging_detail ON packaging.idx = packaging_detail.packaging_id
+                                                    WHERE packaging.order_id = {$this->orderId}) AS packaging"
+                                                  , "packaging.status_id = packaging_status.idx", "left outer")
+                                          ->where(['packaging_status.available' => 1
+                                                , 'packaging_status.display' => 1
+                                                , 'packaging.in_progress' => 1])
+                                          ->orderBy('packaging_status.order_by desc')
+                                          ->first();
     }
 
     $this->basicLayout('orders/List', $this->data);
@@ -524,5 +540,17 @@ class Orders extends BaseController {
 
     if ( !empty($whereCondition) ) $products->where(join(" AND ", $whereCondition));
     return $products;
+  }
+
+  public function getOrderOption() {
+    $params = $this->request->getVar();
+    // $var = $params;
+    // echo $params;
+    print_r($params);
+    echo "aaa";
+    if ( $this->request->isAJAX()) {
+      return json_encode(['result' => true, 'params' => $params]);
+    }
+    return "result";
   }
 }

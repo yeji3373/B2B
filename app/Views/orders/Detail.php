@@ -20,6 +20,11 @@
           <?php if ($product['order_excepted'] == 1) : ?> 
           <div> 
             <span>주문 취소</span>
+            <?php if (!empty($product['detail_desc'])) : ?>
+            <div>
+              <span class='fw-bold'>※ <?=$product['detail_desc']?></span>
+            </div>
+            <?php endif ?>
           </div>
           <?php else : ?>
             <!-- <div class='name-group'>
@@ -37,39 +42,40 @@
                 <?php endif ?>
               <?php endforeach ?>
             </div> -->
-            <div class='product-info-item spq'>
-              <table class='border border-secondary w-200px'>
-                <tr class='border border-secondary'>
-                  <td class='border border-secondary w-10'></td>
-                  <td class='w-25'>수량</td>
-                  <td class='border border-secondary w-25'>가격</td>
-                  <td class='w-25'>비고</td>
-                </tr>
-                <tr class='border border-secondary'>
-                  <td class='border border-secondary w-10'>최초</td>
-                  <td class='w-25'><?=$product['prd_order_qty']?></td>
-                  <td class='border border-secondary w-25'><?=$product['prd_price']?></td>
-                  <td class='w-25'></td>
-                </tr>
-                <tr class='border border-secondary'>
-                  <td rowspan='2' class='border border-secondary'>재고</td>
-                  <td><?=$product['prd_change_qty']?></td>
-                  <td class='border border-secondary'><?=$product['prd_change_price']?></td>
-                  <td><?=$product['detail_desc']?></td>
-                </tr>
-                <tr class='border border-secondary'>
-                  <td colspan='3' class='detail_id_check' data-detail-id='<?=$product['detail_id']?>'>
-                  <div class='name-group'>
-                    <?php foreach($orderRequirement AS $j => $require) :?>
-                      <?php if (($product['detail_id'] == $require['order_detail_id']) && (!empty($require['requirement_reply']))) : ?>
-                        <span class='product_name text-uppercase fw-bold'>※ <?=$require['requirement_en']?></span> :
+            <div class='product-info-item spq w-450px'>
+              <div class='d-flex flex-column border border-1 border-dark mb-2'>
+                <div class='w-100 d-flex flex-row border-bottom border-dark text-center'>
+                  <div class='w-25 border-end border-dark'></div>
+                  <div class='w-25 border-end border-dark'>수량</div>
+                  <div class='w-25 border-end border-dark'>가격</div>
+                  <div class='w-25'>비교</div>
+                </div>
+                <div class='w-100 d-flex flex-column'>
+                  <div class='w-100 d-flex flex-row border-bottom border-dark'>
+                    <div class='w-25 border-end border-dark text-center'>최초</div>
+                    <div class='w-25 border-end border-dark text-center'><?=$product['prd_order_qty']?></div>
+                    <div class='w-25 border-end border-dark text-center'><?=$product['prd_price']?></div>
+                    <div class='w-25 text-center'>-</div>
+                  </div>
+                  <div class='w-100 d-flex flex-row border-bottom border-dark'>
+                    <div class='w-25 border-end border-dark text-center'>재고</div>
+                    <div class='w-75 d-flex flex-column'>
+                      <div class='w-100 d-grid grid-half2 text-end'>
+                        <div class='border-end border-dark text-center'><?=$product['prd_change_qty']?></div>
+                        <div class='border-end border-dark text-center'><?=$product['prd_change_price']?></div>
+                        <div class='text-center'><?=!empty($product['detail_desc']) ? $product['detail_desc'] : '-' ?></div>
+                      </div>
+                      <?php foreach($orderRequirement AS $j => $require) :?>
+                      <?php if (($product['detail_id'] == $require['order_detail_id']) 
+                      && (!empty($require['requirement_reply']))) : ?>
+                      <div class='w-100 border-top border-dark p-1'>
+                      <span class='product_name text-uppercase fw-bold'>※ <?=$require['requirement_en']?></span> :
                         <span class='product_name text-uppercase fw-bold'><?=$require['requirement_reply']?></span>
-                        <?php if(($product['prd_qty_changed'] == 1) && ($require['requirement_id'] == 2)) :?>
+                        <?php if(($product['prd_qty_changed'] == 1) && ($require['requirement_id'] == 2) && ($nowPackStatus['order_by'] == 5)) :?>
                           <span>수량 변경, 리드타임도 있음.</span>
-                          <form>
+                          <form name='optionForm' detail_id_check=<?=$i?>>
                             <label>
-                              <input type='radio' name='detail[<?=$i?>][order_option]' value='order_all'>
-                              다 주문하기
+                              <input type='radio' name='detail[<?=$i?>][order_option]' value='order_all'>다 주문하기
                             </label>
                             <label>
                               <input type='radio' name='detail[<?=$i?>][order_option]' value='order_now'>지금재고만주문하기
@@ -79,9 +85,9 @@
                             </label>
                             <button class='btn btn-primary btn-small'>저장</button>
                           </form>
-                        <?php elseif(($product['prd_qty_changed'] == 0) && ($require['requirement_id'] == 2)) :?>
+                        <?php elseif(($product['prd_qty_changed'] == 0) && ($require['requirement_id'] == 2) && ($nowPackStatus['order_by'] == 5)) :?>
                           <span>수량은 변경 x, 리드타임만 있음. (= 전량주문해야 한다는 뜻)</span>
-                          <form>
+                          <form name='optionForm2'>
                             <label>
                               <input type='radio' name='detail[<?=$i?>][order_option]' value='order_all'>다 주문하기
                             </label>
@@ -91,19 +97,19 @@
                             <button class='btn btn-primary btn-small'>저장</button>
                           </form>
                         <?php endif ?>
-                      <?php endif ?>
-                    <?php endforeach ?>
+                      </div>
+                      <?php endif;
+                      endforeach; ?>
+                    </div>
                   </div>
-                    <span>짜바리</span>
-                  </td>
-                </tr>
-                <tr class='border border-secondary'>
-                  <td class='border border-secondary'>포장</td>
-                  <td><?=$product['prd_change_qty']?></td>
-                  <td class='border border-secondary'><?=$product['prd_change_price']?></td>
-                  <td></td>
-                </tr>
-              </table>
+                  <div class='w-100 d-flex flex-row'>
+                    <div class='w-25 border-end border-dark text-center'>포장</div>
+                    <div class='w-25 border-end border-dark text-center'><?=$product['prd_change_qty']?></div>
+                    <div class='w-25 border-end border-dark text-center'><?=$product['prd_change_price']?></div>
+                    <div class='w-25 text-center'>-</div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class='name-group'>
               <?php if(!empty($product['detail_desc'])) : ?>
