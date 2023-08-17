@@ -101,6 +101,7 @@ class Inventory extends BaseController {
         $request['buyer_id'] = session()->userData['buyerId'];
         $request['order_number'] = date('Ymd', time()).sprintf('%04d', ($this->makeOrderNumber() + 1));
         $request['request_amount'] = $data['request-total-price'];
+        $request['inventory_fixed_amount'] = $data['request-total-price'];
         $request['currency_rate_idx'] = $currency['currency_rate_idx'];
         $request['currency_code'] = $currency['currency_code'];
         $request['address_id']  = $addressId;
