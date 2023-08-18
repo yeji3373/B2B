@@ -1,0 +1,40 @@
+/* checkout start */
+/* checkout 주소입력 */
+#checkout-main label.title { width: 23%; margin-right: 0.5rem; }
+
+#checkout-main div[class*='-addr'] .address-new-form > div { display: flex; flex-direction: row; flex-wrap: nowrap; margin-bottom: 0.5rem; }
+#checkout-main div[class*='-addr'] .address-new-form > div label { width: 23%; margin-right: 0.5rem; }
+#checkout-main div[class*='-addr'] .address-new-form .region-list { height: 25rem; overflow-y: auto; }
+
+/* checkout 주문내역 및 합계 */
+#checkout-main .box-header { font-weight: bold; background-color: #ffd1d1; }
+#checkout-main .cart-list { height: 55vh; overflow-y: auto; }
+#checkout-main .cart-list .thumbnail { width: 2.2rem; height: 2.3rem; }
+#checkout-main .cart-list .brand-name { position: relative; text-transform: uppercase; }
+#checkout-main .cart-list .brand-name::after { content: '\005D'; }
+#checkout-main .cart-list .brand-name::before { content: '\005B'; }
+#checkout-main .cart-list .product-type { position: relative; }
+#checkout-main .cart-list .product-type::before { content: '\0023';}
+
+#checkout-main .cart-list .accordion-button { font-size: 0.8rem; }
+#checkout-main .cart-list .accordion-button .product-opts { font-size: 0.7rem; }
+#checkout-main .cart-list .accordion-body { font-size: 0.78rem; }
+
+#checkout-main .cart-total-price .box-header .currency-unit { border: 0; background-color: transparent; margin: 0; padding: 0; width: 2.5rem; text-align: center; }
+#checkout-main .cart-total-price .box-header .currency-unit:focus { outline: none !important; }
+#checkout-main .cart-total-price p { padding: 0; margin-bottom: 0.3rem; }
+#checkout-main .cart-total-price p span { display: inline-block; width: 13rem; }
+/* #checkout-main .cart-total-price .order-discount-price { position: relative; } */
+/* #checkout-main .cart-total-price .order-discount-price::before { content: '\2010';} */
+#checkout-main .cart-total-price .order-subtotal { font-weight: bold; }
+#checkout-main .cart-total-price .order-subtotal .order-subtotal-price { font-size: 1.5rem; }
+#checkout-main .cart-total-price .checkout-btn { background-color: #ff6666;}
+
+#checkout-main .radio-group label { width: auto; min-width: 25%; }
+#checkout-main .radio-group label:not(:first-child), 
+#checkout-main .radio-group label:not(:nth-child(3n)) { margin-left: 2rem; }
+#checkout-main .radio-group label:nth-child(n+4) { padding-top: 0.5rem; }
+
+#checkout-main .currency-kr-tax-choice { display: none; }
+#checkout-main .currency-kr-tax-choice .btn.selected { background-color: black; color: white; }
+/* checkout end */

@@ -47,9 +47,10 @@ class Orders extends BaseController {
 
     $this->OrderController = new Order();
 
-    $this->data['header'] = ['css' => ['/orders.css', '/taggroup.css'],
+    $this->data['header'] = ['css' => ['/orders.css', '/address.css'
+                                      , '/checkout.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
-                                      , '/orders.js?ver=230816', '/product.js']];
+                                      , '/orders.js', '/product.js']];
 
   }
 
@@ -119,7 +120,17 @@ class Orders extends BaseController {
 
   public function ordersStatistics() {
     return $this->order->orderStatistics()->getResultArray();
+  }
+
+  public function orderCheck() {
+    $order = $this->request->getVar('order');
     
+    if ( !empty($order) ) {
+      $order = array_merge($order, ['order_check' => 1]);
+    }
+    if ( $this->request->isAJAX() ) {
+      return json_encode(['request'=> $order]);
+    }
   }
 
   public function getOrderList() {
@@ -233,7 +244,7 @@ class Orders extends BaseController {
                     ->select('currency.currency_sign, currency.currency_float')
                     ->select('margin.margin_level, margin.margin_section, margin_rate.margin_rate')
                     ->select('IFNULL(currency_rate.exchange_rate, 1) AS exchange_rate')
-                    // ->select('requirement_request.requirement_detail')
+                    ->select('requirement.requirement_reply')
                     // ->join('orders', 'orders.id = orders_detail.order_id')
                     ->join('product', 'product.id = orders_detail.prd_id')
                     ->join('brand', 'brand.brand_id = product.brand_id')
@@ -244,7 +255,11 @@ class Orders extends BaseController {
                     ->join('margin_rate', 'margin_rate.idx = orders_detail.margin_rate_id')
                     ->join('margin', 'margin.idx = margin_rate.margin_idx')
                     ->join('currency_rate', 'currency_rate.cRate_idx = orders.calc_currency_rate_id', 'left outer')
-                    // ->join('requirement_request', 'requirement_request.order_detail_id = orders_detail.id AND orders.id = requirement_request.order_id')
+                    ->join('( SELECT order_id, order_detail_id, GROUP_CONCAT(CONCAT(requirement_id,",",requirement_en,",",requirement_reply) SEPARATOR "|") AS requirement_reply
+                              FROM requirement_request
+                                JOIN requirement ON requirement.idx = requirement_request.requirement_id
+                              GROUP BY requirement_request.order_detail_id 
+                            ) AS requirement', 'requirement.order_id = orders.id AND requirement.order_detail_id = orders_detail.id')
                     ->where('orders_detail.order_id', $this->orderId)
                     ->where(['product.discontinued' => 0, 'product.display' => 1])
                     ->where('product_price.available', 1)

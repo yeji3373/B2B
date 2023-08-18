@@ -14,7 +14,8 @@ class OrderModel extends Model {
     'request_amount', 'inventory_fixed_amount',
     'order_amount', 'discount_amount', 'subtotal_amount',
     'currency_rate_idx', 'calc_currency_rate_id', 'currency_code',
-    'taxation', 'payment_id', 'complete_payment', 'address_id', '', 'available'
+    'taxation', 'payment_id', 'complete_payment',
+    'order_check', 'address_id', '', 'available'
   ];
 
   protected $useTimestamps = true;

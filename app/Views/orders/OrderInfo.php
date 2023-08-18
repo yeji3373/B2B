@@ -13,16 +13,31 @@
 <div class='d-flex flex-column flex-wrap p-0 product-payment-info-section'>
   <div class='info-sec p-0'>
     <label class='py-2 ps-2'><?=lang('Order.paymentType')?></label>
-    <?php if ( empty($order['payment_id']) && $order['complete_payment'] == 0 ) : ?>
-      <span class='py-2 pm-2'><?=lang('Order.inventoryChecking')?>
-    <?php else : ?>
+    <?php if ( !empty($order['payment_id']) && !empty($order['complete_payment']) ) : ?>
       <span class='py-2 pm-2'><?=$paymentMethod['payment']?></span>
       <?php if ( $paymentMethod['show_info'] == 1 ) : ?>
       <div class='w-100 p-2 bg-opacity-10 bg-secondary sub-sec'>
         <!-- htmlspecialchars -->
         <span><?=$paymentMethod['payment_info']?></span>
       </div>
-      <?php endif ?>
+      <?php endif; ?>
+    <?php else : ?>
+      <?php if ( !empty($nowPackStatus) ) : ?>
+        <?php if ( !empty($nowPackStatus['payment_request']) ) : ?>
+          <form>
+          <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
+          <?php if ( empty($order['order_check'] )) : ?>
+          <button class='btn btn-sm btn-dark my-1 order-check'>결제확정</button>
+          <?php else : ?>
+            <button class='btn btn-sm btn-dark my-1 order-request'>결제하기</button>
+          <?php endif; ?>
+          </form>
+        <?php else : ?>
+          <span class='py-2 pm-2'><?=lang('Order.inventoryChecking')?>
+        <?php endif; ?>
+      <?php else : ?>
+        <!-- 현재 상태값이 없음 -->
+      <?php endif; ?>
     <?php endif; ?>
   </div>
     <div class='info-sec p-0'>
@@ -45,19 +60,20 @@
   재고요청 완료 후, 배송정보 -->
 </div>
 <div class='p-0 packaging-info-section'>
-    <div class='info-sec p-0'>
-      <label class='py-2 ps-2'>Adress</label>
-      <div class='w-100 sub-sec p-2'>
-        <span class='consignee d-none'><?=$order['consignee']?></span>
-        <div>
-          <span class='region' data-id='<?=$order['region']?>' data-ccode='<?=$order['country_code']?>'><?=$order['region']?></span> / <span class='city'><?=$order['city']?></span>
-        </div>
-        <div>
-          <span class='streetAddr1'><?=$order['streetAddr1']?></span>
-          <span class='streetAddr2'><?=$order['streetAddr2']?></span>
-        </div>
+  <div class='info-sec p-0'>
+    <div class='py-2 ps-2 border-bottom w-100'>Adress</div>
+    <div class='w-100 sub-sec p-2 pt-0'>
+      <span class='consignee d-none'><?=$order['consignee']?></span>
+      <div>
+        <span class='region' data-id='<?=$order['region']?>' data-ccode='<?=$order['country_code']?>'><?=$order['region']?></span> / <span class='city'><?=$order['city']?></span>
+      </div>
+      <div>
+        <span class='streetAddr1'><?=$order['streetAddr1']?></span>
+        <span class='streetAddr2'><?=$order['streetAddr2']?></span>
+      </div>
+      <div class='d-flex flex-row'>
         <?php if ( isset($order['zipcode']) ) : ?>
-        <div class='zipcode'><?=$order['zipcode']?></div>
+        <div class='zipcode me-2'><?=$order['zipcode']?></div>
         <?php endif ?>
         <div class='d-flex flex-row'>
           <span class='phone_code'><?=$order['phone_code']?></span>
@@ -66,9 +82,15 @@
       </div>
     </div>
   </div>
+</div>
+<!-- <div class='p-0'>
+  <div class='info-sec p-0'>
+    invoice 보기
+  </div>
+</div> -->
 <div class='p-0 packaging-info-section'>
     <div class='info-sec p-0'>
-      <label class='py-2 ps-2'>Packaging Status</label>
+      <div class='py-2 ps-2 border-bottom w-100'>Packaging Status</div>
       <div class='w-100 sub-sec p-2'>
         <div class='w-100 d-flex flex-row flex-wrap'>
           <?php if ( !empty($packagingStatus) ) : 

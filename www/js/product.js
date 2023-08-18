@@ -703,6 +703,26 @@ $(document).ready(function() {
   $(this).children('.thumbnail-zoom').removeClass('d-none');
 }).on('mouseleave', '.thumbnail-group', function() {
   $(this).children('.thumbnail-zoom').addClass('d-none');
+}).on('click', '.order-check', function() {
+  let data = $(this).closest('form').serializeArray();
+  result = getData('/orders/orderCheck', data, true);
+  console.log(result);
+  return false;
+  // result = getData('/order')
+}).on('click', '.order-request', function(e) {
+  e.preventDefault();
+  result = getData('/order/orderForm');
+  
+  if ( result.indexOf('error') >= 0 ) {
+    if ( $.inArray('error', result) ) {
+      alert(result['error']);
+      return;
+    }
+  }
+  
+  appendData($('.pre-order'), result, true);
+  $("body").css('overflow', 'hidden');
+  $('.pre-order').addClass('show');
 });
 
 // $(window).ready(function() {

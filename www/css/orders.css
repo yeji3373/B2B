@@ -83,6 +83,15 @@
 .orders-main ::-ms-input-placeholder { color: red; } */
 /* Order History css */
 
+.pre-order #checkout-main {
+  width: 80%;
+  height: 100%;
+  padding: 2rem 3.5rem;
+  background-color: white;
+  overflow-y: auto;
+  margin: auto;
+}
+
 .orders-main .pi-viewer { 
   display: none; 
   width: 100%;

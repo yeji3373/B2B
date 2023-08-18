@@ -39,4 +39,5 @@
     </section>
     <?php endif; ?>
   </div>
+  <div class='pre-order'></div>
 </main>

@@ -357,12 +357,12 @@ class Order extends BaseController
     //   $where['supply_price.margin_level'] = $this->request->getPost('margin_level');
     // } else $where['supply_price.margin_level'] = 2;
 
-    if ( $this->CartController->checkMinimumAmount() === false ) {
-      if ( $this->request->isAJAX()) {
-        return json_encode(['error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
-      } 
-      return redirect()->to(site_url('/order'))->with('error', lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
-    }
+    // if ( $this->CartController->checkMinimumAmount() === false ) {
+    //   if ( $this->request->isAJAX()) {
+    //     return json_encode(['error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
+    //   } 
+    //   return redirect()->to(site_url('/order'))->with('error', lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
+    // }
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->findAll();
     $this->data['regions'] = $country->findAll();
@@ -371,8 +371,13 @@ class Order extends BaseController
     // $a = $country->select('id, country_no')->orderBy('country_no ASC', 'country_no_sub ASC')->groupBy('country_no')->findAll();
     $this->data['itus'] = $this->getItus()->findAll();
     $this->data['currencies'] = $this->currency->currencyJoin()->where('default_set', 1)->find();
-    $this->data['cartSubTotal'] = $cartTotal;
-    $this->cartList();
+    $this->data['orderDetails'] = $this->products
+                                      ->join('orders_detail', 'orders_detail.prd_id = product.id')
+                                      ->join('brand', 'brand.brand_id = product.brand_id')
+                                      ->where('orders_detail.order_id', 1)
+                                      ->findAll();
+    // $this->data['cartSubTotal'] = $cartTotal;
+    // $this->cartList();
 
     // print_r($this->data);
     
