@@ -705,8 +705,11 @@ $(document).ready(function() {
   $(this).children('.thumbnail-zoom').addClass('d-none');
 }).on('click', '.order-check', function() {
   let data = $(this).closest('form').serializeArray();
-  result = getData('/orders/orderCheck', data, true);
+  result = getData('/orders/orderFixed', data, true);
   console.log(result);
+  if (result['code'] == 200 ) {
+    // 결제하기로 변경하기
+  }
   return false;
   // result = getData('/order')
 }).on('click', '.order-request', function(e) {

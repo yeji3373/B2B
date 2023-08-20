@@ -122,14 +122,21 @@ class Orders extends BaseController {
     return $this->order->orderStatistics()->getResultArray();
   }
 
-  public function orderCheck() {
+  public function orderFixed() {
     $order = $this->request->getVar('order');
+    $code = 500;
     
     if ( !empty($order) ) {
-      $order = array_merge($order, ['order_check' => 1]);
+      $order = array_merge($order, ['order_fixed' => 1]);
     }
+
+    if ( !$this->order->save($order) ) {
+      // session()->setFlashdata('error', 'update error');
+      $code = 500;
+    } else $code = 200;
+
     if ( $this->request->isAJAX() ) {
-      return json_encode(['request'=> $order]);
+      return json_encode(['code' => $code, 'request'=> $order]);
     }
   }
 
