@@ -26,10 +26,10 @@
         <?php if ( !empty($nowPackStatus['payment_request']) ) : ?>
           <form>
           <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
-          <?php if ( empty($order['order_check'] )) : ?>
+          <?php if ( empty($order['order_fixed'] )) : ?>
           <button class='btn btn-sm btn-dark my-1 order-check'>결제확정</button>
           <?php else : ?>
-            <button class='btn btn-sm btn-dark my-1 order-request'>결제하기</button>
+            <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Order.checkout')?></button>
           <?php endif; ?>
           </form>
         <?php else : ?>

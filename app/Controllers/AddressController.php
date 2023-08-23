@@ -5,7 +5,7 @@ use Auth\Models\UserModel;
 use App\Models\BuyerAddressModel;
 
 class AddressController extends BaseController {
-  public $addressId;
+  public $addressId = NULL;
   
   public function __construct() {
     $this->address = new BuyerAddressModel();
@@ -19,8 +19,12 @@ class AddressController extends BaseController {
 
   }
 
-  public function addressConduct() {
-    $req = $this->request->getVar();
+  public function addressConduct($data = []) {
+    if ( is_null($this->request) ) {
+      if ( !empty($data) ) $req = $data;
+      else return NULL;
+    } else $req = $this->request->getVar();
+
     $req['buyer_id'] = session()->userData['buyerId'];
 
     if ( $this->address->save($req) ) {
@@ -33,7 +37,7 @@ class AddressController extends BaseController {
     $code = 200;
     $msg = '';
     $type = '';
-    $data = $this->request->getVar();
+    $data = $this->request->getVar('address');
 
     $address = $this->address->where(['buyer_id' => session()->userData['buyerId'], 'idx' => $data['idx']]);
 

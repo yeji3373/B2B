@@ -70,4 +70,25 @@ class ProductModel extends Model {
 
     return $this;
   }
+
+  function productOrderJoin($where = []) {
+    $this->select('product.*
+                  , brand.brand_name
+                  , orders_detail.id AS order_detail_id
+                  , orders_detail.order_id
+                  , orders_detail.order_excepted
+                  , orders_detail.changed_manager
+                  , orders_detail.prd_order_qty
+                  , orders_detail.prd_change_qty
+                  , orders_detail.prd_qty_changed
+                  , orders_detail.prd_price
+                  , orders_detail.prd_change_price
+                  , orders_detail.prd_price_changed
+                  , orders_detail.margin_rate_id')
+    ->join('orders_detail', 'orders_detail.prd_id = product.id')
+    ->join('brand', 'brand.brand_id = product.brand_id')
+    ->where($where);
+
+    return $this;
+  }
 }

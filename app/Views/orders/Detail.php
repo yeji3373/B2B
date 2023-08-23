@@ -95,4 +95,3 @@
     <div><?=lang('Order.isEmpty')?></div>
   <?php endif ?>
 </div>
-<div class='pre-order'></div>

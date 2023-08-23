@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Models\ProductModel;
+use App\Models\OrderModel;
 use App\Models\BrandModel;
 use App\Models\BuyerModel;
 use App\Models\CurrencyModel;
@@ -49,7 +50,7 @@ class Order extends BaseController
 
     $this->data['header'] = ['css' => ['/address.css', '/order.css'
                                       , '/inventory.css', '/stock.css'],
-                              'js' => ['/product.js', '/inventory.js', '/stock.js']];
+                              'js' => ['/address.js', '/product.js', '/inventory.js', '/stock.js']];
   }
 
   public function __output() {
@@ -351,8 +352,15 @@ class Order extends BaseController
   public function orderForm() {
     $country = new CountryModel();
     $payments = new PaymentMethodModel();
-    
-    $where = [];
+    $orderModel = new OrderModel();
+    $where = $this->request->getVar();
+
+    $orderWhere = []; 
+    if ( isset($where['order']) && !empty($where['order']) ) {
+      $orderWhere = $where['order'];
+    } else {
+      return ['error' => $orderWhere];
+    }
     // if ( !empty($this->request->getPost('margin_level')) ) {
     //   $where['supply_price.margin_level'] = $this->request->getPost('margin_level');
     // } else $where['supply_price.margin_level'] = 2;
@@ -362,28 +370,28 @@ class Order extends BaseController
     //     return json_encode(['error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
     //   } 
     //   return redirect()->to(site_url('/order'))->with('error', lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
-    // }
+    // }    
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->findAll();
     $this->data['regions'] = $country->findAll();
     $this->data['buyer'] = $this->getBuyerInfo();
     $this->data['payments'] = $payments->where('available', 1)->find();
-    // $a = $country->select('id, country_no')->orderBy('country_no ASC', 'country_no_sub ASC')->groupBy('country_no')->findAll();
     $this->data['itus'] = $this->getItus()->findAll();
-    $this->data['currencies'] = $this->currency->currencyJoin()->where('default_set', 1)->find();
+    $this->data['currencies'] = $this->currency->currencyJoin()->where('currency.default_currency', 1)->find();
     $this->data['orderDetails'] = $this->products
-                                      ->join('orders_detail', 'orders_detail.prd_id = product.id')
-                                      ->join('brand', 'brand.brand_id = product.brand_id')
-                                      ->where('orders_detail.order_id', 1)
+                                      ->productOrderJoin(
+                                        ['orders_detail.order_id'=> 1
+                                        , 'orders_detail.order_excepted' => 0])
                                       ->findAll();
-    // $this->data['cartSubTotal'] = $cartTotal;
+    $this->data['subTotal'] = $orderModel->where($orderWhere)->first();
     // $this->cartList();
 
     // print_r($this->data);
     
     if ( $this->request->isAJAX() ) { 
       return view('order/Checkout', $this->data);
-    } else $this->basicLayout('order/Checkout', $this->data);
+    }
+    $this->basicLayout('order/Checkout', $this->data);
   }
 
   public function getItus() {

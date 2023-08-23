@@ -50,7 +50,8 @@ class Orders extends BaseController {
     $this->data['header'] = ['css' => ['/orders.css', '/address.css'
                                       , '/checkout.css', '/taggroup.css'],
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
-                                      , '/orders.js', '/product.js']];
+                                      , '/address.js', '/checkout.js'
+                                      , '/orders.js']];
 
   }
 
@@ -123,21 +124,18 @@ class Orders extends BaseController {
   }
 
   public function orderFixed() {
-    $order = $this->request->getVar('order');
+    $data = $this->request->getPost('order');
     $code = 500;
-    
-    if ( !empty($order) ) {
-      $order = array_merge($order, ['order_fixed' => 1]);
+   
+    if ( !empty($data) ) {
+      $data = array_merge($data, ['order_fixed' => 1]);      
+      if ( $this->order->save($data) ) $code = 200;
     }
-
-    if ( !$this->order->save($order) ) {
-      // session()->setFlashdata('error', 'update error');
-      $code = 500;
-    } else $code = 200;
 
     if ( $this->request->isAJAX() ) {
-      return json_encode(['code' => $code, 'request'=> $order]);
+      return json_encode(['Code' => $code, 'request'=> $data]);
     }
+    return $data;
   }
 
   public function getOrderList() {

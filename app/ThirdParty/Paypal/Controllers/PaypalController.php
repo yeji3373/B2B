@@ -63,9 +63,8 @@ class PaypalController extends Controller
 
   protected function makeInvoice() {
     $header = array_merge($this->header, ['Prefer: return=representation']);
-    // print_r($this->orderInfo);
     $invoiceData = invoice_detail($this->orderInfo);
-
+    
     $generate = $this->curlRequest(
       $this->config->baseUrl.$this->invoiceUrl,
       $header,
@@ -73,7 +72,7 @@ class PaypalController extends Controller
       'POST'
     );
     // echo "<br/><br/>";
-    // print_r($generate);
+    // var_dump($generate);
 
     if ( $generate['code'] == 201 ) {   // successful request returns code 
       $this->invoiceId = $generate['data']['id'];

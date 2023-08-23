@@ -44,8 +44,8 @@
   </div>
   <?php endif ?>
   <div class='w-100 d-flex flex-column accordion-item new-addr'>
-    <input type='hidden' name='address_id'>
-    <input type='hidden' name='address_operate' value='0' >
+    <input type='hidden' name='address[idx]'>
+    <input type='hidden' name='address[address_operate]' value='0' >    
     <div class='w-100 accordion-header' id='address-new-head'>
       <div class='accordion-button <?=!empty($prevAddrList) ? 'collapsed' : ''?>'
         data-bs-toggle='collapse' data-bs-target='#address-new-body'
@@ -59,16 +59,16 @@
       <div class='accordion-body address-new-form'>
         <div class='body-item'>
           <label><?=lang('Order.consignee')?></label>
-          <!-- <input type='text' name='consignee' value='<?//=isset($prevAddrList) ? $prevAddrList[0]['consignee'] : ''?>' required> -->
-          <input type='text' name='consignee' value aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
+          <!-- <input type='text' name='address[consignee' value='<?//=isset($prevAddrList) ? $prevAddrList[0]['consignee'] : ''?>' required> -->
+          <input type='text' name='address[consignee]' value aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
         </div>
         <div class='body-item'>
           <label>Country/Region</label>
           <div class='position-relative w-50'>
-            <input type='text' name='region' class='regionSelected dropdown-toggle w-100' 
+            <input type='text' name='address[region]' class='regionSelected dropdown-toggle w-100' 
                 data-bs-target='.region-list' data-bs-toggle='dropdown' aria-expanded='false' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>/>
-            <input type='hidden' name='region_id'>
-            <input type='hidden' name='country_code'>
+            <input type='hidden' name='address[region_id]'>
+            <input type='hidden' name='address[country_code]'>
             <ul class='region-list dropdown-menu w-100'>
             <?php if ( !empty($regions) ) : 
               foreach($regions as $region) : ?>
@@ -81,26 +81,26 @@
         <div class='body-item'>
           <label>Street address</label>
           <div class='w-75'>
-            <input type='text' class='w-100 mb-2' name='streetAddr1' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
-            <input type='text' class='w-100' name='streetAddr2'>
+            <input type='text' class='w-100 mb-2' name='address[streetAddr1]' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
+            <input type='text' class='w-100' name='address[streetAddr2]'>
           </div>
         </div>
         <div class='body-item'>
           <label>City</label>
-          <input type='text' name='city' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
+          <input type='text' name='address[city]' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
         </div>
         <!-- <div class='body-item'>
           <label>State/Province/Region</label>
-          <input type='text' name='' value>
+          <input type='text' name='address[' value>
         </div> -->
         <div class='body-item'>
           <label>Zip/Postal code</label>
-          <input type='text' name='zipcode' maxlength='10'>
+          <input type='text' name='address[zipcode]' maxlength='10'>
         </div>
         <div class='body-item border-0'>
           <label>Phone number</label>
           <div class='d-flex flex-direction-row align-items-center'>
-            +<select class='col-1 me-2 w-auto' name='phone_code' <?=empty($prevAddrList) ? 'required' : ''?>>
+            +<select class='col-1 me-2 w-auto' name='address[phone_code]' <?=empty($prevAddrList) ? 'required' : ''?>>
               <option><?=lang('Order.selectBtn')?></option>
               <?php if ( !empty($itus) ) :
               foreach ($itus as $itu) : ?>
@@ -110,7 +110,7 @@
               <?php endforeach; 
               endif;?>
             </select>
-            <input type='text' name='phone' pattern='[0-9]+' maxlength='11' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
+            <input type='text' name='address[phone]' pattern='[0-9]+' maxlength='11' aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
           </div>
         </div>
       </div>

@@ -22,7 +22,8 @@ class CurrencyModel extends Model {
     return $this
             ->join('currency_rate', 'currency_rate.currency_idx = '.$this->table.'.idx')
             ->where($this->default)
-            ->where('currency_rate.available', 1);
+            ->where('currency_rate.available', 1)
+            ->where('currency_rate.default_set', 1);
             // ->where('currency_rate.available', 1);
   }
 }

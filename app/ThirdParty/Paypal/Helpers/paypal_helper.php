@@ -6,11 +6,13 @@ if ( !function_exists('invoice_detail') || !empty($userData) ) {
   function invoice_detail($userData, $currencyUnit = 'USD') {
     $config = config('Paypal');
     
-    if ( !empty($userData['currency_code']) ) $currencyUnit = $userData['currency_code'];
+    if ( !empty($userData['currency_code']) ) {
+      $currencyUnit = $userData['currency_code'];
+    }
 
     $default = [
       'detail'   => [
-        'invoice_number'  => $userData['buyerName'].'_'.date('YmdHms', time()),
+        'invoice_number'  => empty($userData['invoce_number']) ? $userData['buyerName'].'_'.date('YmdHms', time()) : $userData['invoce_number'],
         'invoice_date'    => date('Y-m-d'),
         'payment_term'    => ['term_type' => 'NO_DUE_DATE'],
         'currency_code'   => $currencyUnit
@@ -81,7 +83,7 @@ if ( !function_exists('invoice_detail') || !empty($userData) ) {
           'unit_amount' => [
             'currency_code' => $currencyUnit,
             // 'value'         => ($userData['order-subtotal-price'] * $userData['depositRate'])
-            'value'         => ($userData['order-subtotal-price'] * $userData['depositRate'])
+            'value'         => $userData['subtotal']
           ],
           'unit_of_measure' => 'QUANTITY'
         ]
