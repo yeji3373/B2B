@@ -105,6 +105,7 @@ datalist option {
 }
 .form-control:focus { border-color: initial; box-shadow: none; }
 
+.w-5 { width: 5%; }
 .w-10 { width: 10%; }
 .w-14 { width: 14%; }
 .w-15 { width: 15%; }
@@ -123,6 +124,7 @@ datalist option {
 .w-80 { width: 80%; }
 .w-85 { width: 85%; }
 .w-90 { width: 90%; }
+.w-95 { width: 95%; }
 
 .h-09 { height: 9%; }
 .h-84 { height: 84%; }
@@ -178,3 +180,10 @@ datalist option {
 .grid-half { grid-template-columns: repeat(2, 1fr);}
 .grid-half2 { grid-template-columns: repeat(3, 1fr);}
 .grid-column-span-2 { grid-column: auto / span 2 ;}
+
+.text-justify { text-align: justify;}
+.font-size-7 { font-size: 0.7rem;}
+.font-size-9 { font-size: 0.9rem;}
+.ml-2 { margin-left: 2rem;}
+
+

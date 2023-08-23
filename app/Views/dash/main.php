@@ -6,7 +6,7 @@
         <?php if ( !empty($notices) ) : 
           foreach($notices AS $notice) : ?>
           <div class='w-100 py-1 px-2 col <?=!empty($notice['fixed']) ? 'fix' : ''?>'>
-            <a href='/board/<?=$notice['type_idx']?>/<?=$notice['idx']?>'><?=$notice['title']?></a>
+            <a href='/Board/getBoard/<?=$notice['type_idx']?>/<?=$notice['idx']?>'><?=$notice['title']?></a>
           </div>
         <?php endforeach;
         else : ?> 
