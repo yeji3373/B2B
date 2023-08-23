@@ -107,6 +107,7 @@ datalist option {
 
 .w-5 { width: 5%; }
 .w-10 { width: 10%; }
+.w-12 { width: 12%; }
 .w-14 { width: 14%; }
 .w-15 { width: 15%; }
 .w-16 { width: 16%; }
@@ -121,6 +122,7 @@ datalist option {
 .w-49 { width: 49%; }
 .w-60 { width: 60%; }
 .w-70 { width: 70%; }
+.w-72 { width: 72%; }
 .w-80 { width: 80%; }
 .w-85 { width: 85%; }
 .w-90 { width: 90%; }
@@ -178,7 +180,7 @@ datalist option {
 /* button */
 
 .grid-half { grid-template-columns: repeat(2, 1fr);}
-.grid-half2 { grid-template-columns: repeat(3, 1fr);}
+.grid-three-equal-parts { grid-template-columns: repeat(3, 1fr);}
 .grid-column-span-2 { grid-column: auto / span 2 ;}
 
 .text-justify { text-align: justify;}
@@ -186,4 +188,4 @@ datalist option {
 .font-size-9 { font-size: 0.9rem;}
 .ml-2 { margin-left: 2rem;}
 
-
+img.thumbnail { width: 2rem; }

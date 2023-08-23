@@ -18,9 +18,10 @@ function getData(url, data, parse = false, type = 'POST') {
         val = res;
       },
       error: function(XMLHttpRequest, textStatus, errorThrow) {
-        console.log("error XMLHttpRequest", XMLHttpRequest, ' textStatus ', textStatus);
-        val = {'Code': 500, 'Msg': XMLHttpRequest.responseText};
-        // return false;
+        console.log("error XMLHttpRequest", XMLHttpRequest);
+        // val = {'Code': XMLHttpRequest.status, 'Msg': XMLHttpRequest.responseText};
+        val = {'Code': XMLHttpRequest.status, 'Msg': textStatus};
+        return val;
       }
     });
   } catch(e) {
@@ -143,3 +144,21 @@ $.urlParam = function(param) {
 
   return decodeURI(urlParams);
 }
+
+$(document).on('click', '.pre-order', function(e) {
+  let confirmMsg = "Do you want to cancel the payment?";
+
+  if ( $(e.target).attr('class') == $(this).attr('class') ) {
+    if ( $(e.target).data('bsConfirm') != '' 
+        && typeof $(e.target).data('bsConfirm') != 'undefined' ) {
+          confirmMsg = $(e.target).data('bsConfirm');
+    }
+
+    let cancelPaypal = confirm(confirmMsg);
+    if ( cancelPaypal ) {
+      $(".pre-order").removeClass('show');
+      $("body").css('overflow', 'auto');
+    }
+    else return;
+  }
+});

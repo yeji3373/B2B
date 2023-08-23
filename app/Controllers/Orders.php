@@ -72,7 +72,7 @@ class Orders extends BaseController {
     } else {
       $this->data['order'] = $this->getOrder();
       $this->data['paymentMethod'] = $this->getPaymentMethod();
-      // $this->data['receipts'] = $this->getOrderReceipts();
+      $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
       $this->data['orderRequirement'] = $this->getRequirement();
       // $this->data['shippinCost'] = $this->getTotalShippingCost();

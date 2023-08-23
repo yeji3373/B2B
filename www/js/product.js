@@ -439,7 +439,7 @@ $(document).ready(function() {
 // }).on('click', '.pre-order-btn', function() {
 //   result = getData('/order/orderForm', [{name: 'margin_level', value: 1}]);
 
-//   if ( result.indexOf('error') >= 0 ) {
+//   if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
 //     // result = JSON.parse(result);
 //     if ( $.inArray('error', result) ) {
 //       alert(result['error']);
@@ -455,14 +455,13 @@ $(document).ready(function() {
   let target = $(this).data('bsTarget');
   result = getData('/inventory/request', [], false, 'GET');
 
-  if ( result.indexOf('error') >= 0 ) {
+  if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
     result = JSON.parse(result);
     if ( $.inArray('error', result) ) {
       alert(result['error']);
       return;
     }
   }
-
   appendData($('.pre-order'), result, true);
   $(target).attr('data-bs-confirm', $(this).attr('aria-confirm')).addClass('show');
   if ( $('.prev-addr-sel').length ) {
@@ -473,123 +472,6 @@ $(document).ready(function() {
     $('.pre-order form input[name=request-total-price]').val(parseFloat($('.sub-total-price').text()));
   }
   $("body").css('overflow', 'hidden');
-
-}).on('click', '.pre-order', function(e) {
-  let confirmMsg = "Do you want to cancel the payment?";
-  // console.log( $(e.target).attr('class'), ' ' ,$(this).attr('class'));
-  if ( $(e.target).attr('class') == $(this).attr('class') ) {
-    if ( $(e.target).data('bsConfirm') != '' ) confirmMsg = $(e.target).data('bsConfirm');
-
-    let cancelPaypal = confirm(confirmMsg);
-    if ( cancelPaypal ) {
-      $(".pre-order").removeClass('show');
-      $("body").css('overflow', 'auto');
-    }
-    else return;
-  }
-}).on("click", '.region-list .dropdown-item', function() {
-  $(".regionSelected").val($(this).text())
-  $("[name=region_id]").val($(this).val());
-  $("[name=country_code]").val($(this).data('ccode'));
-
-  $("[name=phone_code]").val($(this).data('cno'));
-}).on('keyup', '.regionSelected', function() {
-  $this = $(this);
-  $regionList = $('.region-list > li');
-
-  if ( $this.val().length > 1 ) {
-    if ( !$this.hasClass('show') ) {
-      $this.addClass('show');
-      if ( !$(".region-list").hasClass('show') ) $('.region-list').addClass('show');
-    }
-  }
-
-  $searchedRegion = $regionList.filter(function(i) {
-    return $(this).text().toUpperCase().indexOf($this.val().toUpperCase()) > -1;
-  });
-  $regionList.hide();
-  $searchedRegion.show();
-// }).on('click', '.checkout-btn', function(e) {
-//   console.log("안내창 띄우기?");
-//   /* submit check */
-//   // validRequiredCheck($("form"));
-//   if ( $('[name=address_id]').val() == '' ) {
-//     if ( $('.prev-addr-sel').length > 0 ) {
-//       if ( $('.prev-addr-sel.selected').length == 0 ) {
-//         if ( $('#address-prev-body').hasClass('show') ) {
-//           // $("#address-new-head .accordion-button").click();
-//           alert('Please select or enter an address');
-//           return false;
-//           // e.preventDefault();
-//         }
-//       }
-//     }
-//   }
-}).on('click', '.prev-addr-sel', function() {
-  // addressFormInit();
-  $('.prev-addr-sel').removeClass('selected');
-  $(".pre-order form").find('input[name=address_id]').val($(this).data('id'));
-  $(this).addClass('selected');
-}).on("click", '.prev-addr-edit', function() {
-  $(".new-addr [name=address_id]").val($('.prev-addr-sel.selected').data('id'));
-  $('.new-addr [name=consignee]').val($('.prev-addr-sel.selected .consignee').text());
-  $('.new-addr [name=region]').val($('.prev-addr-sel.selected .region').text());
-  $('.new-addr [name=region_id]').val($('.prev-addr-sel.selected .region').data('id'));
-  $('.new-addr [name=country_code]').val($('.prev-addr-sel.selected .region').data('ccode'));
-  $('.new-addr [name=streetAddr1]').val($('.prev-addr-sel.selected .streetAddr1').text());
-  $('.new-addr [name=streetAddr2]').val($('.prev-addr-sel.selected .streetAddr2').text());
-  $('.new-addr [name=city]').val($('.prev-addr-sel.selected .city').text());
-  $('.new-addr [name=zipcode]').val($('.prev-addr-sel.selected .zipcode').text());
-  $('.new-addr [name=phone_code]').val($('.prev-addr-sel.selected .phone_code').text());
-  $('.new-addr [name=phone]').val($('.prev-addr-sel.selected .phone').text());
-
-  $("#address-accordion input[name=address_operate]").val(1);
-  $("#address-accordion .accordion-item.new-addr").addClass('edit-address');
-  $("#address-new-head .accordion-button").click();
-}).on('click', '.prev-addr-del', function() {
-  result = getData('/address/edit', 
-                  [ {name: 'idx', value: $(this).data('id')},
-                    {name: 'oper', value: 'del'} ], 
-                  true);
-                  
-  alert(result['Msg']);
-
-  if ( result['code'] == 200 ) {
-    // $('.prev-addr-sel').eq(idx).remove();
-    $(this).closest('.registed-address').remove();
-    // if ( $('[name=address_id]').val() == $(this).data('id') ) $('[name=address_id]').val('');
-    if ( $('.prev-addr-sel').length == 0 ) {
-      if ( $('[name=address_id]').val() != '' ) $('[name=address_id]').val('');
-      $("#address-new-head .accordion-button").click();
-      $(".prev-addr").addClass('d-none');
-    } else {
-      if ( !$('.prev-addr-sel:eq(0)').hasClass('selected') ) $('.prev-addr-sel:eq(0)').click();
-    }
-  }
-}).on('click', '#address-accordion .accordion-button', function() {
-  if ( $(this).closest('.accordion-item').hasClass('prev-addr') ) {
-    if ( $('#address-accordion').find('.prev-addr-sel').length ) {
-      $("#address-accordion input[name=address_operate]").val(0);
-      $(".accordion-item.new-addr.edit-address").removeClass('edit-address');
-      if ( !$('.prev-addr-sel.selected').length ) {
-        $('.prev-addr-sel:eq(0)').click();
-      }
-      addressFormInit();
-    }
-  } else {
-    $('.prev-addr-sel.selected').removeClass('selected');
-    if ( !$(".accordion-item.new-addr").hasClass("edit-address") ) {
-      $('.new-addr input[name=address_id]').val('');
-      $(".new-addr input[name=address_operate]").val(1);
-    }
-    
-    Array.from($("#address-accordion input, #address-accordion select")).forEach(v => {
-      if ( typeof $(v).attr('aria-required') != undefined 
-          && $(v).attr('aria-required') == 'true' ) {
-        $(v).prop('required', true);
-      }
-    });
-  }
 }).on('change', '[name=checkout-currency]', function() {
   console.log("changed");
   let currency = $(this);
@@ -703,29 +585,6 @@ $(document).ready(function() {
   $(this).children('.thumbnail-zoom').removeClass('d-none');
 }).on('mouseleave', '.thumbnail-group', function() {
   $(this).children('.thumbnail-zoom').addClass('d-none');
-}).on('click', '.order-check', function() {
-  let data = $(this).closest('form').serializeArray();
-  result = getData('/orders/orderFixed', data, true);
-  console.log(result);
-  if (result['code'] == 200 ) {
-    // 결제하기로 변경하기
-  }
-  return false;
-  // result = getData('/order')
-}).on('click', '.order-request', function(e) {
-  e.preventDefault();
-  result = getData('/order/orderForm');
-  
-  if ( result.indexOf('error') >= 0 ) {
-    if ( $.inArray('error', result) ) {
-      alert(result['error']);
-      return;
-    }
-  }
-  
-  appendData($('.pre-order'), result, true);
-  $("body").css('overflow', 'hidden');
-  $('.pre-order').addClass('show');
 });
 
 // $(window).ready(function() {
@@ -825,14 +684,6 @@ function validRequiredCheck($target) {
   //     $target.attr('action', action).submit();
   //   } else return;
   // }
-}
-
-function addressFormInit() {
-  // $('.prev-addr-sel.selected').removeClass('selected');
-  $(".address-new-form input").val('');
-  $(".address-new-form select option:selected").prop('selected', false);
-  $("input, select").prop('required', false);
-
 }
 
 function hideStockModal() {

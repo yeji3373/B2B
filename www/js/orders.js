@@ -56,6 +56,37 @@ $(document).ready(function() {
     result = getData('/orders/getOrderOption', formData);
     console.log(result);
     return false;
+  }).on('click', '.order-check', function(e) {
+    e.preventDefault()
+    let data = $(this).closest('form').serializeArray();
+    console.log(data);
+    result = getData('/orders/orderFixed', data, true);
+    console.log(result);
+    if (result['code'] == 200 ) {
+      // 결제하기로 변경하기
+      $(this).removeClass('order-check').addClass('order-request');
+    }
+    return false;
+    // result = getData('/order')
+  }).on('click', '.order-request', function(e) {
+    e.preventDefault();
+    result = getData('/order/orderForm', $(this).closest('form').serializeArray());
+
+    if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
+      result = JSON.parse(result);
+      if ( $.inArray('error', result) ) {
+        alert(result['error']);
+        return;
+      }
+      return;
+    }
+    
+    appendData($('.pre-order'), result, true);
+    $("body").css('overflow', 'hidden');
+    $('.pre-order').addClass('show');
+    if ( $('.prev-addr-sel').length ) {
+      $(".prev-addr-sel:eq(0)").click();
+    }
   });
 
   //.on("click", ".detail_id_check .btn", function() {

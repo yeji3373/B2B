@@ -155,6 +155,10 @@
   background-color: white;
 }
 
+.orders-main .pre-order #checkout-main form > section > section {
+  width: 50%;
+}
+
 .orders-main .pre-order #inventoryCheck-main {
   width: 50%;
   /* height: 100%; */
