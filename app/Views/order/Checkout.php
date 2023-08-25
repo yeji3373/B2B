@@ -84,7 +84,11 @@
                     $totalPrice = $detail['prd_price'] * $detail['prd_change_qty'];
                   endif;
                 else : 
-                  $totalPrice = $detail['prd_price'] * $detail['prd_order_qty'];
+                  if ( !empty($detail['prd_price_changed'])) : 
+                    $totalPrice = $detail['prd_price'] * $detail['prd_change_price'];
+                  else :
+                    $totalPrice = $detail['prd_price'] * $detail['prd_order_qty'];
+                  endif;
                 endif;
               ?>
               <?php $ids = ++$key ?>

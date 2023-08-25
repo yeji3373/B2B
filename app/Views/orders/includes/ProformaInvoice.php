@@ -76,15 +76,53 @@
       <?php if (!empty($orderDetails)) : ?>
       <?php foreach($orderDetails AS $i => $detail) : ?>
       <tr>
-        <td><?=$i + 1?></td>
-        <td class='w-15 text-uppercase'><?=$detail['brand_name']?></td>
-        <td class='text-start ps-2'>
+        <td class='border border-dark'><?=$i + 1?></td>
+        <td class='w-15 text-uppercase border border-dark'><?=$detail['brand_name']?></td>
+        <td class='text-start ps-2 border border-dark'>
           <?=$detail['name_en'].' '.$detail['spec']?>
           <?=!empty($detail['type_en']) ? " #".$detail['type_en'] : '' ?>
         </td>
-        <td class='text-end pe-2'><?=number_format($detail['prd_order_qty'])?></td>
-        <td class='text-end pe-2'><?=$detail['currency_sign'] . ' ' . number_format($detail['prd_price'], $detail['currency_float'])?></td>
-        <td class='text-end pe-2'><?=$detail['currency_sign'] . ' ' . number_format(($detail['prd_order_qty'] * $detail['prd_price']), $detail['currency_float'])?></td>
+        <td class='text-end pe-2 border border-dark'>
+          <?php
+          if ( !empty($detail['prd_qty_changed']) ) : 
+            echo number_format($detail['prd_change_qty']);
+          else :
+            echo number_format($detail['prd_order_qty']);
+          endif;
+          ?>
+        </td>
+        <td class='text-end pe-2 border border-dark'>
+          <?php 
+            echo $detail['currency_sign'];
+            if ( !empty($detail['prd_price_changed']) ) : 
+              echo number_format($detail['prd_change_price'], $detail['currency_float']);
+            else :
+              echo number_format($detail['prd_price'], $detail['currency_float']);
+            endif;
+          ?>
+          </td>
+        <td class='text-end pe-2 border border-dark'>
+          <?php
+            echo $detail['currency_sign'];
+            if ( $detail['order_excepted'] == 1 ) : 
+              echo "0.00";
+            else :
+              if ( !empty($detail['prd_qty_changed'])) :
+                if ( !empty($detail['prd_price_changed'])) : 
+                  echo number_format(($detail['prd_change_qty'] * $detail['prd_change_price']), $detail['currency_float']);
+                else :
+                  echo number_format(($detail['prd_change_qty'] * $detail['prd_price']), $detail['currency_float']);
+                endif;
+              else :
+                if ( !empty($detail['prd_price_changed']) ) :
+                  echo number_format(($detail['prd_order_qty'] * $detail['prd_change_price']), $detail['currency_float']);
+                else : 
+                  echo number_format(($detail['prd_order_qty'] * $detail['prd_price']), $detail['currency_float']);
+                endif;
+              endif;
+            endif;
+          ?>
+        </td>
         <td>
           <?php if ( $detail['order_excepted'] == 1 ) : 
             echo "주문 제외";
@@ -97,9 +135,8 @@
     <tfoot>
     <?php if (!empty($receipt) && !empty($order)) : 
       // print_r($order);
-      // print_r($receipts);?>
-
-<tr class='fw-bold'>
+      // print_r($receipt);?>
+      <tr class='fw-bold'>
         <td class='text-center py-2' colspan='5'>Product total</td>
         <td class='text-end py-2 px-1 color-red' colspan='2'>
           <?=$order['currency_sign'].' '.number_format($order['order_amount'], $order['currency_float']) ?>
@@ -108,10 +145,7 @@
       <tr class='fw-bold'>
         <td class='text-center py-2' colspan='5'>Shipping cost</td>
         <td class='text-end py-2 px-1 color-red' colspan='2'>
-          <?php if ( !empty($receipt['delivery_price']) ) {
-            echo $order['currency_sign'].' '.number_format($receipt['delivery_price'], $order['currency_float']);
-          } else echo "-";        
-          ?>
+          <?=$order['currency_sign'].' '.number_format($receipt['delivery_price'], $order['currency_float']);?>
         </td>
       </tr>      
       <tr class='fw-bold'>
@@ -149,32 +183,32 @@
         <td>Packing</td>
         <td>Export standard</td>
       </tr>
-      <?php if ( !empty($order) ) : ?>
+      <?php if ( !empty($payment) ) : ?>
       <tr>
         <td>Payment</td>
-        <?php if( strtolower($order['payment']) == 'paypal') : ?>
-        <td><?=$order['payment']?></td>
+        <?php if( strtolower($payment['payment']) == 'paypal') : ?>
+        <td><?=$payment['payment']?></td>
         <?php else : ?>
         <td>100 % in advance(p/o)  by T/T</td>
         <?php endif ?>
       </tr>
-      <?php if ( $order['payment'] != 'paypal') : ?>
-      <?php if ( !empty($order['bank_name']) ) : ?>
+      <?php if ( $payment['payment'] != 'paypal') : ?>
+      <?php if ( !empty($payment['bank_name']) ) : ?>
       <tr>
         <td>Payment Bank</td>
-        <td><?=$order['bank_name']?></td>
+        <td><?=$payment['bank_name']?></td>
       </tr>
       <?php endif ?>
-      <?php if ( !empty($order['account_no']) ) : ?>
+      <?php if ( !empty($payment['account_no']) ) : ?>
       <tr>
         <td>Account No</td>
-        <td><?=$order['account_no']?></td>
+        <td><?=$payment['account_no']?></td>
       </tr>
       <?php endif ?>
-      <?php if ( !empty($order['swift_code']) ) : ?>
+      <?php if ( !empty($payment['swift_code']) ) : ?>
       <tr>
         <td>Swift Code</td>
-        <td><?=$order['swift_code']?></td>
+        <td><?=$payment['swift_code']?></td>
       </tr>
       <?php endif ?>
       <?php endif ?>

@@ -16,13 +16,14 @@ class PackagingStatusModel extends Model {
 
 
   public function getNextIdx($idx) {
-    $this->select('(SELECT idx
-                  FROM packaging_status AS B
-                  WHERE packaging_status.order_by > B.order_by
-                  ORDER BY B.order_by ASC
-                  LIMIT 1) AS nextIdx')
-        ->where('idx', $idx)
-        ->first();
-    return $this;
+    return $this->db->query("SELECT 
+                                (SELECT idx
+                                  FROM packaging_status AS B
+                                  WHERE B.available = 1 AND packaging_status.order_by < B.order_by
+                                  ORDER BY B.order_by ASC
+                                  LIMIT 1) AS nextIdx
+                            FROM {$this->table}
+                            WHERE idx =  {$idx}")
+                    ->getRow();
   }
 }

@@ -128,7 +128,7 @@
         <input type='hidden' name='onlyZeroTax' value='<?=$product['taxation']?>'>
         <input type='hidden' name='bskAction' value='add'>
         <input type='hidden' name='order_qty' value='<?=empty($product['moq']) ? 10 : $product['moq']?>'>
-        <?php if ($product['cart_idx'] == null ) : ?>
+        <?php if ( empty($product['cart_idx']) ) : ?>
         <button class='btn btn-sm order-req' 
               data-prd-id='<?=$product['id']?>'
               data-add-class='bsk-del-btn' 

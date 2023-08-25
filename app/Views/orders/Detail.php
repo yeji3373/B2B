@@ -2,7 +2,7 @@
   <?php if ( isset($orderDetails) && !empty($orderDetails) ) : ?>
     <?php $orderTotal = 0?>
     <?php foreach($orderDetails AS $i => $product) : ?>
-    <div class='d-flex flex-column border <?=($i > 0 ? 'border-top-0': '')?> justify-content-between p-0 list-group-item <?=$product['prd_discount'] > 0 ? "apply-discount": ""?>'>
+    <div class='d-flex flex-column border <?=($i > 0 ? 'border-top-0': '')?> justify-content-between p-0 list-group-item'>
       <div class='d-flex flex-row align-items-center product-item mx-0 my-auto pt-2 pb-1 px-2'>
         <?=img(esc($product['img_url']), false, ['class' => 'thumbnail me-2']);?>
         <div class='d-flex flex-column'>

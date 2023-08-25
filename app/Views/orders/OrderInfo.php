@@ -13,7 +13,7 @@
 <div class='d-flex flex-column flex-wrap p-0 product-payment-info-section'>
   <div class='info-sec p-0'>
     <label class='py-2 ps-2'><?=lang('Order.paymentType')?></label>
-    <?php if ( !empty($order['payment_id']) && !empty($order['complete_payment']) ) : ?>
+    <?php if ( !empty($paymentMethod) ) : ?>      
       <span class='py-2 pm-2'><?=$paymentMethod['payment']?></span>
       <?php if ( $paymentMethod['show_info'] == 1 ) : ?>
       <div class='w-100 p-2 bg-opacity-10 bg-secondary sub-sec'>
@@ -27,7 +27,7 @@
           <form>
           <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
           <?php if ( empty($order['order_fixed'] )) : ?>
-          <button class='btn btn-sm btn-dark my-1 order-check'>결제확정</button>
+          <button class='btn btn-sm btn-dark my-1 order-check' data-next-name='<?=lang('Order.checkout')?>'>결제확정</button>
           <?php else : ?>
             <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Order.checkout')?></button>
           <?php endif; ?>
@@ -50,15 +50,90 @@
     <span class='py-2 pm-2'><?=$order['currency_sign'].number_format($order['request_amount'], $order['currency_float'])?></span>
     <!-- 재고요청 완료 후, 결제하기 버튼 보여지기. -->
     <?php else: ?>
-    <div class='w-100 py-2 px-1 bg-opacity-10 bg-secondary sub-sec'>
+    <div class='w-100 py-1 px-1 bg-light sub-sec fw-bold'>
       <label class='py-2 ps-2'><?=lang('Order.amount')?></label>
-        <!-- 재고 요청 완료 후 값들 -->
+      <span class='py-2 pm-2 fs-6'><?=$order['currency_sign'].number_format($order['order_amount'], $order['currency_float'])?></span>
     </div>
     <?php endif; ?>
   </div>
   <!-- 재고요청 당시 등록한 주소 & 주소 편집 추가
   재고요청 완료 후, 배송정보 -->
 </div>
+<?php if ( !empty($receipts) ) : ?>
+<div class='p-0 receipt-info-section'>
+  <div class='info-sec p-0 d-flex flex-column'>
+    <div class='py-2 ps-2 border-bottom w-100'>Receipts</div>
+    <div class='w-100 sub-sec p-2'>
+      <div class='d-flex flex-column border border-1'>
+        <div class='w-100 head d-grid text-center'>
+          <div>회차</div>
+          <div>Status</div>
+          <div>결제요청금액</div>
+          <div>결제후 남은 금액</div>
+          <div>배송비</div>
+          <div>기타</div>
+        </div>
+      <?php foreach ($receipts as $key => $receipt) {?>
+        <div class='w-100 d-grid border-top'>
+          <div class='p-1 border-end text-center'>
+            <?php if ( $receipt['receipt_type'] == 1 ) : 
+              echo esc($receipt['receipt_type']).'st Receipt';
+            elseif ( $receipt['receipt_type'] == 2 ) : 
+              echo esc($receipt['receipt_type']).'nd Receipt';
+            elseif ( $receipt['receipt_type'] == 2 ) : 
+              echo esc($receipt['receipt_type']).'rd Receipt';
+            else : 
+              echo esc($receipt['receipt_type']).'th Receipt';
+            endif; ?>
+          </div>
+          <div class='p-1 border-end text-center'>
+            <?=esc($receipt['payment_status_msg'])?>
+          </div>
+          <div class='border-end p-1 text-end'>
+            <?=$order['currency_sign'].number_format($receipt['rq_amount'], $order['currency_float'])?>
+          </div>
+          <div class='border-end p-1 text-end'>
+            <?=$order['currency_sign'].number_format($receipt['due_amount'], $order['currency_float'])?>
+          </div>
+          <div class='border-end p-1 text-end'>
+            <?php if ( !empty($receipt['delivery_id']) ) : ?>
+              <?php 
+                if ( !empty($receipt['delivery_price']) ) :
+                  echo $order['currency_sign'].number_format($receipt['delivery_price'], $order['currency_float']);
+                else: 
+                  echo "정산전";
+                endif;
+              else: 
+                echo "-";
+            endif;?>
+          </div>
+          <div class='p-1 text-center d-flex flex-column'>
+            <?php if ( !empty($receipt['payment_invoice_id']) ) : ?>
+              <div>
+              <?php 
+                if ( !empty($receipt['payment_refund_id']) ) :
+                  echo esc($receipt['payment_refund_id']);
+                else: 
+                  echo "<a href='".$receipt['payment_url']."' target='_blank'>".$receipt['payment_invoice_id']."</a>";
+                endif;
+                echo "</div>";
+            endif;?>
+            <?php if ( $receipt['payment_status'] >= 0 ) : ?>
+              <form method='post'>
+                <input type='hidden' name='receipt_type' value='<?=$receipt['receipt_type']?>'>
+                <input type='hidden' name='order_number' value='<?=$order['order_number']?>'>
+                <input type='hidden' name='just_data' value='1'>
+                <div class='btn btn-dark btn-sm px-1 pi-view'><?=lang('Order.pi')?> <?=lang('Order.view')?></div>
+              </form>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php } ?>
+      </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 <div class='p-0 packaging-info-section'>
   <div class='info-sec p-0'>
     <div class='py-2 ps-2 border-bottom w-100'>Adress</div>

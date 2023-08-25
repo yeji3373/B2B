@@ -58,7 +58,7 @@ class Inventory extends BaseController {
 
     if ( $this->CartController->checkMinimumAmount() === false ) {
       if ( $this->request->isAJAX()) {
-        return json_encode(['error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
+        return json_encode(['Code'=> 500, 'error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
       } 
       return redirect()->to(site_url('/order'))->with('error', lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
     }
@@ -76,6 +76,8 @@ class Inventory extends BaseController {
     $data = $this->request->getVar();
     // print_r($data['requirement']);
     $request = [];
+
+    var_dump($data);
     
     $cartList = $this->cart->where('buyer_id', session()->userData['buyerId'])->findAll();
 
@@ -87,14 +89,14 @@ class Inventory extends BaseController {
                       ->where(['currency_rate.default_set' => 1])->first();
       if ( !empty($currency) ) {
         if ( $currency['exchange_rate'] != session()->currency['basedExchangeRate'] ) {
-          return redirect()->to('/logout');
+          // return redirect()->to('/logout');
         }
       }
 
-      if ( $data['address_operate'] == true ) {
+      if ( !empty($data['address']['address_operate']) && $data['address']['address_operate'] == true ) {
         $addressId = $this->AddressController->addressConduct();
       } else {
-        $addressId = $data['address_id'];
+        $addressId = $data['address']['idx'];
       }
 
       if ( !empty($addressId) ) {
@@ -104,7 +106,7 @@ class Inventory extends BaseController {
         $request['inventory_fixed_amount'] = $data['request-total-price'];
         $request['currency_rate_idx'] = $currency['currency_rate_idx'];
         $request['currency_code'] = $currency['currency_code'];
-        $request['address_id']  = $addressId;
+        $request['idx']  = $addressId;
         
         // if ( $cartList['temp_order_number'] == $request['order_number'] ) {
         //   $this->order->where(['order_numeber'=> $request['order_numeber']

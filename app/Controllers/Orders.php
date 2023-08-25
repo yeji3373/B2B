@@ -8,6 +8,7 @@ use App\Models\DeliveryModel;
 use App\Models\BuyerModel;
 use App\Models\PackagingModel;
 use App\Models\PackagingStatusModel;
+use App\Models\PackagingDetailModel;
 use App\Models\PaymentMethodModel;
 use App\Models\RequirementRequestModel;
 use App\Models\BrandModel;
@@ -37,6 +38,7 @@ class Orders extends BaseController {
     $this->buyer = new BuyerModel();
     $this->packaging = new PackagingModel();
     $this->packagingStatus = new PackagingStatusModel();
+    $this->packagingDetail = new PackagingDetailModel();
     $this->paymentMethodModel = new PaymentMethodModel();
     $this->requirement = new RequirementRequestModel();
     $this->products = new ProductModel();
@@ -106,7 +108,6 @@ class Orders extends BaseController {
                                                     WHERE packaging.order_id = {$this->orderId}) AS packaging"
                                                   , "packaging.status_id = packaging_status.idx", "left outer")
                                           ->where(['packaging_status.available' => 1
-                                                , 'packaging_status.display' => 1
                                                 , 'packaging.in_progress' => 1])
                                           ->orderBy('packaging_status.order_by desc')
                                           ->first();
@@ -126,14 +127,44 @@ class Orders extends BaseController {
   public function orderFixed() {
     $data = $this->request->getPost('order');
     $code = 500;
+    $msg = NULL;
    
     if ( !empty($data) ) {
-      $data = array_merge($data, ['order_fixed' => 1]);      
-      if ( $this->order->save($data) ) $code = 200;
-    }
+      $packagingStatus = $this->packaging
+                            ->packagingJoin(['packaging.order_id'=> $data['id']])
+                            ->select('packaging.*')
+                            ->select('packaging_status.idx AS packaging_status_id, packaging_status.order_by
+                                      , packaging_status.status_name, packaging_status.status_name_en
+                                      , packaging_status.display, packaging_status.payment_request
+                                      , packaging_status.available, packaging_status.has_email, packaging_status.email_id')
+                            ->select('packaging_detail.idx AS packaging_detail_idx, packaging_detail.packaging_id
+                                      , packaging_detail.status_id, packaging_detail.in_progress, packaging_detail.complete')
+                            ->orderBy('packaging_status.order_by DESC')
+                            ->first();
+      
+      if ( !empty($packagingStatus) && !empty($packagingStatus['payment_request']) ) {
+        if ( empty($packagingStatus['complete']) ) {
+          $nextPackageStatus = $this->packagingStatus->where(['order_by' => ($packagingStatus['order_by'] + 1), 'available' => 1])->first();
+
+          if ( !empty($nextPackageStatus) ) {
+            if ($this->packagingDetail->save(['idx' => $packagingStatus['packaging_detail_idx'], 'complete' => 1])) {
+            $packagingDetailData['packaging_id'] = $packagingStatus['packaging_id'];
+            $packagingDetailData['status_id'] = $nextPackageStatus['idx'];
+            
+              if ($this->packagingDetail->save($packagingDetailData)) {
+                $data = array_merge($data, ['order_fixed' => 1]);
+                if ( $this->order->save($data) ) {
+                  $code = 200; $msg = 'saved';
+                }
+              }
+            }
+          } 
+        }
+      }
+    } else $msg = $data;
 
     if ( $this->request->isAJAX() ) {
-      return json_encode(['Code' => $code, 'request'=> $data]);
+      return json_encode(['Code' => $code, 'request'=> $msg]);
     }
     return $data;
   }
@@ -172,6 +203,7 @@ class Orders extends BaseController {
   public function getOrder() {
     $order = $this->order
                 ->select('orders.*')
+                ->select('DATE_FORMAT(orders.created_at, "%Y-%m-%d") AS orderDate')
                 ->select('currency.currency_sign, currency.currency_float')
                 ->select('buyers_address.idx AS address_id, buyers_address.consignee')
                 ->select('buyers_address.region, buyers_address.country_code')
@@ -184,6 +216,7 @@ class Orders extends BaseController {
                 ->where(['order_number' => $this->request->getVar('order_number')
                         ,'orders.buyer_id' => session()->userData['buyerId']])
                 ->first();
+    echo $this->order->getLastQuery();
     // $order = $this->order
     //                 ->select('orders.id, orders.order_number, orders.order_amount, orders.discount_amount')
     //                 ->select('orders.subtotal_amount, orders.order_amount, orders.discount_amount')
@@ -216,24 +249,21 @@ class Orders extends BaseController {
     //   // if ( $order['payment_id'] == 1) $this->isPaypal = TRUE;
       $this->orderId = $order['id'];
     }
-
-    if ( $this->request->isAJAX() ) {
-      return view('/orders/OrderInfo', ['order' => $order]);
-    }
+    // if ( $this->request->isAJAX() ) {
+    //   return view('/orders/OrderInfo', ['order' => $order]);
+    // }
     return $order;
   }
   
-  public function getOrderDetails() {
+  public function getOrderDetails($where = []) {
     $orderDetails = $this->oDetail
                     ->select('orders_detail.id AS detail_id')
-                    ->select('ROUND(IF(orders_detail.prd_price_changed = 1, orders_detail.prd_change_price, orders_detail.prd_price), 2) AS prd_change_price')
-                    // ->select('ROUND(orders_detail.prd_change_price, 2) AS prd_change_price')
-                    ->select('ROUND(orders_detail.prd_price, 2) AS prd_price')
+                    ->select('orders_detail.prd_price_changed')
+                    ->select('orders_detail.prd_change_price')
+                    ->select('orders_detail.prd_price')
                     ->select('orders_detail.prd_qty_changed')
-                    ->select('CAST(IF(orders_detail.prd_qty_changed = 1, orders_detail.prd_change_qty, orders_detail.prd_order_qty) AS DOUBLE) AS prd_change_qty')
-                    // ->select('orders_detail.prd_change_qty')
                     ->select('orders_detail.prd_order_qty')
-                    ->select('orders_detail.prd_discount')
+                    ->select('orders_detail.prd_change_qty')
                     ->select('orders_detail.order_excepted')
                     ->select('orders_detail.detail_desc')
                     // ->select('orders_detail.prd_taxation')
@@ -269,6 +299,7 @@ class Orders extends BaseController {
                     ->where(['product.discontinued' => 0, 'product.display' => 1])
                     ->where('product_price.available', 1)
                     ->where('supply_price.margin_level = margin.margin_level')
+                    ->where($where)
                     ->findAll();
                     //  echo $this->oDetail->getLastQuery();
     return $orderDetails;
@@ -357,40 +388,38 @@ class Orders extends BaseController {
     }
 
     $receipt = $this->receipt
-                      ->select('orders.order_amount')
-                      ->select('orders_receipt.receipt_id, orders_receipt.order_id, orders_receipt.receipt_type')
-                      ->select('orders_receipt.payment_status, orders_receipt.payment_date')
-                      ->select('orders_receipt.refund_date, orders_receipt.payment_invoice_id')
-                      ->select('orders_receipt.payment_refund_id, orders_receipt.payment_url')
-                      ->select('orders_receipt.rq_percent')
-                      ->select("orders_recipt_sum.rq_amount")
-                      ->select('(orders.order_amount - orders_recipt_sum.rq_amount) AS due_amount')
-                      ->select('orders_receipt.delivery_id, orders_receipt.display')
-                      ->select('orders_receipt.created_at')
-                      // ->select("SUM(CAST(IFNULL(delivery.delivery_price, 0) AS DOUBLE)) OVER() AS delivery_price")
-                      ->select("SUM(CAST(IFNULL(delivery.delivery_price, 0) AS DOUBLE)) AS delivery_price")
-                      ->join("orders", "orders.id = orders_receipt.order_id")
-                      // ->join("( SELECT order_id, SUM(rq_amount) AS rq_amount 
-                      //           FROM orders_receipt 
-                      //           WHERE order_id = {$this->orderId} 
-                      //             AND payment_status = 100
-                      //             $where_1
-                      //         ) AS orders_recipt_sum"
-                      //       , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")
-                      ->join("( SELECT order_id, SUM(rq_amount) AS rq_amount 
-                            FROM orders_receipt 
-                            WHERE order_id = {$this->orderId} 
-                              AND payment_status = 100
-                          ) AS orders_recipt_sum"
-                        , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")                            
-                      // ->join("delivery", "delivery.id = orders_receipt.delivery_id", "left outer")
-                      ->join("(SELECT id, order_id, SUM(delivery_price) AS delivery_price FROM delivery WHERE order_id = {$this->orderId} AND delivery_code = 100) AS delivery"
-                            , "delivery.order_id = orders_receipt.order_id AND delivery.id = orders_receipt.delivery_id", "left outer")
-                      ->where(['orders_receipt.order_id' => $this->orderId
-                              , 'orders_receipt.display' => 1])
-                      ->where($addWhere)
-                      ->orderBy('orders_receipt.receipt_id DESC')
-                      ->first();
+                    ->select('orders.order_amount')
+                    ->select('orders_receipt.receipt_id, orders_receipt.order_id, orders_receipt.receipt_type')
+                    ->select('orders_receipt.payment_status, orders_receipt.payment_date')
+                    ->select('orders_receipt.refund_date, orders_receipt.payment_invoice_id')
+                    ->select('orders_receipt.payment_refund_id, orders_receipt.payment_url')
+                    ->select('orders_receipt.rq_percent')
+                    ->select('IFNULL(orders_recipt_sum.rq_amount, 0) AS rq_amount')
+                    // ->select('orders_receipt.due_amount')
+                    ->select('((orders.order_amount + IFNULL(delivery.delivery_price, 0)) - IFNULL(orders_recipt_sum.rq_amount, 0)) AS due_amount')
+                    ->select('orders_receipt.delivery_id, orders_receipt.display')
+                    ->select('orders_receipt.created_at')
+                    ->select('IFNULL(delivery.delivery_price, 0) AS delivery_price')
+                    ->join("orders", "orders.id = orders_receipt.order_id")
+                    // ->join("( SELECT order_id, SUM(rq_amount) AS rq_amount 
+                    //           FROM orders_receipt 
+                    //           WHERE order_id = {$this->orderId} 
+                    //             AND payment_status = 100
+                    //             $where_1
+                    //         ) AS orders_recipt_sum"
+                    //       , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")
+                    ->join("( SELECT order_id, SUM(rq_amount) AS rq_amount 
+                              FROM orders_receipt 
+                              WHERE order_id = {$this->orderId} AND payment_status = 100
+                            ) AS orders_recipt_sum"
+                          , "orders_recipt_sum.order_id = orders_receipt.order_id", "left outer")                            
+                    ->join("(SELECT id, order_id, SUM(delivery_price) AS delivery_price FROM delivery WHERE order_id = {$this->orderId} AND delivery_code = 100) AS delivery"
+                          , "delivery.order_id = orders_receipt.order_id AND delivery.id = orders_receipt.delivery_id", "left outer")
+                    ->where(['orders_receipt.order_id' => $this->orderId
+                            , 'orders_receipt.display' => 1])
+                    ->where($addWhere)
+                    ->orderBy('orders_receipt.receipt_id DESC')
+                    ->first();
     // echo "<br/>";
     // echo "<br/>";
     // echo $this->receipt->getLastQuery();
@@ -433,8 +462,8 @@ class Orders extends BaseController {
 
   public function getOrderData() {
     // print_r($this->request->getVar());
-    // $this->orderId = $this->request->getPost('order_id');
     $data['order'] = $this->getOrder();
+    $data['payment'] = $this->getPaymentMethod();
     // echo 'orderId '.$this->orderId.'<br/><br/>';
     $data['orderDetails'] = $this->getOrderDetails();
     // $data['orderRequirement'] = $this->getRequirement();
@@ -442,7 +471,7 @@ class Orders extends BaseController {
     $data['receipt'] = $this->getOrderReceipt();
     $data['buyer'] = $this->getBuyer();
 
-    if ( $this->request->isAJAX() ) {
+   if ( $this->request->isAJAX() ) {
       // return json_encode(['Code' => 200, 'Msg' => $data]);
       // print_r($data);
       return view('/orders/includes/ProformaInvoice', $data);

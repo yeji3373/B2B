@@ -8,7 +8,7 @@ class PackagingDetailModel extends Model {
   protected $primaryKey = 'idx';
   protected $useSoftDeletes = true;
 
-  protected $allowedFields = ['packaging_id', 'status_id', 'in_progress'];
+  protected $allowedFields = ['packaging_id', 'status_id', 'in_progress', 'complete'];
 
   protected $useTimestamps = true;
   protected $createdField = 'created_at';

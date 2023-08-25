@@ -23,4 +23,13 @@ class PackagingModel extends Model {
 
     return $this;
   }
+
+  public function packagingJoin($where = []) {
+    $this->join('packaging_detail', 'packaging_detail.packaging_id = packaging.idx')
+        ->join('packaging_status', 'packaging_status.idx = packaging_detail.status_id')
+        ->where('packaging_status.available', 1)
+        ->where($where);
+        
+    return $this;
+  }
 }
