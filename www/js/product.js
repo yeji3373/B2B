@@ -148,7 +148,6 @@ $(document).ready(function() {
     $(this).parent().addClass('slideUp');
 
   }
-// }).on("click", '.order-req, .stock-order-req, .stock-req', function(e) {
 }).on("click", '.order-req', function(e) {
   e.preventDefault();
   // let data = $(this).parent().find("form").serializeArray();
@@ -330,7 +329,6 @@ $(document).ready(function() {
     checkList = $(".product-section .product-search-result .product-list .list-group-item form input[class=cart_idx]");
   }
 
-  // if ( checkList.length && !cartSection ) {
   if ( checkList.length ) {
     console.log("checklist is empty");
     $.each(checkList, (i, v) => {
@@ -349,7 +347,7 @@ $(document).ready(function() {
           {name: 'oper', value: 'del'}
         ];
 
-        return false;
+        // return false;
       }
     });
   } else {
@@ -366,9 +364,9 @@ $(document).ready(function() {
     result = getData('/order/editCartList', query, true);
     if ( result['Code'] == 200 ) {
       if ( $targetBtn.length ) {
-        let btnText = $targetBtn.data('btn');
-        let removeClass = $targetBtn.data('removeClass');
-        let addClass = $targetBtn.data('addClass');
+        let btnText = 'Select';
+        let removeClass = 'bsk-del-btn';
+        let addClass = 'order-req';
 
         $targetBtn.removeClass(removeClass);
         $targetBtn.addClass(addClass);

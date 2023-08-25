@@ -107,7 +107,7 @@ class RegistrationController extends Controller
               'name'  => $this->request->getPost('buyerName'),
               'business_number' => $this->request->getPost('businessNumber'),
               'region_ids' => implode(',', $this->request->getPost('region')),
-              'countries_ids' => implode(',', $this->request->getPost('country')),
+              'countries_ids' => !empty($this->request->getPost('country')) ? implode(',', $this->request->getPost('country')) : '',
               'country_id' => $this->request->getPost('buyerRegion'),
               'address' => $this->request->getPost('buyerAddress1').$this->request->getPost('buyerAddress2'),
               'zipcode' => $this->request->getPost('zipcode'),
