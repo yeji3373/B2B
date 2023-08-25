@@ -33,17 +33,18 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 // $routes->get('/', 'Home::index', ['filter' => 'auth']);
-$routes->get('/orders/(:num)', 'Orders::getOrderDetail/$i', ['as' =>'orders']);
+$routes->get('orders/(:num)', 'Orders::getOrderDetail/$i', ['as' =>'orders']);
 // $routes->get('orders/(:num)', 'Orders::index');
-$routes->post('/address/edit', 'AddressController::addressOperate');
+$routes->group('address', function($routes) {
+  $routes->post('edit', 'AddressController::addressOperate');
+});
 
 $routes->group('inventory', function($routes) {
   $routes->get('/', 'Inventory::index');
-  
+
   $routes->get('request', 'Inventory::requestInventoryCheck');
   $routes->post('request', 'Inventory::requestInventory');
 });
-
 
 /*
  * --------------------------------------------------------------------

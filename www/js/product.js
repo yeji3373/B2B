@@ -150,7 +150,6 @@ $(document).ready(function() {
   }
 }).on("click", '.order-req', function(e) {
   e.preventDefault();
-  // let data = $(this).parent().find("form").serializeArray();
   let data = $(this).closest('.list-group-item').find('form').serializeArray();
 
   result = getData("/order/addCartList", data, true);
@@ -161,19 +160,23 @@ $(document).ready(function() {
     if ( result['Msg'] != '' ) {
       $("#product-form").append($("<input type='hidden' name='cart_id'/>").val(result['Msg']));
     }
-    getCartList();
-    setSubTotalPrice();
-
     let btnText = $(this).data('btn');
     let removeClass = $(this).data('removeClass');
     let addClass = $(this).data('addClass');
 
-    $(this).removeClass(removeClass);
-    $(this).addClass(addClass);
+    $(this).attr('data-btn', $.trim($(this).text()));
     $(this).attr('data-remove-class', addClass);
     $(this).attr('data-add-class', removeClass);
+    $(this).removeClass(removeClass);
+    $(this).addClass(addClass);    
     $(this).text(btnText);
-    $(this).before("<input type='hidden' class='cart_idx' value='" + result['Msg'] + "'>");
+    
+    if ( $(this).prev('.cart_idx').length ) {
+      $(this).prev('.cart_idx').val(result['Msg']);
+    } else $(this).before("<input type='hidden' class='cart_idx' value='" + result['Msg'] + "'>");
+
+    getCartList();
+    setSubTotalPrice();
   }
 }).on("click", '.increase-btn, .decrease-btn', function(e) {
   e.preventDefault();
@@ -313,60 +316,48 @@ $(document).ready(function() {
 }).on("click", '.bsk-del-btn', function(e) {
   e.preventDefault();
   let cart_id_element = $(this).parent().find('[name=cart_idx]').length ? 
-                        $(this).parent().find('[name=cart_idx]') : 
-                        $(this).parent().find('.cart_idx');
+                        $(this).parent().find('[name=cart_idx]').val() : 
+                        $(this).parent().find('.cart_idx').val();
   let checkList = '';
   let cartSection = false;
   let $targetBtn = '';
   let query = [];
-
+  
   if ($(this).closest('.product-section').length) {
     cartSection = false;
     checkList = $(".product-invoice-section .product-selected .list-group-item .cart-qty-form input[name=cart_idx]");
   } else {
-    console.log("durl");
     cartSection = true;
     checkList = $(".product-section .product-search-result .product-list .list-group-item form input[class=cart_idx]");
   }
 
+  // if ( checkList.length && !cartSection ) {
   if ( checkList.length ) {
-    console.log("checklist is empty");
     $.each(checkList, (i, v) => {
-      if ( $(v).val() == cart_id_element.val() ) {
-        console.log($(v).closest('.list-group-item'));
+      if ( $(v).val() == cart_id_element ) {
         if ( cartSection ) {
           $targetBtn = $(v).parent().find('.bsk-del-btn');
-          $(this).closest('.list-group-item').remove();
         } else {
-          $targetBtn = $(this);
-          $(v).closest('.list-group-item').remove();
+          $targetBtn = $(v).closest('.list-group-item');
         }
-
+        
         query = [
-          {name: 'cart_idx', value: cart_id_element.val() },
+          {name: 'cart_idx', value: cart_id_element },
           {name: 'oper', value: 'del'}
         ];
 
-        // return false;
+        return false;
       }
     });
-  } else {
-    if ( cartSection ) {
-      $(this).closest('.list-group-item').remove();
-      query = [
-        {name: 'cart_idx', value: cart_id_element.val() },
-        {name: 'oper', value: 'del'}
-      ];
-    }
   }
 
   if ( query != '' && query.length > 0 ) {
     result = getData('/order/editCartList', query, true);
     if ( result['Code'] == 200 ) {
       if ( $targetBtn.length ) {
-        let btnText = 'Select';
-        let removeClass = 'bsk-del-btn';
-        let addClass = 'order-req';
+        let btnText = $targetBtn.data('btn');
+        let removeClass = $targetBtn.data('removeClass');
+        let addClass = $targetBtn.data('addClass');
 
         $targetBtn.removeClass(removeClass);
         $targetBtn.addClass(addClass);
@@ -375,8 +366,8 @@ $(document).ready(function() {
         $targetBtn.text(btnText);
         $targetBtn.closest('.cart_idx').remove();
       }
-      setSubTotalPrice();
     }
+    setSubTotalPrice();
   }
 }).on('keyup', '.qty-spq', function(e) {
   $parent = $(this).closest('.cart-qty-form');
@@ -452,12 +443,16 @@ $(document).ready(function() {
 }).on('click', '.inventory_check_request-btn', function() {
   let target = $(this).data('bsTarget');
   result = getData('/inventory/request', [], false, 'GET');
-
-  if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
-    result = JSON.parse(result);
-    if ( $.inArray('error', result) ) {
-      alert(result['error']);
-      return;
+  
+  if ( result.indexOf('Code') >= 0 ) {
+    if ( typeof JSON.parse(result) == 'object' ) {
+      result = JSON.parse(result);
+      if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
+        if ( $.inArray('error', result) ) {
+          alert(result['error']);
+          return;
+        }
+      }
     }
   }
   appendData($('.pre-order'), result, true);

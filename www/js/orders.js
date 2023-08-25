@@ -38,9 +38,9 @@ $(document).ready(function() {
   }).on('click', '.pi-view', function() {
     // console.log($("[name=receipt_id]").val());
     $form = $(this).closest('form');
-    appendData($('.pi-viewer > div') 
-                , getData('/orders/getOrderData', $form.serializeArray())
-                , true);
+    result = getData('/orders/getOrderData', $form.serializeArray());
+
+    appendData($('.pi-viewer > div') , result, true);
     $('.pi-viewer').show();
     $('body').addClass('overflow-hidden');
   }).on('click', '.pi-viewer .btnClose', function(e) {
@@ -62,8 +62,11 @@ $(document).ready(function() {
     console.log(data);
     result = getData('/orders/orderFixed', data, true);
     console.log(result);
-    if (result['code'] == 200 ) {
+    if (result['Code'] == 200 ) {
       // 결제하기로 변경하기
+      if ( typeof $(this).data('nextName') != 'undefined' ) {
+        $(this).text($(this).data('nextName'));
+      }
       $(this).removeClass('order-check').addClass('order-request');
     }
     return false;

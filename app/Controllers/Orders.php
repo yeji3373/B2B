@@ -216,33 +216,6 @@ class Orders extends BaseController {
                 ->where(['order_number' => $this->request->getVar('order_number')
                         ,'orders.buyer_id' => session()->userData['buyerId']])
                 ->first();
-    echo $this->order->getLastQuery();
-    // $order = $this->order
-    //                 ->select('orders.id, orders.order_number, orders.order_amount, orders.discount_amount')
-    //                 ->select('orders.subtotal_amount, orders.order_amount, orders.discount_amount')
-    //                 ->select('orders.currency_code, orders.taxation')
-    //                 ->select('orders.payment_id, orders.address_id')
-    //                 ->select('DATE_FORMAT(orders.created_at, "%Y-%m-%d") AS orderDate')
-    //                 ->select('payment_method.payment')
-    //                 ->select('payment_method.payment_info, payment_method.bank_name, payment_method.account_no, payment_method.swift_code')
-    //                 ->select('payment_method.show_info, payment_method.has_payment_url, payment_method.payment_desc')
-    //                 ->select('buyers_address.idx AS address_id, buyers_address.consignee')
-    //                 ->select('buyers_address.region, buyers_address.country_code')
-    //                 ->select('buyers_address.streetAddr1, buyers_address.streetAddr2')
-    //                 ->select('buyers_address.city, buyers_address.zipcode')
-    //                 ->select('buyers_address.phone_code, buyers_address.phone')
-    //                 ->select('buyers_address.deleted_at')
-    //                 ->select('currency.currency_sign, currency.currency_float')
-    //                 ->select('delivery.delivery_code, SUM(delivery_price) AS delivery_price')
-    //                 ->join('payment_method', 'payment_method.id = orders.payment_id')
-    //                 ->join('buyers_address', 'buyers_address.idx = orders.address_id')
-    //                 ->join('currency', 'currency.currency_code = orders.currency_code')
-    //                 ->join('delivery', 'delivery.order_id = orders.id')
-    //                 ->where('orders.order_number', $this->request->getVar('order_number'))
-    //                 ->where('orders.buyer_id', session()->userData['buyerId'])
-    //                 ->where('payment_method.available', 1)
-    //                 ->first();
-    
     // echo $this->order->getLastQuery();
 
     if ( !empty($order) ) {

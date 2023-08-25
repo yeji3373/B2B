@@ -15,7 +15,16 @@
       "name": "Listen for Xdebug",
       "type": "php",
       "request": "launch",
-      // "port": 9003
+      "hostname": "127.0.0.8",
+      "port": 9000,
+      "serverReadyAction" : {
+        "action": "openExternally"
+      },
+      "stopOnEntry": true,
+      "xdebugSettings": { 
+        "show_hidden": 1
+      },
+      "runtimeExecutable": "C:\\php-7.4.25\\php.exe"
     },
     {
       "name": "Launch currently open script",
@@ -23,7 +32,7 @@
       "request": "launch",
       "program": "${file}",
       "cwd": "${fileDirname}",
-      "port": 0,
+      "port": 9000,
       "runtimeArgs": [
         "-dxdebug.start_with_request=yes"
       ],
@@ -40,7 +49,7 @@
         "-dxdebug.mode=debug",
         "-dxdebug.start_with_request=yes",
         "-S",
-        "localhost:0"
+        "localhost:8080"
       ],
       "program": "",
       "cwd": "${workspaceRoot}",

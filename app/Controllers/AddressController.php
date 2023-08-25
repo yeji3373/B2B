@@ -23,7 +23,7 @@ class AddressController extends BaseController {
     if ( is_null($this->request) ) {
       if ( !empty($data) ) $req = $data;
       else return NULL;
-    } else $req = $this->request->getVar();
+    } else $req = $this->request->getVar('address');
 
     $req['buyer_id'] = session()->userData['buyerId'];
 

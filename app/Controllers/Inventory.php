@@ -81,19 +81,27 @@ class Inventory extends BaseController {
     
     $cartList = $this->cart->where('buyer_id', session()->userData['buyerId'])->findAll();
 
-    if ( !empty($cartList)) {
-      $currency = $this->currency->currencyJoin()
-                      ->select('currency.*')
-                      ->select('currency_rate.cRate_idx AS currency_rate_idx
-                              , currency_rate.exchange_rate')
-                      ->where(['currency_rate.default_set' => 1])->first();
-      if ( !empty($currency) ) {
-        if ( $currency['exchange_rate'] != session()->currency['basedExchangeRate'] ) {
-          // return redirect()->to('/logout');
-        }
-      }
+    if ( !empty($cartList) ) {
+      // if ( $data['request-total-price'] <= 0 || empty($data['request-total-price']) ) {
+      //   // 주문 금액이 0이거나 작을 때.
+      //   return redirect()->to('/order')->with('error', 'Cart is empty.');
+      // }
+      // $currency = $this->currency->currencyJoin()
+      //                 ->select('currency.*')
+      //                 ->select('currency_rate.cRate_idx AS currency_rate_idx
+      //                         , currency_rate.exchange_rate')
+      //                 ->where(['currency_rate.default_set' => 1])->first();
+      // if ( !empty($currency) ) {
+      //   var_dump($currency);
+      //   echo "<br/>";
+      //   var_dump(session()->currency);
+      //   echo "<br/>";
+      //   if ( $currency['exchange_rate'] != session()->currency['basedExchangeRate'] ) {
+      //     // return redirect()->to('/logout');
+      //   }
+      // }
 
-      if ( !empty($data['address']['address_operate']) && $data['address']['address_operate'] == true ) {
+      if ( !empty($data['address']['address_operate']) ) {
         $addressId = $this->AddressController->addressConduct();
       } else {
         $addressId = $data['address']['idx'];
@@ -104,9 +112,11 @@ class Inventory extends BaseController {
         $request['order_number'] = date('Ymd', time()).sprintf('%04d', ($this->makeOrderNumber() + 1));
         $request['request_amount'] = $data['request-total-price'];
         $request['inventory_fixed_amount'] = $data['request-total-price'];
-        $request['currency_rate_idx'] = $currency['currency_rate_idx'];
-        $request['currency_code'] = $currency['currency_code'];
-        $request['idx']  = $addressId;
+        $request['currency_rate_idx'] = session()->currency['currencyId'];
+        $request['currency_code'] = session()->currency['currencyUnit'];
+        $request['address_id']  = $addressId;
+
+        // var_dump($request);
         
         // if ( $cartList['temp_order_number'] == $request['order_number'] ) {
         //   $this->order->where(['order_numeber'=> $request['order_numeber']
@@ -179,7 +189,7 @@ class Inventory extends BaseController {
         return json_encode(['code' => 500, 'Msg' => 'address 등록 오류']);
       }
     } else {
-      return redirect()->to('/order')->widthInput()->with('error', 'Cart is empty');;
+      return redirect()->to('/order')->with('error', 'Cart is empty');;
     }
   }
 
