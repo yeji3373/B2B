@@ -76,31 +76,9 @@ class Inventory extends BaseController {
     $data = $this->request->getVar();
     // print_r($data['requirement']);
     $request = [];
-
-    var_dump($data);
     
     $cartList = $this->cart->where('buyer_id', session()->userData['buyerId'])->findAll();
-
     if ( !empty($cartList) ) {
-      // if ( $data['request-total-price'] <= 0 || empty($data['request-total-price']) ) {
-      //   // 주문 금액이 0이거나 작을 때.
-      //   return redirect()->to('/order')->with('error', 'Cart is empty.');
-      // }
-      // $currency = $this->currency->currencyJoin()
-      //                 ->select('currency.*')
-      //                 ->select('currency_rate.cRate_idx AS currency_rate_idx
-      //                         , currency_rate.exchange_rate')
-      //                 ->where(['currency_rate.default_set' => 1])->first();
-      // if ( !empty($currency) ) {
-      //   var_dump($currency);
-      //   echo "<br/>";
-      //   var_dump(session()->currency);
-      //   echo "<br/>";
-      //   if ( $currency['exchange_rate'] != session()->currency['basedExchangeRate'] ) {
-      //     // return redirect()->to('/logout');
-      //   }
-      // }
-
       if ( !empty($data['address']['address_operate']) ) {
         $addressId = $this->AddressController->addressConduct();
       } else {
@@ -108,30 +86,18 @@ class Inventory extends BaseController {
       }
 
       if ( !empty($addressId) ) {
-        $request['buyer_id'] = session()->userData['buyerId'];
-        $request['order_number'] = date('Ymd', time()).sprintf('%04d', ($this->makeOrderNumber() + 1));
-        $request['request_amount'] = $data['request-total-price'];
-        $request['inventory_fixed_amount'] = $data['request-total-price'];
-        $request['currency_rate_idx'] = session()->currency['currencyId'];
-        $request['currency_code'] = session()->currency['currencyUnit'];
-        $request['address_id']  = $addressId;
+        $requestPrice = $this->CartController->getCartTotalPrice();
+        if ( !empty($requestPrice) ) {
+          $request['buyer_id'] = session()->userData['buyerId'];
+          $request['order_number'] = date('Ymd', time()).sprintf('%04d', ($this->makeOrderNumber() + 1));
+          $request['request_amount'] = $requestPrice['order_price_total'];
+          $request['inventory_fixed_amount'] = $requestPrice['order_price_total'];
+          $request['currency_rate_idx'] = session()->currency['currencyId'];
+          $request['currency_code'] = session()->currency['currencyUnit'];
+          $request['address_id']  = $addressId;
 
-        // var_dump($request);
+          var_dump($request);
         
-        // if ( $cartList['temp_order_number'] == $request['order_number'] ) {
-        //   $this->order->where(['order_numeber'=> $request['order_numeber']
-        //                       , 'buyer_id' => $request['buyer_id']
-        //                       , 'available' => 0 ])->first();
-          
-        // } else {
-        //   $this->cart
-        //       ->where('buyer_id', session()->userData['buyerId'])
-        //       ->set(['request_order_date' => 'NOW()'
-        //             , 'temp_order_number' => $request['order_number']])
-        //       ->update();
-        // }
-
-        // if ( $this->cart->affectedRows() ) {
           if ( $this->order->save($request) ) {
             $orderId = $this->order->getInsertID();
             $this->orderNumber = $request['order_number'];
@@ -145,6 +111,11 @@ class Inventory extends BaseController {
                     if ( $this->packagingDetail->save(['packaging_id' => $this->packaging->getInsertID()
                                                   , 'status_id' => 1
                                                   , 'in_progress' => 1]) ) :
+                      if ( $this->order->save(['id'=> $orderId, 'available'=> 1]) ) {  
+                      } else {
+                        // order 활성화 중에 오류 발생
+                        return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
+                      }
                     else :
                       //  packagingDetail save error
                       return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
@@ -160,21 +131,6 @@ class Inventory extends BaseController {
                 // delivery save error
                 return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
               }
-
-              // $orderStatus = $this->orderStatus->where(['available' => 1, 'default' => 1])->first();
-              // if ( !empty($orderStatus) ) $orderStatusId = $orderStatus['status_id'];
-              // else $orderStatusId = 1;
-
-              // if ( !empty($orderStatus) && !empty($orderStatusId) ) {
-                if ( $this->order->save(['id'=> $orderId, 'available'=> 1]) ) {  
-                } else {
-                  // order 활성화 중에 오류 발생
-                  return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
-                }
-              // } else {
-              //   // orderStatus가 없어서 order 활성화 안됨
-              //   return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
-              // }
             } else {
               // detail 입력중에 오류 발생
               return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
@@ -184,7 +140,7 @@ class Inventory extends BaseController {
           } else {
             return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
           }
-        // }
+        }
       } else {
         return json_encode(['code' => 500, 'Msg' => 'address 등록 오류']);
       }

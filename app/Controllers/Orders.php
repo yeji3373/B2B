@@ -76,7 +76,7 @@ class Orders extends BaseController {
       $this->data['paymentMethod'] = $this->getPaymentMethod();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
-      $this->data['orderRequirement'] = $this->getRequirement();
+      // $this->data['orderRequirement'] = $this->getRequirement(); // all requirement request
       // $this->data['shippinCost'] = $this->getTotalShippingCost();
       // $this->data['buyer'] = $this->getBuyer();
       // $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
