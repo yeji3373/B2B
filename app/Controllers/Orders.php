@@ -58,6 +58,7 @@ class Orders extends BaseController {
   }
 
   public function index() {    
+
     $this->data['orders'] = $this->getOrderList();
 
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
@@ -77,6 +78,8 @@ class Orders extends BaseController {
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
       // $this->data['orderRequirement'] = $this->getRequirement(); // all requirement request
+      $this->data['orderRequirement'] = $this->requirement->getRequirementOptions($this->orderId);
+      // print_r($this->data['orderRequirement']);
       // $this->data['shippinCost'] = $this->getTotalShippingCost();
       // $this->data['buyer'] = $this->getBuyer();
       // $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
@@ -263,7 +266,10 @@ class Orders extends BaseController {
                     ->join('margin_rate', 'margin_rate.idx = orders_detail.margin_rate_id')
                     ->join('margin', 'margin.idx = margin_rate.margin_idx')
                     ->join('currency_rate', 'currency_rate.cRate_idx = orders.calc_currency_rate_id', 'left outer')
-                    ->join('( SELECT order_id, order_detail_id, GROUP_CONCAT(CONCAT(requirement_id,",",requirement_en,",",requirement_reply) SEPARATOR "|") AS requirement_reply
+                    ->join('( SELECT order_id, 
+                              order_detail_id,
+                              GROUP_CONCAT(CONCAT(requirement_id,",",requirement_en,",",requirement_reply) SEPARATOR "|") AS requirement_reply,
+                              requirement_option_ids
                               FROM requirement_request
                                 JOIN requirement ON requirement.idx = requirement_request.requirement_id
                               GROUP BY requirement_request.order_detail_id 
@@ -278,25 +284,22 @@ class Orders extends BaseController {
     return $orderDetails;
   }
   //요구사항
-  public function getRequirement() {
-    $orderRequirement = $this->requirement
-                        ->select('requirement_request.requirement_detail')
-                        ->select('requirement_request.order_detail_id')
-                        ->select('requirement_request.order_id')
-                        ->select('requirement_request.requirement_reply')
-                        ->select('requirement.requirement_en')
-                        ->select('requirement_request.requirement_id')
-                        ->join('requirement','requirement.idx = requirement_request.requirement_id')
-                        ->where("requirement_request.order_id = {$this->orderId}")
-                        ->orderby('requirement_request.order_detail_id')
-                        ->findAll();
-                      // echo $this->requirement->getLastQuery();
-    return $orderRequirement;
-  }
+  // public function getRequirement() {
+  //   $orderRequirement = $this->requirement-> requirementRequest($this->orderId)->getResultArray();
+  //   $requirementOps = [];
+  //   foreach($orderRequirement as $i => $detail) {
+  //     if(!empty($detail['requirement_option_ids'])){
+  //       $requirementOps['requirement_id'] = $detail['requirement_id'];
+  //       array_push($requirementOps, $detail['requirement_option_ids']);
+  //       $requirementOps['idx'] = $detail['requirement_option_ids']; 
+  //     }
+  //   }
+  //   return $orderRequirement;
+  // }
 
   public function getOrderReceipts() {
     $addWhere = [];
-    // if ( !is_null($this->request->getVar('receipt_id')) ) {
+    // if ( !is_null($this->request->getVar('receipt_id ')) ) {
     //   $addWhere['orders_receipt.receipt_id'] = $this->request->getVar('receipt_id');
     // }
     if ( !is_null($this->request->getVar('receipt_type')) ) {

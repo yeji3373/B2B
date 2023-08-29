@@ -18,10 +18,21 @@ class RequirementRequestModel extends Model {
   protected $updateField = 'updated_at';
   protected $dateFormat = 'datetime';
 
-  function test() {
-    $result = $this->where('order_id', 1)->findAll();
+  function getRequirementOptions($orderId = NULL) {
+    $result = $this
+              ->select('requirement_request.requirement_detail')
+              ->select('requirement_request.order_detail_id')
+              ->select('requirement_request.order_id')
+              ->select('requirement_request.requirement_reply')
+              ->select('requirement.requirement_en')
+              ->select('requirement_request.requirement_id')
+              ->select('requirement_request.requirement_option_ids')
+              ->join('requirement', 'requirement.idx = requirement_request.requirement_id')
+              ->where('order_id', $orderId)
+              ->orderby('requirement_request.order_detail_id')
+              ->findAll();
 
-    foreach($result as $a ) {
+    foreach($result as $j => $a ) {
       if ( !empty($a['requirement_option_ids']) ) :
         $ids = explode(",", $a['requirement_option_ids']);
         $temp = NULL;
@@ -29,20 +40,46 @@ class RequirementRequestModel extends Model {
           if ( $i > 0 ) :
             $temp .= ", ".$id;
           else :
-            $temp .= $id;
+            $temp = $id;
           endif;          
         endforeach;
 
-        echo $temp;
+        // echo $temp;
 
+        // $options = $this->db->query(
+        //           "SELECT requirement.*
+        //           FROM requirement_option
+        //             join requirement on requirement.idx = requirement_option.requirement_idx
+        //           WHERE requirement_option.idx IN ({$temp})")
+        //           ->getResultArray();
         $options = $this->db->query(
-                  "SELECT *
+                  "SELECT requirement_option.idx,
+                          requirement_option.requirement_idx,
+                          option_name,
+                          option_name_en
                   FROM requirement_option
-                  WHERE idx IN ({$temp})")
+                  WHERE requirement_option.idx IN ({$temp})")
                   ->getResultArray();
+        
+        $result[$j]['options'] = $options;
       endif;
     }
+    return $result;
+  }
 
-    return $options;
+  public function requirementRequest($orderId = NULL) {
+    return $this->db->query(
+      "SELECT requirement_request.requirement_detail,
+              requirement_request.order_detail_id,
+              requirement_request.order_id,
+              requirement_request.requirement_reply,
+              requirement.requirement_en,
+              requirement_request.requirement_id,
+              requirement_option_ids
+      FROM requirement_request
+      JOIN requirement ON requirement.idx = requirement_request.requirement_id
+      WHERE requirement_request.order_id = {$orderId}
+      ORDER BY requirement_request.order_detail_id"
+    );
   }
 }

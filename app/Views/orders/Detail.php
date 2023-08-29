@@ -111,7 +111,7 @@
             ?>
           </div>
         </div>
-        <?php 
+        <!-- <?php 
           if ( !empty($nowPackStatus) && $nowPackStatus['order_by'] > 5 ) : 
             if ( !empty($product['requirement_reply']) ) : 
             $requirementDetail = explode("|", $product['requirement_reply']);
@@ -135,7 +135,35 @@
               endforeach;
             endif;            
             endif;
-          endif; ?>
+          endif; ?> -->
+        <?php 
+          // if ( !empty($nowPackStatus) && $nowPackStatus['order_by'] > 5 ) : 
+          foreach($orderRequirement AS $r) :
+            if($product['detail_id'] == $r['order_detail_id']) :
+              if(!empty($r['requirement_reply'])) :
+                echo "<div class='d-flex flex-column'>";
+                echo "<div class='f-flex flex-row'>";
+                echo "<label class='w-20'>".$r['requirement_en']."</label>";
+                echo "<span>".$r['requirement_reply']."</span>";
+                echo "</div>";
+                echo "</div>";
+              endif;
+              if(isset($r['options'])) :
+                echo "<div class='d-flex flex-column'>";
+                echo "<div class='f-flex flex-row'>";
+                echo "<label class='w-20'>Options</label>";
+                foreach($r['options'] AS $o) :
+                  echo "<label class='margin-right-1'>";
+                  echo "<input type='radio' name='option' value='".$o['idx']."'>".$o['option_name']."</input>";
+                  echo "</label>";
+                endforeach;
+                echo "<button class='btn btn-primary w-10 p-1'>confirm</button>";
+                echo "</div>";
+                echo "</div>";
+              endif;
+            endif;
+          endforeach;
+          // endif;?>
       <?php else: ?>
         <div class='d-flex flex-row'>
           <label class='w-20'>주문상태</label>
