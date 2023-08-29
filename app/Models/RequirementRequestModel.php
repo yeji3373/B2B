@@ -17,4 +17,32 @@ class RequirementRequestModel extends Model {
   protected $createdField = 'created_at';
   protected $updateField = 'updated_at';
   protected $dateFormat = 'datetime';
+
+  function test() {
+    $result = $this->where('order_id', 1)->findAll();
+
+    foreach($result as $a ) {
+      if ( !empty($a['requirement_option_ids']) ) :
+        $ids = explode(",", $a['requirement_option_ids']);
+        $temp = NULL;
+        foreach($ids AS $i => $id) :
+          if ( $i > 0 ) :
+            $temp .= ", ".$id;
+          else :
+            $temp .= $id;
+          endif;          
+        endforeach;
+
+        echo $temp;
+
+        $options = $this->db->query(
+                  "SELECT *
+                  FROM requirement_option
+                  WHERE idx IN ({$temp})")
+                  ->getResultArray();
+      endif;
+    }
+
+    return $options;
+  }
 }
