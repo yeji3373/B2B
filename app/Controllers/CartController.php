@@ -2,6 +2,8 @@
 namespace App\Controllers;
 
 use App\Models\CartModel;
+use App\Models\ProductModel;
+use App\Models\StockModel;
 
 use CodeIgniter\I18n\Time;
 
@@ -17,19 +19,47 @@ class CartController extends BaseController {
   public function __construct() {
     helper('date');
     $this->cart = new CartModel();
+    $this->product = new ProductModel();
+    $this->stocks = new StockModel();
     $this->checkDate = date_format(new Time('-7 days'), 'Y-m-d 23:59:59');
   }
 
-  public function getCartList() {
-    $cartList = $this->cart
-                    ->cartJoin()
-                    ->select('cart.margin_section_id, cart.dis_section_margin_rate_id')
-                    ->select($this->calcRetailPrice().' AS retail_price')
-                    ->select($this->calcSupplyPrice().' AS prd_price')
-                    ->select("( {$this->calcSupplyPrice()} * cart.order_qty ) AS order_price")
-                    ->select(" IF( cart.apply_discount = 1, ({$this->calcSupplyPriceCompare()} * cart.order_qty), 0) AS order_discount_price")
-                    ->select(" IF( cart.apply_discount = 1, ({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}), 0) AS dis_prd_price");
-  
+  public function getCartList($params = []) {
+    $query['select'] = ", cart.idx AS cart_idx, cart.chkd, cart.order_qty";;
+    $query['from'] = ", (SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart";
+    $query['where'] = " AND cart.prd_id = product.id";
+    $query['orderby'] = ", cart.prd_id ASC, cart.idx ASC";
+    $query['limit'] = NULL;
+    $add = NULL;
+    if ( !empty($params) ) {
+      if ( !empty($params['select']) ) $query['select'] .= $params['select'];
+      if ( !empty($params['from']) ) $query['from'] .= $params['from'];
+      if ( !empty($params['where']) ) $query['where'] .= $params['where'];
+      if ( !empty($params['orderby']) ) $query['orderby'] .= $params['orderby'];
+      if ( !empty($params['limit']) ) $query['limit'] .= $params['limit'];
+    } else array_merge($query, $params);
+
+    if ( !empty($query['select']) ) {
+      $add = ", ";
+    }
+    // $query['from'] .= ",  (SELECT stocks.id AS stocks_id
+    //                           , stocks.prd_id
+    //                           , stocks.order_base
+    //                           , stocks_detail.supplied_qty
+    //                           , stocks_detail.supplied_qty AS available_stock
+    //                       FROM stocks
+    //                         , ( SELECT id, stocks_id, SUM(supplied_qty) AS supplied_qty FROM stocks_detail WHERE available = 1 GROUP BY stocks_id ) AS stocks_detail
+    //                       WHERE stocks.id = stocks_detail.stocks_id) AS stocks";
+    $query['select'] .= ", ".$this->calcRetailPrice().' AS retail_price, '
+                      .$this->calcSupplyPrice().' AS product_price, '
+                      .' ('.$this->calcSupplyPrice().' * order_qty) AS order_price';
+
+    $cartList = $this->product->getProductQuery($query);
+    // if ( !empty($this->stocks->getStocks()) ) {
+    //   // foreach($cartList AS $i => $cart) {
+    //   //   $cartList[$i] = array_merge($cart, $this->stocks->getStocks());
+    //   // }
+    // }
     return $cartList;
   }
 

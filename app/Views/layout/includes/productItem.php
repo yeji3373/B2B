@@ -99,7 +99,7 @@
       <div class='tag-group d-flex flex-row flex-nowrap'>
         <?php
           echo "<span class='tag-item on-sale'>".lang('Order.onsale')."</span>";
-          if ( $product['taxation'] == 1 ) {
+          if ( !empty($product['taxation']) && $product['taxation'] == 1 ) {
             echo "<span class='tag-item taxation'>zero tax</span>";
           }
           // echo ($product['box'] == 1 ? "<span class='tag-item inTheBox'>".$product['in_the_box']."pcs/Box</span>" : "");
@@ -123,9 +123,9 @@
         <input type='hidden' name='brand_id' value='<?=$product['brand_id']?>'>
         <input type='hidden' name='prd_id' value='<?=$product['id']?>'>
         <input type='hidden' name='prd_price' value='<?=$product['product_price']?>'>
-        <input type='hidden' name='margin_section_id' value='<?=$product['margin_rate_id']?>'>
-        <input type='hidden' name='margin_section' value='<?=$product['margin_level']?>'>
-        <input type='hidden' name='onlyZeroTax' value='<?=$product['taxation']?>'>
+        <!-- <input type='hidden' name='margin_section_id' value='<?//=$product['margin_rate_id']?>'> -->
+        <!-- <input type='hidden' name='margin_section' value='<?//=$product['margin_level']?>'> -->
+        <!-- <input type='hidden' name='onlyZeroTax' value='<?//=$product['taxation']?>'> -->
         <input type='hidden' name='bskAction' value='add'>
         <input type='hidden' name='order_qty' value='<?=empty($product['moq']) ? 10 : $product['moq']?>'>
         <?php if ( empty($product['cart_idx']) ) : ?>

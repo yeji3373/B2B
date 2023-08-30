@@ -53,9 +53,7 @@ class Order extends BaseController
                               'js' => ['/address.js', '/product.js', '/inventory.js', '/stock.js']];
   }
 
-  public function __output() {
-    
-  }
+  public function __output() {}
 
   public function index() {
     $this->CartController->initialCartList(); // 카트 초기화
@@ -84,15 +82,21 @@ class Order extends BaseController
     $offset = 30;
     $start = empty($params['page']) ? 0 : ((($params['page'] - 1) * 1) * $offset);
 
-    $products = $this->getProduct($params)
-                    ->select('cart.idx AS cart_idx')
-                    ->join('( SELECT * FROM cart WHERE buyer_id = "'.session()->userData['buyerId'].'" GROUP BY prd_id) AS cart'
-                          , 'cart.prd_id = product.id'
-                          , 'left outer')
-                    ->where('margin.margin_level', $buyer['margin_level'])
-                    ->where('supply_price.margin_level', $buyer['margin_level'])
-                    ->orderBy('brand.brand_id ASC, product.id ASC')
-                    ->findAll($offset, $start);
+    $query['select'] = ','.$this->CartController->calcRetailPrice().' AS retail_price, '
+                    .$this->CartController->calcSupplyPrice().' AS product_price';
+    $query['limit'] = " limit $start, $offset";
+    $products = $this->products->getProductQuery($query);
+
+    // $products = $this->getProduct($params)
+    //                 ->select('cart.idx AS cart_idx')
+    //                 ->join('( SELECT * FROM cart WHERE buyer_id = "'.session()->userData['buyerId'].'" GROUP BY prd_id) AS cart'
+    //                       , 'cart.prd_id = product.id'
+    //                       , 'left outer')
+    //                 // ->where('margin.margin_level', $buyer['margin_level'])
+    //                 ->where('supply_price.margin_level', $buyer['margin_level'])
+    //                 ->orderBy('brand.brand_id ASC, product.id ASC')
+    //                 ->findAll($offset, $start);
+
     $this->data['products'] = $products;
 
     if ( $this->request->isAJAX() ) {
@@ -112,18 +116,13 @@ class Order extends BaseController
     $where = [];
     
     if ( !empty(session()->userData) ) {
-      if ( !empty($this->searchData['cart_id']) ) {
-        $where = ['cart.idx' => $this->searchData['cart_id']];
-      }
-      // $userIdx = $this->getUserIdx();
-      $cartList = $this->CartController
-                        ->getCartList()
-                        ->where('cart.buyer_id', session()->userData['buyerId'])
-                        ->where('supply_price.margin_level = cart.prd_section')
-                        // ->where('cart.updated_at >=', $this->CartController->checkDate)
-                        ->orderBy('cart.prd_id ASC, cart.idx ASC')
-                        ->where($where)
-                        ->findAll();
+      // if ( !empty($this->searchData['cart_id']) ) {
+      //   array_push($where, "cart.idx = $this->searchData['cart_id']");
+      // }
+      // $query['where'] = count($where) == 1 ? " AND ".$where[0] : JOIN(" AND ", $where);
+
+      // $cartList = $this->CartController->getCartList($query);
+      $cartList = $this->CartController->getCartList();
     }
     // // $this->data['cartMinimize'] = false; // cart data 최소화해서 보여줌 여부. default false. false: 전체 다 보여주기;
 
@@ -439,109 +438,17 @@ class Order extends BaseController
     }
 
     $whereCondition = product_query_return($params);
+    $query['where'] = $whereCondition;
+    // $product = $this->products->getProductQuery($query);
     
-    $products = $this->products->productJoin()
-              ->select($this->CartController->calcRetailPrice().' AS retail_price')
-              ->select($this->CartController->calcSupplyPrice().' AS product_price')
-              ->join('product_opts', 'product_opts.prd_id = product.id', 'left outer');
+    // $products = $this->products->productJoin()
+    //           ->select($this->CartController->calcRetailPrice().' AS retail_price')
+    //           ->select($this->CartController->calcSupplyPrice().' AS product_price')
+    //           ->join('product_opts', 'product_opts.prd_id = product.id', 'left outer');
 
-    if ( !empty($whereCondition) ) $products->where(join(" AND ", $whereCondition));
+    // if ( !empty($whereCondition) ) $products->where(join(" AND ", $whereCondition));
     return $products;  
   }
-
-  // public function getCartList() {
-  //   $cartList = $this->cart->cartJoin()
-  //                         ->select('cart.margin_section_id, cart.dis_section_margin_rate_id')
-  //                         ->select($this->calcRetailPrice().' AS retail_price')
-  //                         ->select($this->calcSupplyPrice().' AS prd_price')
-  //                         ->select("( {$this->calcSupplyPrice()} * cart.order_qty ) AS order_price")
-  //                         // ->select("IF ( `cart`.`apply_discount` = 1, (({$this->calcSupplyPrice()} * `cart`.`dis_rate`) * `cart`.`order_qty`), 0 ) AS `order_discount_price`")
-  //                         ->select(" IF( cart.apply_discount = 1, ({$this->calcSupplyPriceCompare()} * cart.order_qty), 0) AS order_discount_price")
-  //                         // ->select("IF ( `cart`.`apply_discount` = 1, ({$this->calcSupplyPrice()} * (1 - `cart`.`dis_rate`)), 0 ) AS `dis_prd_price`")
-  //                         ->select(" IF( cart.apply_discount = 1, ({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}), 0) AS dis_prd_price")
-  //                         ->where('cart.buyer_id', session()->userData['buyerId'])
-  //                         ->where('supply_price.margin_level = cart.prd_section')
-  //                         ->where('cart.updated_at >=', new Time('-7 days'))
-  //                         ->orderBy('cart.prd_id ASC, cart.idx ASC');    
-  //   return $cartList;
-  // }
-
-  // public function calcRetailPrice() {
-  //   $select = null;
-  //   $exchangeRate = session()->currency['exchangeRate'];
-  //   $basedExchangeRate = session()->currency['basedExchangeRate'];
-
-  //   if ( !empty($exchangeRate) && ($exchangeRate != $basedExchangeRate) ) {
-  //     $basedExchangeRate = $exchangeRate;
-  //   }
-    
-  //   $select = "ROUND((product_price.retail_price / {$basedExchangeRate}), ".session()->currency['currencyFloat'].")";
-   
-  //   return $select;
-  // }
-
-  // public function calcSupplyPrice() {
-  //   $select = null;
-  //   $exchangeRate = session()->currency['exchangeRate'];
-  //   $basedExchangeRate = session()->currency['basedExchangeRate'];
-
-  //   if ( !empty($exchangeRate) && ($exchangeRate != $basedExchangeRate) ) { // 환율 우대 받은 값이 있을 때 값이 다르면 환율 적용된 값을 최우선으로 처리
-  //     $basedExchangeRate = $exchangeRate;
-  //   }
-  //   $select = "ROUND((supply_price.price / {$basedExchangeRate}), ".session()->currency['currencyFloat'].")";
-  //   return $select;
-  // }
-
-  // public function calcSupplyPriceCompare($condition = NULL) {
-  //   $select = null;
-  //   $exchangeRate = session()->currency['exchangeRate'];
-  //   $basedExchangeRate = session()->currency['basedExchangeRate'];
-
-  //   if ( !empty($exchangeRate) && ($exchangeRate != $basedExchangeRate) ) { // 환율 우대 받은 값이 있을 때 값이 다르면 환율 적용된 값을 최우선으로 처리
-  //     $basedExchangeRate = $exchangeRate;
-  //   }
-  //   $select = "ROUND((supply_price_compare.price / {$basedExchangeRate}), ".session()->currency['currencyFloat'].")";
-  //   return $select;
-  // }
-
-  // public function getCartTotalPrice( $where = array(), $exchange = 1 ) {
-  //   $whereCondition = array();
-  //   $cart = $this->cart->cartJoin();
-  //   if ( count($where) > 0 ) $whereCondition = $where;
-  //   if ( $exchange > 1 ) :
-  //     $cart->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}) AS `order_price_total`")
-  //         ->select("IF ( `cart`.`apply_discount` = 1, 
-  //                         ROUND((SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`) * {$exchange}), 0),
-  //                         0 
-  //                       ) AS `order_discount_total`")
-  //         ->select("IF ( `cart`.`apply_discount` = 1, 
-  //                         ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchange}), 0),
-  //                         ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchange}), 0)
-  //                       ) AS order_subTotal");
-  //   else : 
-  //     $cart->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_price_total`")
-  //     ->select("IF ( `cart`.`apply_discount` = 1, 
-  //                     SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`),
-  //                     0 
-  //                   ) AS `order_discount_total`")
-  //     ->select("IF ( `cart`.`apply_discount` = 1, 
-  //                     SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`),
-  //                     SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`)
-  //                   ) AS `order_subTotal`");
-  //   endif;
-
-  //   $cart->select('cart.apply_discount AS applyDiscount')
-  //         ->where('cart.buyer_id', session()->userData['buyerId'])
-  //         ->where('supply_price.margin_level = cart.prd_section')
-  //         ->where($whereCondition)
-  //         ->groupBy('cart.buyer_id');
-
-  //   $cartSubTotal = $cart->first();
-
-  //   if ( empty($cartSubTotal) ) {
-  //     return NULL;
-  //   } else return $cartSubTotal;
-  // }
 
   public function getUserIdx() {
     $userIdx = $this->users->getUserIndex(session()->userData['id']);
