@@ -57,10 +57,8 @@ class Orders extends BaseController {
 
   }
 
-  public function index() {    
-
+  public function index() {
     $this->data['orders'] = $this->getOrderList();
-
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
     if ( empty($this->request->getGet('order_number')) ) {
       $this->data['statistics'] = $this->ordersStatistics();

@@ -25,4 +25,18 @@ class StockModel extends Model {
 
     return $this;
   }
+
+  public function getStocks() {
+    $stocks = $this->db
+                ->query("SELECT stocks.id AS stocks_id
+                                , stocks.prd_id
+                                , stocks.order_base
+                                , stocks_detail.supplied_qty
+                                , stocks_detail.supplied_qty AS available_stock
+                        FROM stocks
+                              , ( SELECT id, stocks_id, SUM(supplied_qty) AS supplied_qty FROM stocks_detail WHERE available = 1 GROUP BY stocks_id ) AS stocks_detail
+                        WHERE stocks.id = stocks_detail.stocks_id")
+                ->getResultArray();
+    return $stocks;
+  }
 }

@@ -157,6 +157,7 @@ class LoginController extends Controller
 		    'email' 		    => $user['email'],
         'buyerId'       => $buyer['id'],
         'buyerName'     => $buyer['name'],
+        'buyerMargin'   => $buyer['margin_level'],
         'depositRate'   => $buyer['deposit_rate'],
 		]);
     return redirect()->to('/');

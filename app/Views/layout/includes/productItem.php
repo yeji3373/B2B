@@ -99,7 +99,7 @@
       <div class='tag-group d-flex flex-row flex-nowrap'>
         <?php
           echo "<span class='tag-item on-sale'>".lang('Order.onsale')."</span>";
-          if ( $product['taxation'] == 1 ) {
+          if ( !empty($product['taxation']) && $product['taxation'] == 1 ) {
             echo "<span class='tag-item taxation'>zero tax</span>";
           }
           // echo ($product['box'] == 1 ? "<span class='tag-item inTheBox'>".$product['in_the_box']."pcs/Box</span>" : "");
@@ -117,18 +117,23 @@
         echo number_format($product['product_price'], session()->currency['currencyFloat']);
       ?>
     </div>
-    <!-- <div>SPQ <?//=$product['spq']?></div> -->
     <div class='d-flex flex-column align-items-end'>
       <form method='post'>
         <input type='hidden' name='brand_id' value='<?=$product['brand_id']?>'>
         <input type='hidden' name='prd_id' value='<?=$product['id']?>'>
         <input type='hidden' name='prd_price' value='<?=$product['product_price']?>'>
-        <input type='hidden' name='margin_section_id' value='<?=$product['margin_rate_id']?>'>
-        <input type='hidden' name='margin_section' value='<?=$product['margin_level']?>'>
-        <input type='hidden' name='onlyZeroTax' value='<?=$product['taxation']?>'>
-        <input type='hidden' name='bskAction' value='add'>
-        <input type='hidden' name='order_qty' value='<?=empty($product['moq']) ? 10 : $product['moq']?>'>
-        <?php if ( empty($product['cart_idx']) ) : ?>
+        <!-- <input type='hidden' name='order_qty' value='<?//=empty($product['moq']) ? 10 : $product['moq']?>'> -->
+        <?php 
+        $hasCart = false;
+        if ( !empty($carts) ) :           
+          foreach( $carts AS $cart ) :
+            if ( $cart['id'] == $product['id'] ) : 
+              $hasCart = true; 
+              $cartId = $cart['cart_idx'];
+            endif;
+          endforeach;
+        endif; ?>
+        <?php if ( !$hasCart ) : ?>
         <button class='btn btn-sm order-req' 
               data-prd-id='<?=$product['id']?>'
               data-add-class='bsk-del-btn' 
@@ -137,7 +142,7 @@
           <?=lang('Order.selectBtn')?>
         </button>
         <?php else : ?>
-        <input type='hidden' class='cart_idx' value='<?=$product['cart_idx']?>'>
+        <input type='hidden' class='cart_idx' value='<?=$cartId?>'>
         <button class='btn btn-sm bsk-del-btn' 
               data-prd-id='<?=$product['id']?>' 
               data-add-class='order-req' 

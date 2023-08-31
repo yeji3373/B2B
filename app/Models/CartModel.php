@@ -11,11 +11,8 @@ class CartModel extends Model {
 
   protected $allowedFields = [
     'buyer_id', 'brand_id', 'prd_id', 'temp_order_number', 'request_order_date',
-    'stock_req', 'stock_req_parent',
-    'onlyZeroTax', 'order_qty', 'prd_section','dis_prd_price', 'dis_price', 
-    'dis_section', 'dis_rate', 'apply_discount',
-    'chkd', 'product_price_idx', 'margin_section_id', 
-    'dis_section_margin_rate_id' // 할인 적용될 마진율 id
+    'onlyZeroTax', 'order_qty', 'prd_section',
+    'chkd', 'product_price_idx', 'margin_section_id'
   ];
 
 
@@ -26,10 +23,8 @@ class CartModel extends Model {
 
   public function cartJoin() {
     $this->select('cart.idx AS cart_idx,
-                  cart.order_qty, cart.prd_section, cart.dis_section,
-                  cart.dis_rate, cart.apply_discount, cart.onlyZeroTax,
-                  cart.chkd, cart.stock_req, cart.stock_req_parent,
-                  cart.updated_at')
+                  cart.order_qty, cart.prd_section, cart.onlyZeroTax,
+                  cart.chkd, cart.updated_at')
         ->select('product.*')
         ->select('brand.brand_name, brand.lead_time_min, brand.lead_time_max,
                   brand.brand_logo_src, brand.own_brand, brand.taxation')
@@ -55,7 +50,7 @@ class CartModel extends Model {
           ->join('brand', 'brand.brand_id = product.brand_id')
           ->join('product_price', 'product_price.product_idx = product.id')
           ->join('supply_price', 'supply_price.product_price_idx = product_price.idx AND supply_price.available = 1', 'left outer')
-          ->join('(SELECT idx, product_price_idx, margin_level, price FROM supply_price) AS supply_price_compare', 'supply_price_compare.product_price_idx = product_price.idx AND supply_price_compare.margin_level = cart.dis_section', 'left outer')
+          // ->join('(SELECT idx, product_price_idx, margin_level, price FROM supply_price) AS supply_price_compare', 'supply_price_compare.product_price_idx = product_price.idx AND supply_price_compare.margin_level = cart.dis_section', 'left outer')
           ->join('product_spq', 'product_spq.product_idx = product.id', 'left outer')
           ->join('margin_rate', 'margin_rate.brand_id = product.brand_id')
           ->join('margin', '(margin.idx = margin_rate.margin_idx AND margin.margin_level = buyers.margin_level)')

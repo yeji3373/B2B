@@ -9,8 +9,7 @@
           <div class='name-group'>
             <span class='brand_name'><?=$cart['brand_name']?></span>
             <span class='product_name'><?=$cart['name_en'].' '.$cart['spec']?></span>
-          </div>
-          
+          </div>          
           <?php if ( $cart['type_en'] != "" ) : ?>
           <div class='type'>
             <label class='item-name'><?=lang('Order.productType')?> : </label>
@@ -73,18 +72,9 @@
               <span>
                 <?php 
                   echo session()->currency['currencySign'];
-                  echo number_format($cart['prd_price'], session()->currency['currencyFloat']);
+                  echo number_format($cart['product_price'], session()->currency['currencyFloat']);
                 ?>
               </span>
-              <?php
-                // if ( $cart['apply_discount'] == 1 && $cart['dis_prd_price'] > 0) {
-                if ( $cart['apply_discount'] == 1 && $cart['dis_prd_price'] >= 0) {
-                  echo "<span class='unit-discount-price ps-1 text-danger'>";
-                  echo "-".session()->currency['currencySign'].number_format($cart['dis_prd_price'], session()->currency['currencyFloat']);
-                  // echo lang('Order.off', [((1 - $cart['dis_rate']) * 100)]);
-                  echo "</span>";
-                }
-              ?>
             </div>
           </div>
           
@@ -110,7 +100,7 @@
           <div class='product-info-item stock'>
             <label class='item-name'>Stock</label>
             <span>
-              <?php if ( $cart['available_stock'] > 0 && empty($cart['stock_req'])) : ?>
+              <?php if ( !empty($cart['available_stock']) && ($cart['available_stock'] > 0 && empty($cart['stock_req']))) : ?>
               <?=number_format($cart['available_stock'])?>
               <?php else:
                 // echo lang('Order.noStock'); 
@@ -129,45 +119,27 @@
         <input type='hidden' name='prd_id' value='<?=$cart['id']?>'>
         <input type='hidden' name='brd_id' value='<?=$cart['brand_id']?>'>
         <input type='hidden' name='cart_idx' value='<?=$cart['cart_idx']?>'>
-        <input type='hidden' name='prd_price' value='<?=$cart['prd_price']?>'>
+        <input type='hidden' name='prd_price' value='<?=$cart['product_price']?>'>
         <input type='hidden' name='prd-total-price' value='<?=$cart['order_price']?>'>
         <input type='hidden' name='op-code' value='<?=$cart['calc_code']?>'>
         <input type='hidden' name='op-val' value='<?=$cart['calc_unit']?>'>
         <input type='hidden' name='order_qty' value='<?=$cart['moq']?>'> <!-- qty stand value -->
-        <input type='hidden' name='qty-maximum-val' value='<?=empty($cart['stock_req']) ? $cart['available_stock'] : ''?>'>
-        <?php if ( !empty($cart['stock_req']) && $cart['stock_req'] == 1 ) : ?>
-        <input type='hidden' class='parentId' value='<?=$cart['stock_req_parent']?>'>
-        <?php endif ?>
+        <!-- <input type='hidden' name='qty-maximum-val' value='<?//=!empty($cart['stock_req']) ? $cart['available_stock'] : ''?>'> -->
 
         <div class='btn btn-close border-0 end-0 position-absolute top-0 bsk-del-btn'></div>
-        <?php if ( empty($cart['stock_req']) && ($cart['available_stock'] > 0 && ($cart['available_stock'] - explode(',', $cart['order_qty'])[0]) <= 0 )) : ?>
-          <?php if ( empty($cart['stock_req_parent']) ) : ?>
-          <input type='hidden' name='stock_req' value='1'>
-          <div class='btn btn-sm w-100 stock-req' data-prd-id="<?=$cart['id']?>"><?=lang('Order.stockRequestBtn')?></div>
-          <?php else : ?>
-          <div class='btn btn-sm w-100 stock-req-cancel' data-prd-id="<?=$cart['id']?>" data-child-id='<?=$cart['stock_req_parent']?>'><?=lang('Order.stockReqCancelBtn')?></div>
-          <?php endif ?>
-        <?php endif ?>
         <div class='cart-qty-group'>
           <div class='d-flex flex-row justify-content-center align-items-center flex-nowrap border mx-auto mb-2 w-100 qty-group'>          
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='-'>-</div>
-            <!-- <input type='text' value='$cart['order_qty'] > $cart['available_stock'] ? $cart['available_stock'] : $cart['order_qty']' class='w-50 border-0 border-start border-end rounded-0 qty-spq'> -->
             <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq'>
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
           </div>
           <div class='p-1 mb-1 text-end btn /*btn-link*/ btn-dark qty-change-btn'><?=lang('Order.changeQtyBtn')?></div>
         </div>
         <div class='text-end price-group'>
-          <div class='<?=$cart['apply_discount'] == 1 ? 'text-decoration-line-through': ''?>'>
+          <div>
             <?php echo session()->currency['currencySign']?>
             <span class='prd-item-total-price'><?=number_format($cart['order_price'], session()->currency['currencyFloat'])?></span>
           </div>
-          <?php if ( $cart['apply_discount'] == 1 ) : ?>
-          <div class='text-danger fw-bold'>
-            <?php echo session()->currency['currencySign']?>
-            <span class='prd-item-discount-price'><?=number_format($cart['order_discount_price'], session()->currency['currencyFloat'])?></span>
-          </div>
-          <?php endif ?>
         </div>
       </form>
     </div>
