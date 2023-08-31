@@ -11,6 +11,30 @@ $(document).ready(function() {
       
       if ( result != '' ) {
         $(this).append(result);
+        
+        if ( $(".product-invoice-section .list-group-item").length != $('.product-search-result .cart_idx').length ) {
+          Array.from($('.product-search-result .list-group-item')).forEach(element => {
+            Array.from($(".product-invoice-section .list-group-item")).forEach(ele => {
+              if ($(element).find('[name=prd_id]').val() == $(ele).find('[name=prd_id]').val() ) {
+                if ( !$(element).find('form .cart_idx').length ) {
+                  let btn = $(element).find('button');
+                  let removeClass = btn.attr('data-remove-class');
+                  let addClass = btn.attr('data-add-class');
+                  let btnText = btn.attr('data-btn');
+  
+                  btn.attr('data-remove-class', addClass);
+                  btn.attr('data-add-class', removeClass);
+                  btn.attr('data-btn', $.trim(btn.text()));
+                  btn.removeClass(removeClass);
+                  btn.addClass(addClass);
+                  btn.text($.trim(btnText));
+
+                  $(element).find('form').append($('<input type="hidden" class="cart_idx" value=' + $(ele).find('[name=cart_idx]').val() + '>'));
+                }
+              }
+            });
+          });
+        }
       }
     }
   });
@@ -153,6 +177,7 @@ $(document).ready(function() {
   let data = $(this).closest('.list-group-item').find('form').serializeArray();
 
   result = getData("/order/addCartList", data, true);
+  console.log(result);
   if ( result['Code'] != "200" ) {
     console.log(result['Msg']);
     return;
@@ -176,20 +201,18 @@ $(document).ready(function() {
     } else $(this).before("<input type='hidden' class='cart_idx' value='" + result['Msg'] + "'>");
 
     getCartList();
-    setSubTotalPrice();
+    setSubTotalPrice();    
   }
-}).on("click", '.increase-btn, .decrease-btn', function(e) {
+}).on("click", '.increase-btn, .decrease-btn, .qty-change-btn', function(e) {
   e.preventDefault();
   let $parents = $(this).closest('.cart-qty-form');
   let $parent = $(this).parent();
-  let cartId = $parents.children('[name=cart_idx]').val();
-  let opVal = $parents.children("[name=op-val]").val();
-  let opCode = $parents.children('[name=op-code]').val();
+  let cartId = $parents.find('[name=cart_idx]').val();
+  let opCode = $parents.find('[name=op-code]').val();
   let prdPrice = parseFloat($parents.children('[name=prd_price]').val());
-  let calcSpq = $parent.children('.qty-spq').val();
-  let tempPrdTotPrice = parseFloat($parents.find('[name=prd-total-price]').val());
-  let maxSpq = $parents.children('[name=qty-maximum-val]').val();
-  let standSpq = $parents.children('[name=order_qty]').val();
+  let calcSpq = $parent.find('.qty-spq').val();
+  let maxSpq = $parents.find('[name=qty-maximum-val]').val();
+  let standSpq = $parents.find('[name=order_qty]').val();
 
   calcCode = $(this).data('calc');
 
@@ -214,22 +237,27 @@ $(document).ready(function() {
       return;
     }
   } else if ( calcCode == '+' ) {
-    // if ( opCode == 1 ) calcCode = '*';
-    if ( calcSpq == maxSpq ) {
-      if ( $parents.find('.stock-req-cancel').length > 0 ) {
-        alert("The stock request has already been completed.");
-        return;
-      } else {
-        let stockReq = confirm("This is the maximum quantity. Would you like to proceed with the stock request?");
-        if ( stockReq ) {
-          $parents.find('.stock-req').click();
-        }
-      }
-      return;
-    }
-  } else return;
+    // // if ( opCode == 1 ) calcCode = '*';
+    // if ( calcSpq == maxSpq ) {
+    //   if ( $parents.find('.stock-req-cancel').length > 0 ) {
+    //     alert("The stock request has already been completed.");
+    //     return;
+    //   } else {
+    //     let stockReq = confirm("This is the maximum quantity. Would you like to proceed with the stock request?");
+    //     if ( stockReq ) {
+    //       $parents.find('.stock-req').click();
+    //     }
+    //   }
+    //   return;
+    // }
+  } else {
+    if ( calcSpq != '' || calcSpq >= standSpq) {      
+    } else return;
+  }
   // calcSpq = eval(calcSpq + calcCode + opVal); 
-  calcSpq = eval(calcSpq + calcCode + standSpq);
+  if ( typeof calcCode != 'undefined' && calcCode != '' ) {
+    calcSpq = eval(calcSpq + calcCode + standSpq);
+  }
   $parent.find('.qty-spq').val(calcSpq);
 
   compare = compareMinMax(calcSpq, maxSpq, standSpq);
@@ -238,81 +266,19 @@ $(document).ready(function() {
     calcSpq = $parent.find('.qty-spq').val();
   }    
   
-  tempPrdTotPrice = parseFloat(calcSpq * prdPrice);
+  // tempPrdTotPrice = parseFloat(calcSpq * prdPrice);
 
-  result = setCartSpq(cartId, calcSpq, tempPrdTotPrice, true);
-
+  result = setCartSpq(cartId, calcSpq, prdPrice, true);
   if ( result['Code'] == 200 ) { 
-    getCartList();
+    if ( result['Msg'] != '' ) {
+      $parents.find('[name=prd-total-price]').val(result['Msg']);
+      $parents.find('.prd-item-total-price').text(result['Msg']);
+    }
     setSubTotalPrice();
     return;
   } else {
     return;
   }
-// }).on("click", '.bsk-del-btn, .stock-req-cancel', function(e) {
-//   e.preventDefault();
-//   let query = [];
-//   $parents = $(this).parent();
-//   cartId = $parents.find('[name=cart_idx]').val();
-//   if ( typeof(cartId) == 'undefined' ) {
-//     cartId = $parents.find('.cart_idx').val();
-//   }
-
-//   // case 0: 부모, 자식 삭제, 1: 자식 삭제 및 부모의 stock id 값 초기화
-//   if ( $(this).hasClass('stock-req-cancel') ) {
-//     query = [
-//       {name: 'cart_idx', value: $(this).data('childId') },
-//       {name: 'oper', value: 'del'},
-//       {name: 'case', value: 1},
-//       {name: 'stock_req_parent', value: cartId}
-//     ];
-//   } else {
-//     if ( $parents.find('.stock-req-cancel').length > 0 ){
-//       let stockReqMultiCancel = confirm('Inventory requested. Are you sure you want to delete the inventory requested order as well?');
-
-//       if (stockReqMultiCancel) {
-//         query = [
-//           {name: 'cart_idx', value: cartId },
-//           {name: 'oper', value: 'del'},
-//           {name: 'case', value: 0 },
-//           {name: 'stock_req_parent', value: $parents.find('.stock-req-cancel').data('childId') }
-//         ];
-//       } else {
-//         console.log("그냥 안지워지게 했음");
-//         return;
-//       //   query = [
-//       //     {name: 'cart_idx', value: cartId },
-//       //     {name: 'oper', value: 'del'}
-//       //   ];
-//       }
-//     } else {
-//       if ( $parents.find('.parentId').length > 0 &&  $parents.find('.parentId').val() != '') {
-//         query = [
-//           {name: 'cart_idx', value: cartId },
-//           {name: 'oper', value: 'del'},
-//           {name: 'case', value: 1 },
-//           {name: 'stock_req_parent', value: $parents.find('.parentId').val()}
-//         ];    
-//       } else {
-//         query = [
-//           {name: 'cart_idx', value: cartId },
-//           {name: 'oper', value: 'del'}
-//         ];
-//       }
-//     }      
-//   }
-  
-//   if ( query.length > 0 ) {
-//     result = getData('/order/editCartList', query, true);
-//     if ( result['Code'] == 200 ) {
-//       getCartList();
-//       setSubTotalPrice();
-    
-//       // productResult = getData('/order/productList', dataInit());
-//       // appendData($(".product-search-result .product-list"), productResult, true);
-
-//     } else return;
-//   }
 }).on("click", '.bsk-del-btn', function(e) {
   e.preventDefault();
   let cart_id_element = $(this).parent().find('[name=cart_idx]').length ? 
@@ -335,36 +301,53 @@ $(document).ready(function() {
   if ( checkList.length ) {
     $.each(checkList, (i, v) => {
       if ( $(v).val() == cart_id_element ) {
-        if ( cartSection ) {
-          $targetBtn = $(v).parent().find('.bsk-del-btn');
+        if ( cartSection ) {   
+          $targetBtn = $(v).closest('.list-group-item').find('button');
         } else {
+          // console.log($(v).closest('.list-group-item'));
           $targetBtn = $(v).closest('.list-group-item');
         }
-        
-        query = [
-          {name: 'cart_idx', value: cart_id_element },
-          {name: 'oper', value: 'del'}
-        ];
-
         return false;
       }
-    });
+    });    
+    query = [
+      {name: 'cart_idx', value: cart_id_element },
+      {name: 'oper', value: 'del'}
+    ];
   }
 
+  let btnText, removeClass, addClass;
   if ( query != '' && query.length > 0 ) {
     result = getData('/order/editCartList', query, true);
+    // console.log(result);
+    // console.log($targetBtn);
     if ( result['Code'] == 200 ) {
-      if ( $targetBtn.length ) {
-        let btnText = $targetBtn.data('btn');
-        let removeClass = $targetBtn.data('removeClass');
-        let addClass = $targetBtn.data('addClass');
+      if ( cartSection ) {
+        if ( $targetBtn != '' ) {
+          console.log($targetBtn);
+          btnText = $targetBtn.attr('data-btn');
+          removeClass = $targetBtn.attr('data-remove-class');
+          addClass = $targetBtn.attr('data-add-class');
 
-        $targetBtn.removeClass(removeClass);
-        $targetBtn.addClass(addClass);
-        $targetBtn.attr('data-remove-class', addClass);
-        $targetBtn.attr('data-add-class', removeClass);
-        $targetBtn.text(btnText);
-        $targetBtn.closest('.cart_idx').remove();
+          $targetBtn.removeClass(removeClass);
+          $targetBtn.addClass(addClass);
+          $targetBtn.attr('data-remove-class', addClass);
+          $targetBtn.attr('data-add-class', removeClass);
+          $targetBtn.attr('data-btn', $.trim($targetBtn.text()));
+          $targetBtn.text(btnText);
+          $targetBtn.prev('.cart_idx').remove();
+        }
+        $(this).closest('.list-group-item').remove();
+      } else {
+        if ( $targetBtn.length ) {
+          $targetBtn.remove();
+        }
+        $(this).attr('data-remove-class', 'order-req');
+        $(this).attr('data-add-class', 'bsk-del-btn');
+        $(this).attr('data-btn', 'Unselect');
+        $(this).removeClass('bsk-del-btn');
+        $(this).addClass('order-req');
+        $(this).text('Select');
       }
     }
     setSubTotalPrice();
@@ -389,42 +372,20 @@ $(document).ready(function() {
       }
     }
   
-    result = setCartSpq(cartId, calcSpq, parseFloat(productPrice * calcSpq), true);
-    
+    // result = setCartSpq(cartId, calcSpq, parseFloat(productPrice * calcSpq), true);
+    result = setCartSpq(cartId, calcSpq, productPrice, true);
     if ( result['Code'] == 200 ) { 
-      getCartList();
+      if ( result['Msg'] != '' ) {
+        $(this).closest('.cart-qty-request').find('.prd-total-price').val(result['Msg']);
+        $(this).closest('.cart-qty-request').find('.prd-item-total-price').text(result['Msg']);
+      }
+      // getCartList();
       setSubTotalPrice();
       return;
     } else {
       return;
     }
   }
-}).on('click', '.qty-change-btn', function() {
-  $parent = $(this).closest('.cart-qty-form');
-  standSpq = $parent.find('[name=order_qty]').val();
-  maxSpq = $parent.find('[name=qty-maximum-val]').val();
-  operateVal = $parent.find('[name=op-val]').val();
-  cartId = $parent.find('[name=cart_idx]').val();
-  productPrice = parseFloat($parent.find('[name=prd_price]').val());
-  calcSpq = $parent.find('.qty-spq').val();
-
-  if ( maxSpq == '' ) { maxSpq = 1000; }
-  if ( parseInt(calcSpq) > maxSpq || parseInt(calcSpq) < standSpq ) {
-    compare = compareMinMax(calcSpq, maxSpq, standSpq);
-    if ( compare['code'] != 200 ) {
-      alert("Changed to a(an) " + compare['msg'] + "\n" + compare['data']);
-      calcSpq = compare['data'];
-    }
-  }
-
-  result = setCartSpq(cartId, calcSpq, parseFloat(productPrice * calcSpq), true);
-
-  if ( result['Code'] == 200 ) { 
-    getCartList();
-    setSubTotalPrice();
-    return;
-  } else return;
-
 // }).on('click', '.pre-order-btn', function() {
 //   result = getData('/order/orderForm', [{name: 'margin_level', value: 1}]);
 
@@ -592,32 +553,31 @@ function dataInit(target = null) {
 }
 
 function getCartList() {
-  let init = true;
   cartList = getData('/order/cartList', dataInit('#product-form'));
-  if ( $("#product-form input[name=cart_id]").length ) init = false;  
-  appendData($(".product-selected"), cartList, init);
+  if ( cartList != '' ) {
+    if ( $("#product-form").find('[name=cart_id]').length ) {
+      $("#product-form [name=cart_id]").remove();
+    }
+  }
+  appendData($(".product-selected"), cartList, false);
 }
 
 function setSubTotalPrice() {
-  console.log('?????');
   totalPriceResult = getData('/order/cartTotalPrice');
   totalPriceResult = JSON.parse(totalPriceResult);
-
-  console.log('set subtotal ', totalPriceResult);
-
+  // console.log(totalPriceResult);
   $('.total-price').text($.numberWithCommas(totalPriceResult['order_price_total']));
-  $('.discount-price').text($.numberWithCommas(totalPriceResult['order_discount_total']));
   $(".sub-total-price").text($.numberWithCommas(totalPriceResult['order_subTotal']));
 }
 
 function setCartSpq(cartId, productQty, productPrice, ref = false) {
   let editData = [{name: 'cart_idx', value: cartId},
                   {name: 'order_qty', value: productQty},
-                  {name: 'order_price', value: productPrice}];
+                  {name: 'product_price', value: productPrice}];
   // console.log($.param(editData));
   result = JSON.parse(getData('/order/editCartList', editData));
   // result = JSON.parse(result);
-  
+  // console.log(result);
   
   if ( !ref ) { // return 안받고 곧바로 처리
     if ( result['Code'] == 200 ) { 

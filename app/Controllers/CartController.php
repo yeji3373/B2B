@@ -25,12 +25,16 @@ class CartController extends BaseController {
   }
 
   public function getCartList($params = []) {
-    $query['select'] = ", cart.idx AS cart_idx, cart.chkd, cart.order_qty";;
-    $query['from'] = ", (SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart";
-    $query['where'] = " AND cart.prd_id = product.id";
+    $query['select'] = ", product_spq.moq, product_spq.spq, product_spq.spq_inBox
+                        , product_spq.spq_outBox, product_spq.calc_code, product_spq.calc_unit
+                        , cart.idx AS cart_idx, cart.chkd, cart.order_qty";;
+    $query['from'] = ", ( SELECT * FROM product_spq ) AS product_spq
+                      , ( SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart";
+    $query['where'] = " AND product_spq.product_idx = product.id 
+                        AND cart.prd_id = product.id";
     $query['orderby'] = ", cart.prd_id ASC, cart.idx ASC";
     $query['limit'] = NULL;
-    $add = NULL;
+
     if ( !empty($params) ) {
       if ( !empty($params['select']) ) $query['select'] .= $params['select'];
       if ( !empty($params['from']) ) $query['from'] .= $params['from'];
@@ -39,27 +43,11 @@ class CartController extends BaseController {
       if ( !empty($params['limit']) ) $query['limit'] .= $params['limit'];
     } else array_merge($query, $params);
 
-    if ( !empty($query['select']) ) {
-      $add = ", ";
-    }
-    // $query['from'] .= ",  (SELECT stocks.id AS stocks_id
-    //                           , stocks.prd_id
-    //                           , stocks.order_base
-    //                           , stocks_detail.supplied_qty
-    //                           , stocks_detail.supplied_qty AS available_stock
-    //                       FROM stocks
-    //                         , ( SELECT id, stocks_id, SUM(supplied_qty) AS supplied_qty FROM stocks_detail WHERE available = 1 GROUP BY stocks_id ) AS stocks_detail
-    //                       WHERE stocks.id = stocks_detail.stocks_id) AS stocks";
     $query['select'] .= ", ".$this->calcRetailPrice().' AS retail_price, '
                       .$this->calcSupplyPrice().' AS product_price, '
                       .' ('.$this->calcSupplyPrice().' * order_qty) AS order_price';
 
     $cartList = $this->product->getProductQuery($query);
-    // if ( !empty($this->stocks->getStocks()) ) {
-    //   // foreach($cartList AS $i => $cart) {
-    //   //   $cartList[$i] = array_merge($cart, $this->stocks->getStocks());
-    //   // }
-    // }
     return $cartList;
   }
 
@@ -108,29 +96,31 @@ class CartController extends BaseController {
     if ( $exchangeRate > 1 ) : // 환율 혹은 달러에서 한화로 변경할 경우, 한화의 환율을 적용
       $this->cart
           ->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}) AS `order_price_total`")
-          ->select("IF ( `cart`.`apply_discount` = 1, 
-                    ROUND(((SUM({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * cart.order_qty) * {$exchangeRate}), 0),
-                    0 
-                  ) AS `order_discount_total`")
-          ->select("IF ( `cart`.`apply_discount` = 1, 
-                          ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchangeRate}), 0),
-                          ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}), 0)
-                        ) AS order_subTotal");
+          // ->select("IF ( `cart`.`apply_discount` = 1, 
+          //           ROUND(((SUM({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * cart.order_qty) * {$exchangeRate}), 0),
+          //           0 
+          //         ) AS `order_discount_total`")
+          // ->select("IF ( `cart`.`apply_discount` = 1, 
+          //                 ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchangeRate}), 0),
+          //                 ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}), 0)
+          //               ) AS order_subTotal");
+          ->select("ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}), 0) AS order_subTotal");
     else : 
       $this->cart
         ->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_price_total`")
-        ->select("IF ( `cart`.`apply_discount` = 1, 
-                        SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`),
-                        0 
-                      ) AS `order_discount_total`")
-        ->select("IF ( `cart`.`apply_discount` = 1, 
-                        SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`),
-                        SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`)
-                        ) AS `order_subTotal`");
+        // ->select("IF ( `cart`.`apply_discount` = 1, 
+        //                 SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`),
+        //                 0 
+        //               ) AS `order_discount_total`")
+        // ->select("IF ( `cart`.`apply_discount` = 1, 
+        //                 SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`),
+        //                 SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`)
+        //                 ) AS `order_subTotal`");
+        ->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_subTotal`");
     endif;
 
     $this->cart
-        ->select("cart.apply_discount AS applyDiscount")
+        // ->select("cart.apply_discount AS applyDiscount")
         ->joins()    
         ->joinsDefaultWhere()
         ->where('cart.buyer_id', session()->userData['buyerId'])
@@ -168,19 +158,19 @@ class CartController extends BaseController {
     //   print_r($cartList);
     // }
 
-    if ( !empty($this->getCartTotalPrice()) ) {
-      if ( $this->getCartTotalPrice()['order_price_total'] < $this->basedDiscountVal ) {
-        $this->cart
-            ->set(['apply_discount' => 0])
-            ->where(['buyer_id' => session()->userData['buyerId']])
-            ->update();
-      } else {
-        $this->cart
-            ->set(['apply_discount' => 1])
-            ->where(['buyer_id' => session()->userData['buyerId']])
-            ->update();
-      }
-    }
+    // if ( !empty($this->getCartTotalPrice()) ) {
+    //   if ( $this->getCartTotalPrice()['order_price_total'] < $this->basedDiscountVal ) {
+    //     $this->cart
+    //         ->set(['apply_discount' => 0])
+    //         ->where(['buyer_id' => session()->userData['buyerId']])
+    //         ->update();
+    //   } else {
+    //     $this->cart
+    //         ->set(['apply_discount' => 1])
+    //         ->where(['buyer_id' => session()->userData['buyerId']])
+    //         ->update();
+    //   }
+    // }
 
     // // $cartList = $this->cart->where(['buyer_id' => session()->userData['buyerId'], 'product_price_changed' => 1])->findAll();
     // // if ( !empty($cartList )) {

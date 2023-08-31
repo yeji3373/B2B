@@ -43,20 +43,16 @@ class ProductModel extends Model {
           , product.discontinued, product.display, product.renewal
           , brand.brand_id, brand.brand_name, brand.brand_logo_src
           , brand.taxation AS brand_tax, brand.own_brand
-          , brand.excluded_countries
-          , product_spq.moq, product_spq.spq, product_spq.spq_inBox
-          , product_spq.spq_outBox, product_spq.calc_code, product_spq.calc_unit";
+          , brand.excluded_countries";
     $fromquery = " FROM {$this->table}
                   , ( SELECT * FROM brand ) AS brand
                   , ( SELECT * FROM product_price ) AS product_price
-                  , ( SELECT * FROM supply_price WHERE margin_level = $mrginLevel) AS supply_price
-                  , ( SELECT * FROM product_spq ) AS product_spq";
+                  , ( SELECT * FROM supply_price WHERE margin_level = $mrginLevel) AS supply_price";
     $wherequery = " WHERE discontinued = 0 
                       AND display = 1 
                       AND brand.brand_id = product.brand_id
                       AND product.id = product_price.product_idx
                       AND product_price.idx = supply_price.product_price_idx
-                      AND product_spq.product_idx = product.id
                       AND product_price.available = 1 
                       AND brand.available = 1";
     $orderbyquery = " ORDER BY brand.brand_id ASC, product.id ASC";

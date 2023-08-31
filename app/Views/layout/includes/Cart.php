@@ -9,8 +9,7 @@
           <div class='name-group'>
             <span class='brand_name'><?=$cart['brand_name']?></span>
             <span class='product_name'><?=$cart['name_en'].' '.$cart['spec']?></span>
-          </div>
-          
+          </div>          
           <?php if ( $cart['type_en'] != "" ) : ?>
           <div class='type'>
             <label class='item-name'><?=lang('Order.productType')?> : </label>
@@ -121,7 +120,7 @@
         <input type='hidden' name='brd_id' value='<?=$cart['brand_id']?>'>
         <input type='hidden' name='cart_idx' value='<?=$cart['cart_idx']?>'>
         <input type='hidden' name='prd_price' value='<?=$cart['product_price']?>'>
-        <!-- <input type='hidden' name='prd-total-price' value='<?//=$cart['order_price']?>'> -->
+        <input type='hidden' name='prd-total-price' value='<?=$cart['order_price']?>'>
         <input type='hidden' name='op-code' value='<?=$cart['calc_code']?>'>
         <input type='hidden' name='op-val' value='<?=$cart['calc_unit']?>'>
         <input type='hidden' name='order_qty' value='<?=$cart['moq']?>'> <!-- qty stand value -->

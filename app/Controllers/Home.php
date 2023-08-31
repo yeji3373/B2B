@@ -33,13 +33,18 @@ class Home extends BaseController {
   }
 
   public function index() {
-    if ( session()->isLoggedIn ) {
-      return call_user_func_array(array($this, 'main'), []);
-    }
+    // if ( session()->isLoggedIn ) {
+    //   return call_user_func_array(array($this, 'main'), []);
+    // }
     return $this->basicLayout('dash/index', $this->data);
   }
 
   public function main() {
+    if ( session()->isLoggedIn === false ) {
+      if ( session()->isLoggedIn ) {
+        return call_user_func_array(array($this, 'index'), []);
+      }
+    }
     $this->data['notices'] = $this->notice->board(['board_type.available' => 1
                                                 , 'board.type_idx' => 1])
                                           ->orderBy('board.fixed DESC, board.sort ASC, board.idx ASC')
