@@ -7,8 +7,8 @@
         <?=img(esc($cart['img_url']), false, ['class' => 'thumbnail align-self-start'])?>
         <div class='d-flex flex-column ms-1'>
           <div class='name-group'>
-            <span class='brand_name'><?=$cart['brand_name']?></span>
-            <span class='product_name'><?=$cart['name_en'].' '.$cart['spec']?></span>
+            <span class='brand_name'><?=stripslashes($cart['brand_name'])?></span>
+            <span class='product_name'><?=stripslashes($cart['name_en'].' '.$cart['spec'])?></span>
           </div>          
           <?php if ( $cart['type_en'] != "" ) : ?>
           <div class='type'>

@@ -83,7 +83,7 @@ class Order extends BaseController
     $request_unit = false;
     $where = null;
 
-    $offset = 30;
+    $offset = 15;
     $start = empty($params['page']) ? 0 : ((($params['page'] - 1) * 1) * $offset);
 
     if ( !empty($params) ) {
@@ -104,9 +104,9 @@ class Order extends BaseController
     $this->data['products'] = $products;
 
     if ( $this->request->isAJAX() ) {
-      if ( $request_unit == true ) {
+      // if ( $request_unit == true ) {
         return view('/layout/includes/productItem', $this->data);
-      } else return view('/layout/includes/product', $this->data);
+      // } else return view('/layout/includes/product', $this->data);
     } else {
       // echo $this->products->getLastQuery(); 
       return $this->data;

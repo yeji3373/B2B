@@ -2,7 +2,7 @@ $(document).ready(function() {
   $('.product-search-result .product-list').scroll(function() {
     let scrollPer = Math.round((Math.ceil($(".product-search-result .product-list").scrollTop() + $(".product-search-result .product-list").height()) / $(this).prop('scrollHeight')) * 100);
 
-    if ( scrollPer > 90 ) {
+    if ( scrollPer > 70 ) {
       $('#product-form input[name=request_unit]').val(1);
       $('#product-form input[name=page]').val(parseInt($('#product-form input[name=page]').val()) + 1);
 
