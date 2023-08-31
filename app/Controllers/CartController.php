@@ -32,7 +32,7 @@ class CartController extends BaseController {
                       , ( SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart";
     $query['where'] = " AND product_spq.product_idx = product.id 
                         AND cart.prd_id = product.id";
-    $query['orderby'] = ", cart.prd_id ASC, cart.idx ASC";
+    $query['orderby'] = ", cart.idx ASC";
     $query['limit'] = NULL;
 
     if ( !empty($params) ) {

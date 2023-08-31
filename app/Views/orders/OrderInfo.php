@@ -70,8 +70,8 @@
           <div>Status</div>
           <div>결제요청금액</div>
           <div>결제후 남은 금액</div>
-          <div>배송비</div>
-          <div>기타</div>
+          <div>Shipping cost</div>
+          <div>비고</div>
         </div>
       <?php foreach ($receipts as $key => $receipt) {?>
         <div class='w-100 d-grid border-top'>
