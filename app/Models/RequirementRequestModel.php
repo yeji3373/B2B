@@ -10,7 +10,7 @@ class RequirementRequestModel extends Model {
   protected $useSoftDeletes = false;
 
   protected $allowedFields = [
-    'order_id', 'order_detail_id', 'requirement_id', 'requirement_detail'
+    'idx', 'order_id', 'order_detail_id', 'requirement_id', 'requirement_detail', 'requirement_selected_option_id'
   ];
 
   protected $useTimestamps = true;
@@ -20,6 +20,7 @@ class RequirementRequestModel extends Model {
 
   function getRequirementOptions($orderId = NULL) {
     $result = $this
+              ->select('requirement_request.idx')
               ->select('requirement_request.requirement_detail')
               ->select('requirement_request.order_detail_id')
               ->select('requirement_request.order_id')
@@ -27,6 +28,7 @@ class RequirementRequestModel extends Model {
               ->select('requirement.requirement_en')
               ->select('requirement_request.requirement_id')
               ->select('requirement_request.requirement_option_ids')
+              ->select('requirement_request.requirement_selected_option_id')
               ->join('requirement', 'requirement.idx = requirement_request.requirement_id')
               ->where('order_id', $orderId)
               ->orderby('requirement_request.order_detail_id')
@@ -34,31 +36,24 @@ class RequirementRequestModel extends Model {
 
     foreach($result as $j => $a ) {
       if ( !empty($a['requirement_option_ids']) ) :
-        $ids = explode(",", $a['requirement_option_ids']);
-        $temp = NULL;
-        foreach($ids AS $i => $id) :
-          if ( $i > 0 ) :
-            $temp .= ", ".$id;
-          else :
-            $temp = $id;
-          endif;          
-        endforeach;
-
-        // echo $temp;
-
-        // $options = $this->db->query(
-        //           "SELECT requirement.*
-        //           FROM requirement_option
-        //             join requirement on requirement.idx = requirement_option.requirement_idx
-        //           WHERE requirement_option.idx IN ({$temp})")
-        //           ->getResultArray();
+        $ids = (string)$a['requirement_option_ids'];
+        // $ids = explode(",", $a['requirement_option_ids']);
+        // $temp = NULL;
+        // foreach($ids AS $i => $id) :
+        //   if ( $i > 0 ) :
+        //     $temp .= ", ".$id;
+        //   else :
+        //     $temp = $id;
+        //   endif;          
+        // endforeach;
+        // var_dump($ids);
         $options = $this->db->query(
                   "SELECT requirement_option.idx,
                           requirement_option.requirement_idx,
                           option_name,
                           option_name_en
                   FROM requirement_option
-                  WHERE requirement_option.idx IN ({$temp})")
+                  WHERE requirement_option.idx IN ({$ids})")
                   ->getResultArray();
         
         $result[$j]['options'] = $options;

@@ -111,55 +111,86 @@
             ?>
           </div>
         </div>
-        <!-- <?php 
-          if ( !empty($nowPackStatus) && $nowPackStatus['order_by'] > 5 ) : 
-            if ( !empty($product['requirement_reply']) ) : 
-            $requirementDetail = explode("|", $product['requirement_reply']);
-            if ( !empty($requirementDetail) ) :
-              foreach($requirementDetail AS $rDetail) :
-                $requirement = explode(",", $rDetail);
-
-                if ( !empty($requirement[2]) ) :
-                echo "<div class='d-flex flex-column'>";
-                echo "<div class='f-flex flex-row'>";
-                echo "<label class='w-20'>".$requirement[1]."</label>";
-                echo "<span>".$requirement[2]."</span>";
-                echo "</div>";
-                if ( $requirement[0] == 2 ) :
-                  echo "<div class='w-100'>";
-                  // echo "<input type='radio' name"
-                  echo "</div>";
-                endif;
-                echo "</div>";
-                endif;
-              endforeach;
-            endif;            
-            endif;
-          endif; ?> -->
         <?php 
           // if ( !empty($nowPackStatus) && $nowPackStatus['order_by'] > 5 ) : 
           foreach($orderRequirement AS $r) :
             if($product['detail_id'] == $r['order_detail_id']) :
-              if(!empty($r['requirement_reply'])) :
-                echo "<div class='d-flex flex-column'>";
-                echo "<div class='f-flex flex-row'>";
-                echo "<label class='w-20'>".$r['requirement_en']."</label>";
-                echo "<span>".$r['requirement_reply']."</span>";
-                echo "</div>";
-                echo "</div>";
-              endif;
               if(isset($r['options'])) :
-                echo "<div class='d-flex flex-column'>";
-                echo "<div class='f-flex flex-row'>";
-                echo "<label class='w-20'>Options</label>";
-                foreach($r['options'] AS $o) :
-                  echo "<label class='margin-right-1'>";
-                  echo "<input type='radio' name='option' value='".$o['idx']."'>".$o['option_name']."</input>";
-                  echo "</label>";
-                endforeach;
-                echo "<button class='btn btn-primary w-10 p-1'>confirm</button>";
-                echo "</div>";
-                echo "</div>";
+                if($r['requirement_id'] == 1){
+                  echo "<fieldset class='border mt-2 pb-2 position-relative pt-3 px-2'>
+                        <legend class='position-absolute'>".$r['requirement_en']."</legend>
+                        <form id='expirationForm'>
+                          <input type='hidden' name='idx' value=".$r['idx'].">
+                          <input type='hidden' name='detail_id' value=".$r['order_detail_id'].">
+                          <input type='hidden' name='requirement_id' value=".$r['requirement_id'].">";
+                  if(!empty($r['requirement_reply'])) :
+                    echo "<div class='d-flex flex-column'>
+                            <div class='f-flex flex-row'>
+                              <label class='w-19'>".$r['requirement_reply']."</label>
+                            </div>
+                          </div>";
+                  endif;
+                  echo "<div class='d-flex flex-column'>
+                        <div class='f-flex flex-row'>";
+                  foreach($r['options'] AS $o) :
+                    echo "<label class='margin-right-1'>";
+                    echo "<input type='radio' name='expirationOption' value='{$o['idx']}'";
+                    if($o['idx'] == $r['requirement_selected_option_id']){
+                      echo " checked";
+                    }
+                    if($nowPackStatus['order_by'] > 6){
+                      echo " disabled";
+                    }
+                    echo ">{$o['option_name']}";
+                    echo "</label>";
+                  endforeach;
+                  echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1'";
+                  if($nowPackStatus['order_by'] > 6){
+                    echo " disabled";
+                  }
+                  echo ">confirm</button>
+                        </div>
+                        </div>
+                        </form>
+                        </fieldset>";
+                }else{
+                  echo "<fieldset class='border mt-3 pb-2 position-relative pt-3 px-2'>
+                        <legend class='position-absolute'>".$r['requirement_en']."</legend>
+                        <form id='leadtimeForm'>
+                          <input type='hidden' name='idx' value=".$r['idx'].">
+                          <input type='hidden' name='detail_id' value=".$r['order_detail_id'].">
+                          <input type='hidden' name='requirement_id' value=".$r['requirement_id'].">";
+                  if(!empty($r['requirement_reply'])) :
+                    echo "<div class='d-flex flex-column'>
+                            <div class='f-flex flex-row'>";
+                    echo "<label>".$r['requirement_reply']."</label>";
+                    echo "</div>";
+                    echo "</div>";
+                  endif;
+                  echo "<div class='d-flex flex-column'>";
+                  echo "<div class='f-flex flex-row'>";
+                  foreach($r['options'] AS $o) :
+                    echo "<label class='margin-right-1'>";
+                    echo "<input type='radio' name='leadtimeOption' value='{$o['idx']}'";
+                    if($o['idx'] == $r['requirement_selected_option_id']){
+                      echo " checked";
+                    }
+                    if($nowPackStatus['order_by'] > 6){
+                      echo " disabled";
+                    }
+                    echo ">{$o['option_name']}";
+                    echo "</label>";
+                  endforeach;
+                  echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1'";
+                  if($nowPackStatus['order_by'] > 6){
+                    echo " disabled";
+                  }
+                  echo ">confirm</button>
+                      </div>
+                    </div>
+                  </form>
+                  </fieldset>";
+                }
               endif;
             endif;
           endforeach;

@@ -79,7 +79,6 @@ class Orders extends BaseController {
       $this->data['orderDetails'] = $this->getOrderDetails();
       // $this->data['orderRequirement'] = $this->getRequirement(); // all requirement request
       $this->data['orderRequirement'] = $this->requirement->getRequirementOptions($this->orderId);
-      // print_r($this->data['orderRequirement']);
       // $this->data['shippinCost'] = $this->getTotalShippingCost();
       // $this->data['buyer'] = $this->getBuyer();
       // $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
@@ -114,6 +113,7 @@ class Orders extends BaseController {
                                                 , 'packaging.in_progress' => 1])
                                           ->orderBy('packaging_status.order_by desc')
                                           ->first();
+                                          // echo $this->packagingStatus->getLastQuery();
     }
 
     $this->basicLayout('orders/List', $this->data);
@@ -569,11 +569,17 @@ class Orders extends BaseController {
 
   public function getOrderOption() {
     $params = $this->request->getVar();
-    // $var = $params;
-    // echo $params;
     print_r($params);
-    echo "aaa";
-    if ( $this->request->isAJAX()) {
+    if ( $this->request->isAJAX()) { 
+      if(!empty($params)){
+        //요청사항 : 유통기한 체크
+        if($params['requirement_id'] == 1){
+          $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['expirationOption']]);
+        //요청사항 : leadtime check 
+        }else{
+          $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['leadtimeOption']]);
+        }
+      }
       return json_encode(['result' => true, 'params' => $params]);
     }
     return "result";

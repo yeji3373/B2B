@@ -90,12 +90,22 @@ $(document).ready(function() {
     if ( $('.prev-addr-sel').length ) {
       $(".prev-addr-sel:eq(0)").click();
     }
+  }).on('click', '.confirmbtn', function(e) {
+    e.preventDefault();
+    if(confirm('order confirmation')){
+      let formData;
+      let selectedOption = $(this).closest('form').find('input[name="requirement_id"]').val();
+      if(selectedOption == 1){
+        formData = $(this).closest('.list-group-item').find('#expirationForm').serializeArray();
+      }else{
+        formData = $(this).closest('.list-group-item').find('#leadtimeForm').serializeArray();
+      }
+      console.log(formData);
+      result = getData('/orders/getOrderOption', formData);
+      console.log(result);
+      return true;
+    }else{
+      return false;
+    }
+    // return false;
   });
-
-  //.on("click", ".detail_id_check .btn", function() {
-  //   let formData = $(this).closest('.detail_id_check').find('form').serializeArray();
-  //   console.log(formData);
-  //   result = getData('/orders/getOrderOption', formData);
-  //   console.log(result);
-  //   return false;
-  // });
