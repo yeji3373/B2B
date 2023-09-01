@@ -2,7 +2,7 @@ $(document).ready(function() {
   $('.product-search-result .product-list').scroll(function() {
     let scrollPer = Math.round((Math.ceil($(".product-search-result .product-list").scrollTop() + $(".product-search-result .product-list").height()) / $(this).prop('scrollHeight')) * 100);
 
-    if ( scrollPer > 90 ) {
+    if ( scrollPer > 70 ) {
       $('#product-form input[name=request_unit]').val(1);
       $('#product-form input[name=page]').val(parseInt($('#product-form input[name=page]').val()) + 1);
 
@@ -281,6 +281,7 @@ $(document).ready(function() {
   }
 }).on("click", '.bsk-del-btn', function(e) {
   e.preventDefault();
+  console.log("bsk-del-btn");
   let cart_id_element = $(this).parent().find('[name=cart_idx]').length ? 
                         $(this).parent().find('[name=cart_idx]').val() : 
                         $(this).parent().find('.cart_idx').val();
@@ -309,18 +310,19 @@ $(document).ready(function() {
         }
         return false;
       }
-    });    
+    });
+  }
+
+  if ( cart_id_element != '' ){
     query = [
       {name: 'cart_idx', value: cart_id_element },
       {name: 'oper', value: 'del'}
     ];
-  }
 
-  let btnText, removeClass, addClass;
-  if ( query != '' && query.length > 0 ) {
+    let btnText, removeClass, addClass;
     result = getData('/order/editCartList', query, true);
-    // console.log(result);
-    // console.log($targetBtn);
+    console.log(result);
+    console.log($targetBtn);
     if ( result['Code'] == 200 ) {
       if ( cartSection ) {
         if ( $targetBtn != '' ) {
@@ -536,6 +538,9 @@ $(document).ready(function() {
     }
   }
 }).on('mouseenter', '.thumbnail-group', function() {
+  if ( typeof $(this).children('.thumbnail-zoom').attr('style') == "undefined" ) {
+    $(this).children('.thumbnail-zoom').css('background-image', 'url(' + $(this).find('img').attr('src') + ')');
+  }
   $(this).children('.thumbnail-zoom').removeClass('d-none');
 }).on('mouseleave', '.thumbnail-group', function() {
   $(this).children('.thumbnail-zoom').addClass('d-none');

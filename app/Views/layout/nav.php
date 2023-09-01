@@ -7,6 +7,7 @@
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/" class="nav-link px-2 text-secondary">HOME</a></li>
+        <li><a href='<?=site_url('/main')?>' class="nav-link px-2 text-white">Main</a></li>
         <li><a href='<?=site_url('/order')?>' class="nav-link px-2 text-white">Product/Checkout</a></li>
         <li><a href='<?=site_url('/orders')?>' class="nav-link px-2 text-white">Order Info</a></li>
         <!-- <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>

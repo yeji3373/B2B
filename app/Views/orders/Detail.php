@@ -42,12 +42,11 @@
               $priceClass = 'text-decoration-line-through pe-2';
               $changedClass = 'fw-bold font-size-9';
             endif;
-            if ( !empty($product['prd_price']) ) {
+            if ( empty($product['prd_price_changed']) ) {
               echo "<span class='".$priceClass."'>";
               echo session()->currency['currencySign'].number_format($product['prd_price'], session()->currency['currencyFloat']);
               echo "</span>";
-            }
-            if ( !empty($product['prd_change_price']) ) {
+            } else {
               echo "<span class='".$changedClass."'>";
               echo session()->currency['currencySign'].number_format($product['prd_change_price'], session()->currency['currencyFloat']);
               echo "</span>";
@@ -86,10 +85,14 @@
             if ( !empty($product['prd_price_changed'])) :
               $orderPrice = ($product['prd_change_qty'] * $product['prd_change_price']);
             else:
-              $orderPrice = ($product['prd_order_qty'] * $product['prd_change_price']);
+              $orderPrice = ($product['prd_change_qty'] * $product['prd_price']);
             endif;
           else :
-            $orderPrice = ($product['prd_order_qty'] * $product['prd_price']);
+            if ( !empty($product['prd_price_changed']) ) :
+              $orderPrice = ($product['prd_order_qty'] * $product['prd_change_price']);
+            else :
+              $orderPrice = ($product['prd_order_qty'] * $product['prd_price']);
+            endif;
           endif;
           $orderTotal += $orderPrice;
           ?>

@@ -4,7 +4,8 @@
   <div class='d-flex flex-row align-items-start product-item mx-0 my-auto'>
     <div class='position-relative thumbnail-group'>
     <?php if ( strpos(esc($product['img_url']), 'no-image') === false ) : ?>
-    <div class='thumbnail-zoom border border-1 rounded-1 d-none' style="background-image: url('<?=esc($product['img_url'])?>')"></div>
+    <!-- <div class='thumbnail-zoom border border-1 rounded-1 d-none' style="background-image: url('<?//=esc($product['img_url'])?>')"></div> -->
+    <div class='thumbnail-zoom border border-1 rounded-1 d-none'></div>
     <?php endif; ?>
     <?=img(esc($product['img_url']), false, ['class'=>'thumbnail me-2']);?>
     </div>
