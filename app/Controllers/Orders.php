@@ -486,7 +486,6 @@ class Orders extends BaseController {
     $path = $url;
     $type = pathinfo($path, PATHINFO_EXTENSION);
     $data = file_get_contents($path);
-
     $img = 'data:image/'.$type.';base64,'.base64_encode($data);
 
     return $img;

@@ -171,9 +171,11 @@
           <?php if ( !empty($packagingStatus) ) : 
             foreach ( $packagingStatus AS $i => $status ) : ?>
             <div class='packagin-status 
-              <?=( $status['in_progress'] == 1 ) 
-                || ( (empty($status['in_progress']) && empty($status['complete']) && $i == 0) ) ? 'ing': ''?>
-              '>
+              <?php 
+              if ( !empty($nowPackStatus) ) :
+                if ( $status['order_by'] < $nowPackStatus['order_by'] ) echo 'ing';
+              endif;
+              ?>'>
               <div class='circle'></div>
               <div class='status-name text-center'><?=$status['status_name_en']?></div>
             </div>

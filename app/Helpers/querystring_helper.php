@@ -21,7 +21,7 @@ function product_query_return($params = []) {
     //   if ( (count($name) - 1) == $i ) $name_where.= ' )';
     // endforeach;
     
-    $name_where='(  REPLACE('.$table.'.name_en, \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', $params['name']).'%\'
+    $name_where='(  REPLACE(UPPER('.$table.'.name_en), \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', strtoupper($params['name'])).'%\'
                     OR REPLACE('.$table.'.name, \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', $params['name']).'%\' )';
     array_push($where, $name_where);
   }
