@@ -564,7 +564,7 @@ class Orders extends BaseController {
     if ( !empty($whereCondition) ) $products->where(join(" AND ", $whereCondition));
     return $products;
   }
-
+  //요청사항 radio check
   public function getOrderOption() {
     $params = $this->request->getVar();
     print_r($params);

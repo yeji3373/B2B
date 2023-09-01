@@ -112,7 +112,7 @@
           </div>
         </div>
         <?php 
-          // if ( !empty($nowPackStatus) && $nowPackStatus['order_by'] > 5 ) : 
+          if ( !empty($nowPackStatus) && $nowPackStatus['requirement_option_check'] == 1 ) : 
           foreach($orderRequirement AS $r) :
             if($product['detail_id'] == $r['order_detail_id']) :
               if(isset($r['options'])) :
@@ -138,14 +138,14 @@
                     if($o['idx'] == $r['requirement_selected_option_id']){
                       echo " checked";
                     }
-                    if($nowPackStatus['order_by'] > 6){
+                    if($nowPackStatus['requirement_option_disabled'] == 1){
                       echo " disabled";
                     }
                     echo ">{$o['option_name']}";
                     echo "</label>";
                   endforeach;
                   echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1'";
-                  if($nowPackStatus['order_by'] > 6){
+                  if($nowPackStatus['requirement_option_disabled'] == 1){
                     echo " disabled";
                   }
                   echo ">confirm</button>
@@ -175,14 +175,14 @@
                     if($o['idx'] == $r['requirement_selected_option_id']){
                       echo " checked";
                     }
-                    if($nowPackStatus['order_by'] > 6){
+                    if($nowPackStatus['requirement_option_disabled'] == 1){
                       echo " disabled";
                     }
                     echo ">{$o['option_name']}";
                     echo "</label>";
                   endforeach;
                   echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1'";
-                  if($nowPackStatus['order_by'] > 6){
+                  if($nowPackStatus['requirement_option_disabled'] == 1){
                     echo " disabled";
                   }
                   echo ">confirm</button>
@@ -194,7 +194,7 @@
               endif;
             endif;
           endforeach;
-          // endif;?>
+          endif;?>
       <?php else: ?>
         <div class='d-flex flex-row'>
           <label class='w-20'>주문상태</label>
