@@ -6,8 +6,8 @@
   <?= view('Auth\Views\_notifications') ?>
   <form method="POST" action="<?= site_url('login'); ?>" accept-charset="UTF-8" class='hasInputAnimate'>
     <p>
-      <input required minlength="2" type="text" name="id" value="<?= old('id') ?>" placeholder=" " />
-      <label><?= lang('Auth.id') ?></label>
+      <input required minlength="2" type="text" name="email" value="<?= old('email') ?>" placeholder=" " />
+      <label><?= lang('Auth.email') ?></label>
     </p>
     <p>
       <input required minlength="5" type="password" name="password" value="" placeholder=" " />

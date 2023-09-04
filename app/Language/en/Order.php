@@ -41,7 +41,6 @@ return [
   'stockRequestBtn'     => 'Request an order',
   'stockReqCancelBtn'   => 'Cancel order request',
   'checkout'            => 'Checkout',  
-  'inventoryCheckRq'    => '재고체크요청',
   'changeQtyBtn'        => 'Change Qty',
 
   'previouslyAddrss'    => 'Registered shipping address',
@@ -64,34 +63,40 @@ return [
   'delete'              => 'Delete',
 
   /* orders */
-  'orderDate'           => 'Order date',  // 주문날짜
-  'orderNumber'         => 'Order number',  // 주문번호
-  'paymentType'         => 'Payment type',  // 결제 수단
-  'inventoryChecking'   => '재고요청 확인 중',  // 재고요청 확인 중
-  'currency'            => 'Currency',  // 결제 통화
-  'ExportCheck'         => 'Export declaration',
-  'zeroTax'             => 'Zero tax',
-  'taxation'            => 'Taxation',
-  'includeVat'          => 'VAT',
-  'orderQty'            => 'Qty',
-  'productPrice'        => 'Unit price',  
-  'totalAmount'         => 'Total amount',  // 결제금액
-  'productSubTotal'     => 'Subtotal',  
-  'shippingFee'         => 'Shipping cost', // 배송비
-  'totalDiscount'       => 'Total discount',  // 할인금액
-  'piTitle'             => 'Payment {0, number}', // 1차 결제정보
-  'toBePaid'            => 'Amount to be paid', // 결제 요청 금액
-  'remainBalance'       => 'Remaining balance', // 결제 후 잔액
-  'paymentStatus'       => 'Status',  // 결제 현황
-  'paypalInvoice'       => 'Paypal invoice',
-  'invoice'             => 'Invoice',
-  'ordermore'           => 'order more',
-  // 'pi'                  => 'Proforma Invoice',
-  'pi'                  => 'PI',
-  'ci'                  => 'CI',
-  'pl'                  => 'PL',
-  'view'                => 'View',
-  'amount'              => 'Amount',
+  'orders'              => [
+    'orderDate'           => 'Order date',  // 주문날짜
+    'orderNumber'         => 'Order number',  // 주문번호
+    'paymentType'         => 'Payment type',  // 결제 수단
+    'inventoryChecking'   => '재고요청 확인 중',  // 재고요청 확인 중
+    'currency'            => 'Currency',  // 결제 통화
+    'ExportCheck'         => 'Export declaration',
+    'zeroTax'             => 'Zero tax',
+    'taxation'            => 'Taxation',
+    'includeVat'          => 'VAT',
+    'orderQty'            => 'Qty',
+    'productPrice'        => 'Unit price',  
+    'totalAmount'         => 'Total amount',  // 결제금액
+    'productSubTotal'     => 'Subtotal',  
+    'shippingFee'         => 'Shipping cost', // 배송비
+    'totalDiscount'       => 'Total discount',  // 할인금액
+    'paypalInvoice'       => 'Paypal invoice',
+    'invoice'             => 'Invoice',
+    'ordermore'           => 'order more',
+    // 'pi'                  => 'Proforma Invoice',
+    'pi'                  => 'PI',
+    'ci'                  => 'CI',
+    'pl'                  => 'PL',
+    'view'                => 'View',
+    'amount'              => 'Amount',
+    'payment'            => [
+      'receipts'            => 'receipts',
+      'receipt'             => 'receipt',
+      'piTitle'             => 'Payment {0, number}', // 1차 결제정보
+      'status'              => 'status',  // 결제 현황
+      'toBePaid'            => 'Amount to be paid', // 결제 요청 금액
+      'remainBalance'       => 'Remaining balance', // 결제 후 잔액
+    ]
+  ],
   /* orders */
 
   /* checkout */
@@ -99,4 +104,30 @@ return [
   'paymentMethod'       => 'Payment method',
   'orderProduct'        => 'Order Product List',
   /* checkout */
+
+
+  /* 재고요청 선택사항 DB */
+  'inventoryRequest'    => [
+    'inventoryCheckRq'    => '재고체크요청',
+    'checkAlert'          => '재고체크 확인 요청을 취소하겠습니까?',
+    'requestCheck'        => '재고요청 시 요청사항',
+    'requestCheckSelect'  => '요청사항 선택',
+    'expirationDate'      => '유통기한 체크 요청',
+    'leadtimeCheck'       => 'lead time Check 요청',
+    'etc'                 => '기타 요청사항'
+  ],
+  'remark'                => 'remark', //비고
+  /* 재고요청 선택사항 DB */
+  // '잔금 요청'
+  // '잔금 입금 완료'
+  // '출고'
+  // '재고요청 확인중'
+  // '주문하기'
+  // '주문 취소'
+  // '재고 확인 된 만큼만 주문하기'
+  // '전체 취소'
+  // '기다렸다가 전체 다 받기'
+  // '주문 취소됨'
+  // '취소사유'
+  // '주문상태'
 ];

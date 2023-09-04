@@ -21,18 +21,13 @@
 .orders-main .order-info-container [class $='-info-section'] .info-sec .sub-sec > label { width: 18.5%; }
 .orders-main .order-info-container [class $='-info-section'] .info-sec .sub-sec .sub-inner-sec > div p > label { width: auto; min-width: 40%; }
 .orders-main .order-info-container [class $='-info-section'] .info-sec .sub-sec .sub-inner-sec.quarter-grid-column { grid-template-columns: 1fr 1fr 1fr 1fr; }
-
-.orders-main .order-info-container .receipt-info-section .d-grid {
-  grid-template-columns: repeat(auto-fill, minmax(13%, 1fr));
-}
-.orders-main .order-info-container .receipt-info-section .d-grid > div:last-child {
-  grid-column: auto / span 2;
-}
-.orders-main .order-info-container .receipt-info-section .d-grid div:not(:last-child) {
-  border-right: 1px solid #dee2e6;
-}
-.orders-main .order-info-container .receipt-info-section .head { font-weight: bold; }
-
+.orders-main .order-info-container .receipt-info-section .d-grid { grid-template-columns: repeat(auto-fill, minmax(5%, 1fr)); }
+.orders-main .order-info-container .receipt-info-section .d-grid > div:nth-child(-n+2) { grid-column: span 2; }
+.orders-main .order-info-container .receipt-info-section .d-grid > div:nth-child(n+3) { grid-column: span 3; }
+.orders-main .order-info-container .receipt-info-section .d-grid > div:last-child { grid-column: auto / span 7; }
+.orders-main .order-info-container .receipt-info-section .d-grid > div:not(:last-child) { border-right: 1px solid #dee2e6; }
+.orders-main .order-info-container .receipt-info-section .head { font-weight: bold; font-size: 0.74rem; }
+.orders-main .order-info-container .receipt-info-section .head > div { padding: 0.5rem 0;}
 .orders-main .order-info-container .packaging-info-section .packagin-status { 
   /* display: flex;
   justify-content: center;

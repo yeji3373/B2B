@@ -57,7 +57,8 @@ class LoginController extends Controller
 	public function attemptLogin() {
 		// validate request
 		$rules = [
-			'id'		    => 'required|min_length[2]',
+			// 'id'		    => 'required|min_length[2]',
+      'email'     => 'required|valid_email',
 			'password' 	=> 'required|min_length[5]',
 		];
 
@@ -70,7 +71,8 @@ class LoginController extends Controller
 		// check credentials
 		$users = new UserModel();
 		$user = $users
-              ->where('id', $this->request->getPost('id'))
+              // ->where('id', $this->request->getPost('id'))
+              ->where('email', $this->request->getPost('email'))
               ->first();
 		if ( is_null($user) || !password_verify($this->request->getPost('password'), $user['password']) ) {
 			return redirect()->to('login')->withInput()->with('error', lang('Auth.wrongCredentials'));

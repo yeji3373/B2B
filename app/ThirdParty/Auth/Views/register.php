@@ -14,11 +14,7 @@
         <label><?= lang('Auth.name') ?></label>
       </p>
       <p>
-        <input minlength="2" maxlength="" type="text" name="id" value="<?= old('id') ?>" placeholder=" " required />
-        <label><?= lang('Auth.id') ?></label>
-      </p>
-      <p>
-        <input type="email" name="email" value="<?= old('email') ?>" placeholder=" " required />
+        <input type="email" name="id" value="<?= old('email') ?>" placeholder=" " required />
         <label><?= lang('Auth.email') ?></label>
       </p>
       <p>
