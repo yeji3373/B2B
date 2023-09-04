@@ -40,7 +40,7 @@ return [
   'unselectBtn'         => 'Unselect',
   'stockRequestBtn'     => 'Request an order',
   'stockReqCancelBtn'   => 'Cancel order request',
-  'checkout'            => 'Checkout',  
+  'checkout'            => 'Checkout',
   'changeQtyBtn'        => 'Change Qty',
 
   'previouslyAddrss'    => 'Registered shipping address',
@@ -105,7 +105,6 @@ return [
   'orderProduct'        => 'Order Product List',
   /* checkout */
 
-
   /* 재고요청 선택사항 DB */
   'inventoryRequest'    => [
     'inventoryCheckRq'    => '재고체크요청',
@@ -116,18 +115,9 @@ return [
     'leadtimeCheck'       => 'lead time Check 요청',
     'etc'                 => '기타 요청사항'
   ],
-  'remark'                => 'remark', //비고
   /* 재고요청 선택사항 DB */
-  // '잔금 요청'
-  // '잔금 입금 완료'
-  // '출고'
-  // '재고요청 확인중'
-  // '주문하기'
-  // '주문 취소'
-  // '재고 확인 된 만큼만 주문하기'
-  // '전체 취소'
-  // '기다렸다가 전체 다 받기'
-  // '주문 취소됨'
-  // '취소사유'
-  // '주문상태'
+
+  /* 공통 */
+  'remark'                => 'remark', //비고
+  /* 공통 */
 ];
