@@ -1,6 +1,6 @@
 <main>
 <div class='w-100'>
-  <img src='//beautynetkorea.daouimg.com/2023_b2b/b2b_main_open.jpg'/>
+  <img class='w-100' src='//beautynetkorea.daouimg.com/2023_b2b/b2b_main_open.jpg'/>
 </div>
 <div class='w-100'>
   <div class='w-70 mx-auto my-5'>

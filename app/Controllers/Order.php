@@ -72,7 +72,10 @@ class Order extends BaseController
     $page = null;
     $brandGroup = 'brand';
 
-    $brands = $this->brands->where('available', '1')->findAll();
+    $brands = $this->brands
+                  ->where('available', 1)
+                  ->orderBy('own_brand DESC, brand_name ASC, brand_id ASC')
+                  ->findAll();
     $this->data['brands'] = $brands;
   }
   

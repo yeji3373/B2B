@@ -103,7 +103,7 @@ class Inventory extends BaseController {
             $this->orderNumber = $request['order_number'];
 
             $orderDetailFailed = $this->setOrderDetail($orderId);
-            var_dump($orderDetailFailed);
+
             if ( empty($orderDetailFailed) ) {  // detail 입력중 오류 없음
               if ( $this->delivery->save(['order_id' => $orderId]) ) {
                 if ( $this->packaging->save(['order_id' => $orderId]) ) {
@@ -197,8 +197,18 @@ class Inventory extends BaseController {
                                 , 'buyer_id' => session()->userData['buyerId']
                                 , 'prd_id' => $cart['prd_id']]);
           }
+        } else {
+          array_push($failed,  [ 'order_id'  => $orderId
+                                , 'cart_idx'  => $cart['idx']
+                                , 'buyer_id'  => session()->userData['buyerId']
+                                , 'prd_id'    => $cart['prd_id']]);
         }
       endforeach;
+    else : 
+      $failed = [ 'order_id'   => $orderId
+                , 'cart_idx'  => null
+                , 'buyer_id'  => session()->userData['buyerId']
+                , 'prd_id'    => null ];
     endif;
 
     return $failed;
