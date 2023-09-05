@@ -95,7 +95,18 @@ return [
       'status'              => 'status',  // 결제 현황
       'toBePaid'            => 'Amount to be paid', // 결제 요청 금액
       'remainBalance'       => 'Remaining balance', // 결제 후 잔액
-    ]
+    ],
+    'detail'                => [
+      'orderStatus'         => 'Order status',
+      'orderCanceled'       => 'Order canceled',
+      'cancelReason'        => 'Cancellation reason',
+      'paymentConfirm'      => 'Payment confirmed',
+      'initialQty'          => 'Initial order quantity', //최초 주문수량
+      'securedQty'          => 'Secured inventory quantity', //재고 확보 된 수량
+      'finalQty'            => 'Final order quantity', //최종 주문 수량
+      'initialAmount'       => 'Initial order amount', //최초 주문 금액
+      'finalAmount'         => 'Final order amount', //최종 주문 금액
+    ],    
   ],
   /* orders */
 

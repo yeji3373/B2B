@@ -116,64 +116,25 @@
         </div>
         <?php 
           if ( !empty($nowPackStatus) && $nowPackStatus['requirement_option_check'] == 1 ) : 
-          foreach($orderRequirement AS $r) :
+          foreach($orderRequirement AS $i => $r) :
             if($product['detail_id'] == $r['order_detail_id']) :
               if(isset($r['options'])) :
-                if($r['requirement_id'] == 1){
-                  echo "<fieldset class='border mt-2 pb-2 position-relative pt-3 px-2'>
+                  echo "<fieldset class='border ".($i > 0 ? 'mt-3' : 'mt-2')." pb-2 position-relative pt-3 px-2'>
                         <legend class='position-absolute'>".$r['requirement_en']."</legend>
-                        <form id='expirationForm'>
+                        <form id='requirmentOptForm'>
                           <input type='hidden' name='idx' value=".$r['idx'].">
                           <input type='hidden' name='detail_id' value=".$r['order_detail_id'].">
                           <input type='hidden' name='requirement_id' value=".$r['requirement_id'].">";
                   if(!empty($r['requirement_reply'])) :
-                    echo "<div class='d-flex flex-column'>
-                            <div class='f-flex flex-row'>
-                              <label class='w-19'>".$r['requirement_reply']."</label>
-                            </div>
-                          </div>";
-                  endif;
-                  echo "<div class='d-flex flex-column'>
-                        <div class='f-flex flex-row'>";
-                  foreach($r['options'] AS $o) :
-                    echo "<label class='margin-right-1'>";
-                    echo "<input type='radio' name='expirationOption' value='{$o['idx']}'";
-                    if($o['idx'] == $r['requirement_selected_option_id']){
-                      echo " checked";
-                    }
-                    if($nowPackStatus['requirement_option_disabled'] == 1){
-                      echo " disabled";
-                    }
-                    echo ">{$o['option_name']}";
-                    echo "</label>";
-                  endforeach;
-                  echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1'";
-                  if($nowPackStatus['requirement_option_disabled'] == 1){
-                    echo " disabled";
-                  }
-                  echo ">confirm</button>
-                        </div>
-                        </div>
-                        </form>
-                        </fieldset>";
-                }else{
-                  echo "<fieldset class='border mt-3 pb-2 position-relative pt-3 px-2'>
-                        <legend class='position-absolute'>".$r['requirement_en']."</legend>
-                        <form id='leadtimeForm'>
-                          <input type='hidden' name='idx' value=".$r['idx'].">
-                          <input type='hidden' name='detail_id' value=".$r['order_detail_id'].">
-                          <input type='hidden' name='requirement_id' value=".$r['requirement_id'].">";
-                  if(!empty($r['requirement_reply'])) :
-                    echo "<div class='d-flex flex-column'>
-                            <div class='f-flex flex-row'>";
-                    echo "<label>".$r['requirement_reply']."</label>";
-                    echo "</div>";
-                    echo "</div>";
+                    echo "<div class='d-flex flex-row mb-2'>
+                          <label class='pe-2'>Answers to requirements :</label>
+                          <span>".$r['requirement_reply']."</span>
+                        </div>";
                   endif;
                   echo "<div class='d-flex flex-column'>";
-                  echo "<div class='f-flex flex-row'>";
+                  echo "<div class='d-flex flex-column'>";
                   foreach($r['options'] AS $o) :
-                    echo "<label class='margin-right-1'>";
+                    echo "<label class='margin-right-1 pb-1 d-flex flex-row align-items-center'>";
                     echo "<input type='radio' name='leadtimeOption' value='{$o['idx']}'";
                     if($o['idx'] == $r['requirement_selected_option_id']){
                       echo " checked";
@@ -181,31 +142,31 @@
                     if($nowPackStatus['requirement_option_disabled'] == 1){
                       echo " disabled";
                     }
-                    echo ">{$o['option_name']}";
+                    echo ">";
+                    echo "<div class='ps-1'>{$o['option_name_en']}</div>";
                     echo "</label>";
-                  endforeach;
-                  echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1'";
+                  endforeach;                  
+                  echo "</div>";
+                  echo "<button class='btn btn-outline-primary btn-sm confirmbtn w-10 p-1 align-self-center'";
                   if($nowPackStatus['requirement_option_disabled'] == 1){
                     echo " disabled";
                   }
                   echo ">confirm</button>
-                      </div>
                     </div>
                   </form>
                   </fieldset>";
-                }
               endif;
             endif;
           endforeach;
           endif;?>
       <?php else: ?>
         <div class='d-flex flex-row'>
-          <label class='w-20'>주문상태</label>
-          <span>취소됨</span>
+          <label class='w-20'><?=lang('Order.orders.detail.orderStatus')?></label>
+          <span><?=lang('Order.orders.detail.orderCanceled')?></span>
         </div>
         <?php if ( !empty($product['detail_desc'])) : ?>
         <div class='d-flex flex-row'>
-          <label class='w-20'>취소 사유</label>
+          <label class='w-20'><?=lang('Order.orders.detail.cancelReason')?></label>
           <div class='w-80'><?=$product['detail_desc']?></div>
         </div>
         <?php endif;?>

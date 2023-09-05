@@ -27,7 +27,7 @@
           <form>
           <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
           <?php if ( empty($order['order_fixed'] )) : ?>
-          <button class='btn btn-sm btn-dark my-1 order-check' data-next-name='<?=lang('Order.checkout')?>'>결제확정</button>
+          <button class='btn btn-sm btn-dark my-1 order-check' data-next-name='<?=lang('Order.checkout')?>'><?=lang('Order.orders.paymentConfirm')?></button>
           <?php else : ?>
             <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Order.checkout')?></button>
           <?php endif; ?>
@@ -62,7 +62,7 @@
 <?php if ( !empty($receipts) ) : ?>
 <div class='p-0 receipt-info-section'>
   <div class='info-sec p-0 d-flex flex-column'>
-    <div class='py-2 ps-2 border-bottom text-capitalize w-100'><?=lang('Order.orders.payment.receipts')?></div>
+    <div class='py-2 ps-2 border-bottom text-capitalize w-100'><?=lang('Order.orders.detail.payment.receipts')?></div>
     <div class='w-100 sub-sec p-2'>
       <div class='d-flex flex-column border border-1'>
         <div class='w-100 head d-grid text-center text-capitalize'>
