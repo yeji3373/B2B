@@ -188,7 +188,7 @@
 }
 
 .orders-main legend {
-  top: -18%;
+  top: -9%;
   transform: translateY(18%);
   left: 0.3rem;
   clear: both;
@@ -196,4 +196,5 @@
   background-color: #f8f9fa;
   font-size: 0.8rem;
   padding: 0 0.2rem;
+  font-weight: bold;
 }
