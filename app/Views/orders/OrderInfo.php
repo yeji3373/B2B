@@ -173,7 +173,7 @@
             <div class='packagin-status 
               <?php 
               if ( !empty($nowPackStatus) ) :
-                if ( $status['order_by'] < $nowPackStatus['order_by'] ) echo 'ing';
+                if ( $status['order_by'] <= $nowPackStatus['order_by'] ) echo 'ing';
               endif;
               ?>'>
               <div class='circle'></div>

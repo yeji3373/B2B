@@ -103,7 +103,7 @@ class Inventory extends BaseController {
             $this->orderNumber = $request['order_number'];
 
             $orderDetailFailed = $this->setOrderDetail($orderId);
-
+            var_dump($orderDetailFailed);
             if ( empty($orderDetailFailed) ) {  // detail 입력중 오류 없음
               if ( $this->delivery->save(['order_id' => $orderId]) ) {
                 if ( $this->packaging->save(['order_id' => $orderId]) ) {
@@ -159,14 +159,14 @@ class Inventory extends BaseController {
     $buyer = $this->buyer->where(['id'=> session()->userData['buyerId'], 'available'=> 1])->first();
     if ( !empty($buyer) ) $margin_level = $buyer['margin_level'];
     else return session()->setFlashdata('error', 'buyer 정보가 일치하지 않음');
-
+    
     $cartList = $this->cart
                   ->select('cart.buyer_id, 
                           cart.prd_id,
                           cart.brand_id,
                           cart.product_price_idx AS prd_price_id,
                           cart.order_qty AS prd_order_qty,
-                          cart.margin_section_id,
+                          cart.prd_section,
                           supply_price.price AS prd_price')
                   ->join('supply_price', 'supply_price.product_price_idx = cart.product_price_idx')
                   ->where(['cart.buyer_id'=> session()->userData['buyerId']
@@ -175,7 +175,7 @@ class Inventory extends BaseController {
     if ( !empty($cartList) ) :
       $success = 0;
       foreach( $cartList AS $i => $cart ) :
-        $margin = $this->margin->margin()->where(['margin_rate.brand_id' => $cart['brand_id'], 'margin_rate.idx' => $cart['margin_section_id']])->first();
+        $margin = $this->margin->margin()->where(['margin_rate.brand_id' => $cart['brand_id'], 'margin.idx' => $cart['prd_section']])->first();
         $prd_price = ROUND(($cart['prd_price'] / session()->currency['basedExchangeRate']), session()->currency['currencyFloat']);
 
         if ( !empty($margin) ) {
