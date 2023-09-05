@@ -103,7 +103,7 @@ class Inventory extends BaseController {
             $this->orderNumber = $request['order_number'];
 
             $orderDetailFailed = $this->setOrderDetail($orderId);
-
+            // var_dump($orderDetailFailed);
             if ( empty($orderDetailFailed) ) {  // detail 입력중 오류 없음
               if ( $this->delivery->save(['order_id' => $orderId]) ) {
                 if ( $this->packaging->save(['order_id' => $orderId]) ) {
@@ -135,7 +135,6 @@ class Inventory extends BaseController {
               // detail 입력중에 오류 발생
               return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
             }
-
             return redirect()->to(site_url('orders'));
           } else {
             return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');

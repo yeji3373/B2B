@@ -271,7 +271,7 @@ class Orders extends BaseController {
                               FROM requirement_request
                                 JOIN requirement ON requirement.idx = requirement_request.requirement_id
                               GROUP BY requirement_request.order_detail_id 
-                            ) AS requirement', 'requirement.order_id = orders.id AND requirement.order_detail_id = orders_detail.id')
+                            ) AS requirement', 'requirement.order_id = orders.id AND requirement.order_detail_id = orders_detail.id', 'left outer')
                     ->where('orders_detail.order_id', $this->orderId)
                     ->where(['product.discontinued' => 0, 'product.display' => 1])
                     ->where('product_price.available', 1)

@@ -80,6 +80,7 @@
 .orders-main .order-info-container .packaging-info-section .packagin-status.ing::before {
   border-bottom-color: royalblue;
 }
+.orders-main .order-detail-container .list-group .list-group-item .product-item > div { width: calc(100% - 3rem); }
 .orders-main .order-detail-container .list-group .thumbnail { width: 3rem; }
 .orders-main .order-detail-container .list-group .list-group-item .apply-discount-value { display: none; }
 .orders-main .order-detail-container .list-group .list-group-item.apply-discount .text-line-through { text-decoration: line-through; }

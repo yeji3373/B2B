@@ -67,7 +67,7 @@ return [
     'orderDate'           => 'Order date',  // 주문날짜
     'orderNumber'         => 'Order number',  // 주문번호
     'paymentType'         => 'Payment type',  // 결제 수단
-    'inventoryChecking'   => '재고요청 확인 중',  // 재고요청 확인 중
+    'inventoryChecking'   => 'Inventory request under review',  // 재고요청 확인 중
     'currency'            => 'Currency',  // 결제 통화
     'ExportCheck'         => 'Export declaration',
     'zeroTax'             => 'Zero tax',
@@ -107,13 +107,12 @@ return [
 
   /* 재고요청 선택사항 DB */
   'inventoryRequest'    => [
-    'inventoryCheckRq'    => '재고체크요청',
-    'checkAlert'          => '재고체크 확인 요청을 취소하겠습니까?',
-    'requestCheck'        => '재고요청 시 요청사항',
-    'requestCheckSelect'  => '요청사항 선택',
-    'expirationDate'      => '유통기한 체크 요청',
-    'leadtimeCheck'       => 'lead time Check 요청',
-    'etc'                 => '기타 요청사항'
+    'inventoryCheckRq'    => 'Inventory check request',
+    'checkAlert'          => 'Would you like to cancel the inventory check request?',
+    'requestCheck'        => 'Details when requesting inventory',
+    'requestCheckSelect'  => 'Select request details',
+    'balanceReq'          => '잔금요청',
+    'balanceCheckComplete'=> '잔금입금 확인 완료'
   ],
   /* 재고요청 선택사항 DB */
 

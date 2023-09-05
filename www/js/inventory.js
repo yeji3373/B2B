@@ -17,8 +17,8 @@ $(document).ready(function() {
       $(target).append(
         $("<div/>").addClass('requirement-item').attr('data-idx', idx)
                   .append($('<input/>').attr('type', 'hidden').attr('name', 'requirement[' + idx + '][requirement_id]').val($(this).children('option:selected').val()))
-                  .append($('<label/>').addClass('w-20').text($(this).children('option:selected').text()))
-                  .append($('<textarea/>').addClass('w-80').attr('name', 'requirement[' + idx + '][requirement_detail]').attr('placeholder', $(this).children('option:selected').data('placeholder')))
+                  .append($('<label/>').text($(this).children('option:selected').text()))
+                  .append($('<textarea/>').attr('name', 'requirement[' + idx + '][requirement_detail]').attr('placeholder', $(this).children('option:selected').data('placeholder')))
       );
     }
   }

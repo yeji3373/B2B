@@ -101,7 +101,9 @@
             </div>
           </div>
           <div class='w-100 text-end'>
-            <button class='btn btn-primary inventory_check_request-btn' data-bs-target='.pre-order' aria-confirm='재고체크 확인 요청을 취소하겠습니까?'>
+            <button class='btn btn-primary inventory_check_request-btn' 
+                  data-bs-target='.pre-order' 
+                  aria-confirm='<?=lang('Order.inventoryRequest.checkAlert')?>'>
               <?=lang('Order.inventoryRequest.inventoryCheckRq')?>
             </button>
           </div>

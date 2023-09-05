@@ -16,7 +16,7 @@
           </div>
           <?php if ( !empty($product['type_en']) ) : ?>
           <div>
-            <label class='w-15'>Type : </label>
+            <label>Type : </label>
             <span class='fw-bold'><?="#".$product['type_en']?></span>
           </div>
           <?php endif ?>
