@@ -129,21 +129,21 @@ class Orders extends BaseController {
     $data = $this->request->getPost('order');
     $code = 500;
     $msg = NULL;
-   
+  
     if ( !empty($data) ) {
       $packagingStatus = $this->packaging
                             ->packagingJoin(['packaging.order_id'=> $data['id']])
                             ->select('packaging.*')
                             ->select('packaging_status.idx AS packaging_status_id, packaging_status.order_by
-                                      , packaging_status.status_name, packaging_status.status_name_en
-                                      , packaging_status.display, packaging_status.payment_request
+                                      , packaging_status.status_name, packaging_status.status_name_en, packaging_status.requirement_option_disabled
+                                      , packaging_status.display, packaging_status.payment_request, packaging_status.requirement_option_check
                                       , packaging_status.available, packaging_status.has_email, packaging_status.email_id')
                             ->select('packaging_detail.idx AS packaging_detail_idx, packaging_detail.packaging_id
                                       , packaging_detail.status_id, packaging_detail.in_progress, packaging_detail.complete')
                             ->orderBy('packaging_status.order_by DESC')
                             ->first();
       
-      if ( !empty($packagingStatus) && !empty($packagingStatus['payment_request']) ) {
+      if ( !empty($packagingStatus) && !empty($packagingStatus['requirement_option_check']) ) {
         if ( empty($packagingStatus['complete']) ) {
           $nextPackageStatus = $this->packagingStatus->where(['order_by' => ($packagingStatus['order_by'] + 1), 'available' => 1])->first();
 
@@ -153,10 +153,10 @@ class Orders extends BaseController {
             $packagingDetailData['status_id'] = $nextPackageStatus['idx'];
             
               if ($this->packagingDetail->save($packagingDetailData)) {
-                $data = array_merge($data, ['order_fixed' => 1]);
-                if ( $this->order->save($data) ) {
-                  $code = 200; $msg = 'saved';
-                }
+                // $data = array_merge($data, ['order_fixed' => 1]);
+                // if ( $this->order->save($data) ) {
+                // }
+                $code = 200; $msg = 'saved';
               }
             }
           } 

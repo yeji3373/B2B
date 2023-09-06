@@ -68,6 +68,7 @@ return [
     'orderNumber'         => 'Order number',  // 주문번호
     'paymentType'         => 'Payment type',  // 결제 수단
     'inventoryChecking'   => 'Inventory request under review',  // 재고요청 확인 중
+    'orderChecking'       => 'Order under review',  // 주문 확인 중
     'currency'            => 'Currency',  // 결제 통화
     'ExportCheck'         => 'Export declaration',
     'zeroTax'             => 'Zero tax',

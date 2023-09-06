@@ -56,6 +56,7 @@ $(document).ready(function() {
     result = getData('/orders/getOrderOption', formData);
     console.log(result);
     return false;
+  // packaging_status -> 6 (고객확인완료) 로 변경
   }).on('click', '.order-check', function(e) {
     e.preventDefault()
     let data = $(this).closest('form').serializeArray();
@@ -63,11 +64,10 @@ $(document).ready(function() {
     result = getData('/orders/orderFixed', data, true);
     console.log(result);
     if (result['Code'] == 200 ) {
-      // 결제하기로 변경하기
       if ( typeof $(this).data('nextName') != 'undefined' ) {
         $(this).text($(this).data('nextName'));
       }
-      $(this).removeClass('order-check').addClass('order-request');
+      // $(this).removeClass('order-check').addClass('order-request');
     }
     return false;
     // result = getData('/order')
