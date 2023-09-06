@@ -32,6 +32,9 @@
             <span>
               <?php
                 echo $cart['spec'];
+                if ( !empty($cart['spec2']) ) {
+                  echo "<span>/".$cart['spec2']."</span>";
+                }
                 if ( $cart['box'] == 1 ) :
                   echo "/pc";
                   echo "<span class='fw-bold'> (".$cart['spec']."&#215;".$cart['in_the_box']."pcs)</span>";
@@ -91,9 +94,9 @@
               </div>
             </div>
           </div>
-
+<!-- <?php print_r($cart) ?> -->
           <div class='product-info-item moq'>
-            <label class='item-name' for='spq'>MOQ</label>
+            <label class='item-name'>MOQ</label>
             <span><?=number_format($cart['moq'])?></span>
           </div>
           

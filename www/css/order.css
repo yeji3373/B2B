@@ -31,6 +31,7 @@
   background-repeat: no-repeat;
   z-index: 1;
 }
+.products .thumbnail-zoom:last-child { bottom: 0; }
 .products .brand_name { position: relative; text-transform: uppercase; }
 .products .brand_name::after { content: '\005D'; }
 .products .brand_name::before { content: '\005B'; }
