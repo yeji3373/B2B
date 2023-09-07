@@ -23,23 +23,21 @@
       <?php endif; ?>
     <?php else : ?>
       <?php if ( !empty($nowPackStatus) ) : ?>
-        <?php if(!empty($nowPackStatus['requirement_option_check'])) : ?>
-          <form class='align-self-center'>
-          <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
-          <?php if($nowPackStatus['requirement_option_check']) : 
-                  if(is_null($nowPackStatus['requirement_option_disabled'])) : ?>
-                    <button class='btn btn-sm btn-dark my-1 order-check' data-next-name='<?=lang('Order.checkout')?>'><?=lang('Order.orders.paymentConfirm')?></button>
-            <?php else :
-                    if (($nowPackStatus['payment_request'])) : ?>
-                      <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Order.checkout')?></button>
-              <?php else : ?>
-                      <span class='py-2 pm-2'><?=lang('Order.orders.orderChecking')?>
-              <?php endif; 
-                  endif; ?>
-          <?php else : ?>
-                  <span class='py-2 pm-2'><?=lang('Order.orders.inventoryChecking')?>
-          <?php endif; ?>
-          </form> 
+        <form class='align-self-center'>
+        <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
+        <?php if($nowPackStatus['requirement_option_check']) : 
+                if(is_null($nowPackStatus['requirement_option_disabled'])) : ?>
+                  <button class='btn btn-sm btn-dark my-1 order-check'><?=lang('Order.orders.detail.paymentConfirm')?></button>
+          <?php else :
+                  if (($nowPackStatus['payment_request'])) : ?>
+                    <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Order.checkout')?></button>
+            <?php else : ?>
+                    <span class='py-2 pm-2'><?=lang('Order.orders.orderChecking')?>
+            <?php endif; 
+                endif; ?>
+        </form>
+        <?php else : ?>
+                <span class='py-2 pm-2'><?=lang('Order.orders.inventoryChecking')?>
         <?php endif; ?>
       <?php else : ?>
         <!-- 현재 상태값이 없음 -->

@@ -64,10 +64,11 @@ $(document).ready(function() {
     result = getData('/orders/orderFixed', data, true);
     console.log(result);
     if (result['Code'] == 200 ) {
-      if ( typeof $(this).data('nextName') != 'undefined' ) {
-        $(this).text($(this).data('nextName'));
-      }
+      // if ( typeof $(this).data('nextName') != 'undefined' ) {
+      //   $(this).text($(this).data('nextName'));
+      // }
       // $(this).removeClass('order-check').addClass('order-request');
+      location.reload(true);
     }
     return false;
     // result = getData('/order')
@@ -96,9 +97,9 @@ $(document).ready(function() {
       let formData;
       let selectedOption = $(this).closest('form').find('input[name="requirement_id"]').val();
       if(selectedOption == 1){
-        formData = $(this).closest('.list-group-item').find('#expirationForm').serializeArray();
+        formData = $(this).closest('#requirmentOptForm').serializeArray();
       }else{
-        formData = $(this).closest('.list-group-item').find('#leadtimeForm').serializeArray();
+        formData = $(this).closest('#requirmentOptForm').serializeArray();
       }
       console.log(formData);
       result = getData('/orders/getOrderOption', formData);

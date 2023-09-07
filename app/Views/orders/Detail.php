@@ -133,9 +133,10 @@
                   endif;
                   echo "<div class='d-flex flex-column'>";
                   echo "<div class='d-flex flex-column'>";
+                  $optionName = $r['requirement_id'] == 1 ? "expirationOption" : "leadtimeOption";
                   foreach($r['options'] AS $o) :
                     echo "<label class='margin-right-1 pb-1 d-flex flex-row align-items-center'>";
-                    echo "<input type='radio' name='leadtimeOption' value='{$o['idx']}'";
+                    echo "<input type='radio' name='".$optionName."' value='{$o['idx']}'";
                     if($o['idx'] == $r['requirement_selected_option_id']){
                       echo " checked";
                     }
