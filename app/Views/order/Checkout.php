@@ -6,7 +6,7 @@
           <?=view('/layout/includes/AddressForm')?>
           <div class='py-2 px-4 mt-2 border rounded'>
             <div class='d-flex flex-row flex-wrap'>
-              <label class='title'><?=lang('Order.currency')?></label>
+              <label class='title'><?=lang('Order.orders.currency')?></label>
               <div class='w-75 radio-group'>
                 <?php foreach($currencies as $currency) : ?>
                 <label class='checkout-currency' for='checkout-currency-<?=strtolower($currency['currency_code'])?>'>
