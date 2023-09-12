@@ -5,6 +5,7 @@ return [
     'registration'          => 'Registration',
     'account'               => 'Account',
     'name'  				    	  => 'Name',
+    'contactName'           => 'Contact Name',
     'id'                    => 'ID',
     'email' 	      			  => 'E-mail address',
     'password'	  	    	  => 'Password',

@@ -86,15 +86,14 @@
             <div class='d-flex flex-row flex-wrap border border-secondary w-50'>
               <div class='d-flex flex-column border-end border-secondary w-50'>
                 <label class='fw-lighter border-bottom border-secondary text-center w-100'>In box </label>
-                <span class='d-inline-block text-center w-100'><?=number_format($cart['spq_inBox'])?></span>
+                <span class='d-inline-block text-center w-100'><?=empty($cart['spq_inBox']) ? '-' : number_format($cart['spq_inBox'])?></span>
               </div>
               <div class='d-flex flex-column w-50'>
                 <label class='fw-lighter border-bottom border-secondary text-center w-100'>Out box</label>
-                <span class='d-inline-block text-center w-100'><?=number_format($cart['spq_outBox'])?></span>
+                <span class='d-inline-block text-center w-100'><?=empty($cart['spq_outBox']) ? '-' : number_format($cart['spq_outBox'])?></span>
               </div>
             </div>
           </div>
-<!-- <?php print_r($cart) ?> -->
           <div class='product-info-item moq'>
             <label class='item-name'>MOQ</label>
             <span><?=number_format($cart['moq'])?></span>

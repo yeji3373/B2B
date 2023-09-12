@@ -36,6 +36,7 @@ class Home extends BaseController {
     // if ( session()->isLoggedIn ) {
     //   return call_user_func_array(array($this, 'main'), []);
     // }
+    $this->data['policy'] = $this->notice->board(['board.idx' => 2])->first();
     return $this->basicLayout('dash/index', $this->data);
   }
 
@@ -46,11 +47,13 @@ class Home extends BaseController {
       }
     }
     $this->data['notices'] = $this->notice->board(['board_type.available' => 1
-                                                , 'board.type_idx' => 1])
+                                                , 'board.type_idx' => 1
+                                                , 'board.display' => 1])
                                           ->orderBy('board.fixed DESC, board.sort ASC, board.idx ASC')
                                           ->findAll(8);
     $this->data['qna'] = $this->notice->board(['board_type.available' => 1
-                                              , 'board.type_idx' => 2])
+                                              , 'board.type_idx' => 2
+                                              , 'board.display' => 1])
                                       ->orderBy('board.fixed DESC, board.sort ASC, board.idx ASC')
                                       ->findAll(8);
     $this->data['statistics'] = $this->ordersController->ordersStatistics();

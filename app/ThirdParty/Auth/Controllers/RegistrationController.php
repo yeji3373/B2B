@@ -58,7 +58,7 @@ class RegistrationController extends Controller
 
     $data['config'] = $this->config;
     $data['regions'] = $region->getRegion();
-    $data['countries'] = $counties->where('available', 1)->orderBy('region_id ASC')->findAll();
+    $data['countries'] = $counties->where('available', 1)->orderBy('sort ASC, region_id ASC, name_en ASC')->findAll();
     $data['itus'] = $counties->select('id, country_no')->orderBy('country_no ASC', 'country_no_sub ASC')->groupBy('country_no')->findAll();
     
     // echo $counties->getLastQuery();
@@ -77,16 +77,15 @@ class RegistrationController extends Controller
 	/**
 	 * Attempt to register a new user.
 	 */
-	public function attemptRegister()
-	{
+	public function attemptRegister()	{
 		helper('text');
     $users = new UserModel();
     $buyers = new BuyerModel();
     $ftpFile = new FtpFileController();
     $buyerCurrency = new BuyerCurrencyModel();
     $buyerId;
-    $fileName;
-    
+    $fileName = NULL;
+
     $buyer = $buyers
                 ->asArray()
                 ->where("replace(name, ' ', '')", str_replace(' ', '', $this->request->getPost('buyerName')), 'both')
@@ -94,13 +93,15 @@ class RegistrationController extends Controller
                 ->first();
     if ( !empty($buyer) ) {
       $buyerId = $buyer['id'];
-
-      // return redirect()->back()->withInput()->with('error', '이미 등록된 업체(buyer)');
+      return redirect()->back()->withInput()->with('error', lang('Auth.alreadyRegistered'));
     } else {
       if ( isset($_FILES) ) {
         if ( $_FILES['certificateBusiness']['size'] <= 1572864 ) {
           $fileName = str_replace(str_split('\\/:*?"<>|'), '', $this->request->getPost('businessNumber'));
           $ftpFile->fileUpload($_FILES['certificateBusiness'], $fileName);
+          $ext = strtolower(pathinfo($_FILES['certificateBusiness']['name'])['extension']);
+
+          $fileName = $fileName.".".$ext;
         } else return redirect()->back()->withInput()->with('error', 'Files Size Error');
       }
       $buyerData = [
@@ -114,33 +115,35 @@ class RegistrationController extends Controller
               'phone' => $this->request->getPost('buyerPhoneCode').'-'.$this->request->getPost('buyerPhone'),
               'certificate_business' => $fileName
       ];
+      // var_dump($buyerData);
       if ( !$buyers->save($buyerData)) {
         return redirect()->back()->withInput()->with('errors', $buyers->errors());
       }
       $buyerId = $buyers->getInsertID();
     }
 
-		// // save new user, validation happens in the model		
+		// save new user, validation happens in the model		
 		$getRule = $users->getRule('registration');
 		$users->setValidationRules($getRule);
     $user = [
+      // 'id'                => $this->request->getPost('id'),
       'name'          	  => $this->request->getPost('name'),
-      'id'                => $this->request->getPost('id'),
       'email'         	  => $this->request->getPost('email'),
       'password'     		  => $this->request->getPost('password'),
       'password_confirm'	=> $this->request->getPost('password_confirm'),
       'buyer_id'          => $buyerId,
     ];
+    // var_dump($user);
 
     if (!$users->save($user)) {
 			return redirect()->back()->withInput()->with('errors', $users->errors());
     }
 
-		// // // send activation email
-		// // helper('auth');
-    // // send_activation_email($user['email'], $user['activate_hash']);
+		// // send activation email
+		// helper('auth');
+    // send_activation_email($user['email'], $user['activate_hash']);
 
-		// // success
+		// success
     return redirect()->to('login')->with('success', lang('Auth.registrationSuccess'));
 	}
   //--------------------------------------------------------------------

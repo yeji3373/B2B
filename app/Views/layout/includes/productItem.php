@@ -88,11 +88,11 @@
       </div>
       <div class='font-size-middle'>
         <?php
-          if ($product['type_en'] != "" ) {
+          if ( !empty($product['type_en']) ) {
             echo "<span class='fw-bold type-en text-capitalize'>".lang('Order.productType')." : #".$product['type_en']."</span>";
           }
 
-          if ( $product['package'] == 1 ) {
+          if ( !empty($product['package']) && !empty($product['package_detail'])) {
             echo "<span class='fw-bold text-capitalize'>".lang('Order.compo')." : ".$product['package_detail']."</span>";
           }
         ?>            
@@ -104,7 +104,7 @@
             echo "<span class='tag-item taxation'>zero tax</span>";
           }
           // echo ($product['box'] == 1 ? "<span class='tag-item inTheBox'>".$product['in_the_box']."pcs/Box</span>" : "");
-          if ($product['sample'] == 1) {
+          if ( !empty($product['sample']) ) {
             echo "<span class='tag-item sample'>".lang('Order.sample')."</span>";
           }
         ?>
