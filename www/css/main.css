@@ -3,6 +3,7 @@
 .home-main .d-grid { grid-gap: 1rem; }
 .home-main img { width: 100%; height: auto; }
 .home-main .board { height: 16rem; overflow-y: auto; }
+.home-main .board .col { max-height: 2rem; }
 .home-main .board .col:not(:last-child) { border-bottom: 1px dotted gray; } 
 .home-main .board .col a { display: block; text-decoration: initial; position: relative; padding: 0.2rem 0 0.2rem;}
 .home-main .board .col.fix { font-weight: bold; text-decoration: underline; }

@@ -8,12 +8,12 @@ class UserModel extends Model
 	protected $primaryKey = 'idx';
 
 	protected $returnType = 'array';
-  	protected $useAutoIncrement = true;
+  protected $useAutoIncrement = true;
 	protected $useSoftDeletes = false;
 
 	// this happens first, model removes all other fields from input data
 	protected $allowedFields = [
-		'buyer_id', 'id', 'name', 'email', 'password', 'active',
+		'buyer_id', 'id', 'name', 'email', 'password', 'active'
 	];
 
 	protected $useTimestamps = true;
@@ -60,8 +60,7 @@ class UserModel extends Model
   /**
   * Retrieves validation rule
   */
-	public function getRule(string $rule)
-	{
+	public function getRule(string $rule)	{
 		return $this->dynamicRules[$rule];
 	}
 
@@ -70,8 +69,7 @@ class UserModel extends Model
   /**
   * Hashes the password after field validation and before insert/update
   */
-	protected function hashPassword(array $data)
-	{
+	protected function hashPassword(array $data) {
 		if (! isset($data['data']['password'])) return $data;
 
 		$data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
@@ -86,8 +84,7 @@ class UserModel extends Model
   /* 
   * getUser index
   */
-  public function getUserIndex($data)
-  {
+  public function getUserIndex($data) {
     if ( !isset($data) ) return null;
 
     $userIdx = $this->select('idx')->where('id', $data)->first();

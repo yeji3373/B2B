@@ -4,8 +4,7 @@ namespace Paypal\Controllers;
 use CodeIgniter\Controller;
 use Config\Services;
 
-class PaypalController extends Controller
-{
+class PaypalController extends Controller {
   protected $config;
 
   protected $currencyCode;
@@ -51,6 +50,7 @@ class PaypalController extends Controller
 
   public function paypal($req) {
     $this->orderInfo = $req;
+    // var_dump($this->orderInfo);
 
     if ( $this->config->accessTokenExpiry >= time() ) {
       if ( empty($this->config->accessToken) ) {
@@ -58,6 +58,7 @@ class PaypalController extends Controller
         $this->config->getOauth();
       }
     }
+    
     $this->makeInvoice();
   }
 
@@ -71,24 +72,25 @@ class PaypalController extends Controller
       $invoiceData,
       'POST'
     );
-    // echo "<br/><br/>";
-    // var_dump($generate);
+    echo "<br/><br/>";
+    var_dump($generate);
 
     if ( $generate['code'] == 201 ) {   // successful request returns code 
       $this->invoiceId = $generate['data']['id'];
       $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
+      // var_dump($generate['data']['links']);
       $this->sendInvoice();
     } else if ( $generate['code'] == 200 ) {
       $this->invoiceId = $generate['data']['id'];
       $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
       $this->sendInvoice();
     } else {
-      // print_r($generate);
-      $this->result['error'] = 'invoice make error '.$generate['data']['name'].' : '.json_encode($generate['data']['details']);
-      $this->result['code'] = $generate['code'];
-      
-      return $this->result;
+      // // print_r($generate);
+      // $this->result['error'] = 'invoice make error '.$generate['data']['name'].' : '.json_encode($generate['data']['details']);
+      // $this->result['code'] = $generate['code'];
+      $this->result = $generate;
     }
+    return $this->result;
   }
 
   protected function sendInvoice() {
@@ -99,18 +101,20 @@ class PaypalController extends Controller
       'POST'
     );
     // echo "<br/><br/>";
-    // print_r($send);
+    // var_dump($send);
     
     // successful code 202 : 인보이스 발행 날짜가 미래인 경우
-    if ( $send['code'] == 200 || $send['code'] == 201 || $send['code'] == 202 ) { 
+    if ( $send['code'] == 200 || $send['code'] == 201 || $send['code'] == 202 || $send['code'] == 204) { 
       $this->result['payment_url'] = $send['data']['href'];
       $this->result['payment_invoice_id'] = $this->invoiceId;
       $this->result['payment_invoice_number'] = $this->invoiceNumber;
       $this->result['data'] = $send;
+      $this->result['code'] = 200;
     } else {
-      $this->result['error'] = 'invoice send error '.$send['data']['name'].' : '.json_encode($send['data']['details']);
-    }    
-    $this->result['code'] = $send['code'];
+      // $this->result['error'] = 'invoice send error '.$send['data']['name'].' : '.json_encode($send['data']['details']);
+      // $this->result['code'] = $send['code'];
+      $this->result = $send;
+    }
     
     return $this->result;
   }

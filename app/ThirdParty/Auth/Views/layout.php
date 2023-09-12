@@ -25,13 +25,27 @@
       border-radius: 4.2px;
       box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.2);
     }  
+    main input:not([type=radio], [type=checkbox], [type=submit]),
+    main textarea,
+    main select,
+    main select option {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.8rem;
+      background-color: #f9f9f9;
+      border-color: #e5e5e5;
+    }    
     .login_section { width: 25%; }
-    .register_section { width: 60%; }
+    .register_section { width: 70%; }
     .register_section form { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1.5rem; align-items: baseline; }
-    .register_section form fieldset { border: 1px solid #b8b8b8; border-radius: 4.2px; padding: 0.2rem 1.5rem; }
+    .register_section form { border: 1px solid #b8b8b8; border-radius: 4.2px; padding: 0.2rem 1.5rem; }
     .register_section form .grid-footer { grid-area: footer; grid-column: auto / span 2; text-align: -webkit-right;}
-    .register_section form fieldset > div { position: relative; margin: 0.8rem auto; padding: 0.8rem 0 0; }
-    .register_section form fieldset > div > label { 
+    .register_section form > div > div,
+    .register_section form > div > p { 
+      position: relative; margin: 0.8rem auto; padding: 0.8rem 0 0; 
+    }
+    .register_section form > div > div > label,
+    .register_section form > div > p > label { 
       position: absolute;
       left: 0.5rem;
       top: 0;

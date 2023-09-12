@@ -12,7 +12,8 @@ if ( !function_exists('invoice_detail') || !empty($userData) ) {
 
     $default = [
       'detail'   => [
-        'invoice_number'  => empty($userData['invoce_number']) ? $userData['buyerName'].'_'.date('YmdHms', time()) : $userData['invoce_number'],
+        // 'invoice_number'  => empty($userData['invoce_number']) ? $userData['buyerName'].'_'.date('YmdHms', time()) : $userData['invoce_number'],
+        'invoice_number'  => empty($userData['invoice_number']) ? $userData['buyerName'].'_'.date('Ymd', time()) : $userData['invoice_number'],
         'invoice_date'    => date('Y-m-d'),
         'payment_term'    => ['term_type' => 'NO_DUE_DATE'],
         'currency_code'   => $currencyUnit

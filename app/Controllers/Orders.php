@@ -72,6 +72,7 @@ class Orders extends BaseController {
                                     ->findAll(10);
     } else {
       $this->data['order'] = $this->getOrder();
+      echo $this->orderId;
       $this->data['paymentMethod'] = $this->getPaymentMethod();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
@@ -313,7 +314,7 @@ class Orders extends BaseController {
                         , 'orders_receipt.display' => 1])
                 ->where($addWhere)
                 ->findAll();
-    // echo $this->receipt->getLastQuery();
+    echo $this->receipt->getLastQuery();
 
     if ( !empty($receipts) ) {
       foreach ($receipts as $i => $receipt) {

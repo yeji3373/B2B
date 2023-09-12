@@ -4,12 +4,11 @@ namespace Paypal\Config;
 use CodeIgniter\Config\BaseConfig;
 use Config\Services;
 
-class Paypal extends BaseConfig
-{
-  public $sandbox = TRUE; // TRUE:test계정 사용하기 FALSE:LIVE
+class Paypal extends BaseConfig {
+  public $sandbox = false; // TRUE:test계정 사용하기 FALSE:LIVE 계정 사용하기
 
   protected $sandboxURL = 'https://sandbox.paypal.com';
-  protected $liveUrl = 'https://www.paypal.com';
+  protected $liveURL = 'https://api.paypal.com';
 
   protected $sandBoxBaseUrl = 'https://api-m.sandbox.paypal.com';
   protected $liveBaseUrl = 'https://api-m.paypal.com';
