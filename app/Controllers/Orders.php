@@ -238,6 +238,7 @@ class Orders extends BaseController {
                     ->select('orders_detail.prd_qty_changed')
                     ->select('orders_detail.prd_order_qty')
                     ->select('orders_detail.prd_change_qty')
+                    ->select('orders_detail.prd_fixed_qty')
                     ->select('orders_detail.order_excepted')
                     ->select('orders_detail.detail_desc')
                     // ->select('orders_detail.prd_taxation')

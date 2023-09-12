@@ -1,7 +1,6 @@
 <div class='d-flex flex-column list-group'>
   <?php if ( isset($orderDetails) && !empty($orderDetails) ) : ?>
     <?php 
-    $orderTotal = 0;
     foreach($orderDetails AS $i => $product) : 
     ?>
     <div class='d-flex flex-column border <?=($i > 0 ? 'border-top-0': '')?> justify-content-between p-0 list-group-item'>
@@ -58,23 +57,23 @@
           <label class='w-20'>Request Qty</label>
           <div class='w-80 d-flex flex-row align-items-lg-end'>
           <?php
-            $priceClass = '';
-            $changedClass = '';
-            if ( !empty($product['prd_qty_changed']) ) :
-              $priceClass = 'text-decoration-line-through pe-2';
-              $changedClass = 'fw-bold font-size-9';
-            endif;
+            $seletedOptions = [];
             if ( !empty($product['prd_order_qty']) ) {
-              echo "<span class='".$priceClass."'>";
-              echo number_format($product['prd_order_qty'])."EA";
+              echo "<span>";
+              echo number_format($product['prd_order_qty'])."EA &nbsp;";
               echo "</span>";
             }
             if ( !empty($product['prd_change_qty']) ) {
-              echo "<span class='".$changedClass."'>";
-              echo number_format($product['prd_change_qty'])."EA";
+              echo "<span> &nbsp:&nbsp:&nbsp ";
+              echo number_format($product['prd_change_qty'])."EA &nbsp;";
               echo "</span>";
             }
-            ?>
+            if(!empty($product['prd_fixed_qty'])) {
+              echo "<span> &nbsp:&nbsp:&nbsp ";
+              echo number_format($product['prd_fixed_qty'])."EA &nbsp;";
+              echo "</span>";
+            }
+          ?>
           </div>
             
         </div>
@@ -94,18 +93,24 @@
               $orderPrice = ($product['prd_order_qty'] * $product['prd_price']);
             endif;
           endif;
-          $orderTotal += $orderPrice;
           ?>
           <label class='w-20'>Order Price</label>
           <div class='w-80 d-flex flex-row align-items-lg-end'>
             <?php 
             if ( ($product['prd_order_qty'] * $product['prd_price']) != $orderPrice ) : 
-              echo "<span class='text-decoration-line-through pe-2 font-size-7'>";
-              echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
+              echo "<span>";
+              echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat'])."&nbsp;";
               echo "</span>";
-              echo "<span class='font-size-9'>";
-              echo  session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat']);
-              echo "</span>";
+              if (!empty($product['prd_change_qty'])) :
+                echo "<span>";
+                echo  " &nbsp:&nbsp:&nbsp ".session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat'])."&nbsp;";
+                echo "</span>";
+              endif;
+              if(!empty($product['prd_fixed_qty'])) :
+                echo "<span>";
+                echo " &nbsp:&nbsp:&nbsp ".session()->currency['currencySign'].number_format(($product['prd_fixed_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
+                echo "</span>";
+              endif;
             else : 
               echo "<span>";
               echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
@@ -175,13 +180,6 @@
       </div>
     </div>
     <?php endforeach ?>
-    <span></span>
-    <span class='order_total'>
-      <?=$product['currency_sign'].number_format($orderTotal, $product['currency_float'])?>
-    </span>
-    <!-- <button class='btn btn-primary inventory_check_request-btn' data-bs-target='.pre-order' aria-confirm='재고체크 확인 요청을 취소하겠습니까?'>
-      <?//=lang('Order.ordermore')?>
-    </button> -->
   <?php else : ?>
     <div><?=lang('Order.isEmpty')?></div>
   <?php endif ?>
