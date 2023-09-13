@@ -211,7 +211,7 @@ class Checkout extends BaseController
                 // $invoiceData['invoice_number'] = $data['order']['buyerName']."_".$data['order']['order_number'];
                 $invoiceData['invoice_number'] = $data['order']['buyerName']."_".date('ymd', strtotime($data['order']['created_at']));
                 $invoiceData['buyerName'] = $data['order']['buyerName'];
-                $invoiceData['id'] = session()->userData['id'];
+                // $invoiceData['id'] = session()->userData['id'];
                 $invoiceData['email'] = session()->userData['email'];
                 $invoiceData['currency_code'] = $data['order']['currency_code'];
                 // $invoiceData['order_details'] = $data['order_details'];

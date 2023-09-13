@@ -431,7 +431,7 @@ class Order extends BaseController
   }
 
   public function getUserIdx() {
-    $userIdx = $this->users->getUserIndex(session()->userData['id']);
+    $userIdx = $this->users->getUserIndex(session()->userData['email']);
     return $userIdx;
   }
 

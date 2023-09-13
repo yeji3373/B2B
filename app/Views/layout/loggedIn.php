@@ -1,8 +1,7 @@
 <?php if ( session()->isLoggedIn ) { ?>
   <div class="dropdown dropstart">
     <a href="#" class="btn d-block link-light text-decoration-none dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
-      <!-- <?=session()->userData['id']."(".session()->userData['email'].")"?> -->
-      <?=session()->userData['id']?>
+      <?=session()->userData['email']?>
     </a>
     <ul class="dropdown-menu text-small shadow">
       <li><a class="dropdown-item" href="#">Settings</a></li>

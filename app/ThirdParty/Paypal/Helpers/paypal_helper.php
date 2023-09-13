@@ -46,7 +46,7 @@ if ( !function_exists('invoice_detail') || !empty($userData) ) {
       'primary_recipients'  => [
         [
           'billing_info'  => [
-            'name'      => ['given_name' => $userData['buyerName'].'('.$userData['id'].')'],
+            'name'      => ['given_name' => $userData['buyerName'].'('.$userData['email'].')'],
             // 'address'   => [
             //   'address_line_1'  => $userData['streetAddr1'].$userData['streetAddr2'],
             //   // 'admin_area_2'    => 'Anytown',

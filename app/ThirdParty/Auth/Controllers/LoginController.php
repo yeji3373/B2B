@@ -154,7 +154,7 @@ class LoginController extends Controller
 		// login OK, save user data to session
 		$this->session->set('isLoggedIn', true);
 		$this->session->set('userData', [
-		    'id' 			      => $user['id'],
+		    // 'id' 			      => $user['id'],
 		    'name' 			    => $user['name'],
 		    'email' 		    => $user['email'],
         'buyerId'       => $buyer['id'],
