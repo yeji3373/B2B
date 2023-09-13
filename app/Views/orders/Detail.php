@@ -97,25 +97,21 @@
           <label class='w-20'>Order Price</label>
           <div class='w-80 d-flex flex-row align-items-lg-end'>
             <?php 
-            if ( ($product['prd_order_qty'] * $product['prd_price']) != $orderPrice ) : 
+            if(!empty($product['prd_fixed_qty'])) :
               echo "<span>";
-              echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat'])."&nbsp;";
+              echo session()->currency['currencySign'].number_format(($product['prd_fixed_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
               echo "</span>";
-              if (!empty($product['prd_change_qty'])) :
+            else :
+              if (!empty($product['prd_qty_changed']) || !empty($product['prd_price_changed'])) :
                 echo "<span>";
-                echo  " &nbsp:&nbsp:&nbsp ".session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat'])."&nbsp;";
+                echo session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat']);
+                echo "</span>";
+              else :
+                echo "<span>";
+                echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
                 echo "</span>";
               endif;
-              if(!empty($product['prd_fixed_qty'])) :
-                echo "<span>";
-                echo " &nbsp:&nbsp:&nbsp ".session()->currency['currencySign'].number_format(($product['prd_fixed_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
-                echo "</span>";
-              endif;
-            else : 
-              echo "<span>";
-              echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
-              echo "</span>";
-            endif;            
+            endif;
             ?>
           </div>
         </div>

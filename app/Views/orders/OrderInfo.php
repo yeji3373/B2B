@@ -23,7 +23,7 @@
       <?php endif; ?>
     <?php else : ?>
       <?php if ( !empty($nowPackStatus) ) : ?>
-        <form class='align-self-center'>
+        <form class='align-self-center m-0'>
         <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
         <?php if($nowPackStatus['requirement_option_check']) : 
                 if(is_null($nowPackStatus['requirement_option_disabled'])) : ?>
