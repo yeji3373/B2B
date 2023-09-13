@@ -58,7 +58,7 @@
           <div class='product-info-item ship-weight'>
             <label class='item-name'><?=lang('Order.productWeight')?></label>
             <span>
-              <?=$cart['shipping_weight'] != 0 ? number_format($cart['shipping_weight'])."g" : "";?>
+              <?=$cart['shipping_weight'] != 0 ? number_format($cart['shipping_weight'])."g" : "-";?>
             </span>
           </div>
 

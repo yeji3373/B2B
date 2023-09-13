@@ -239,7 +239,7 @@ class Order extends BaseController
     $data = $this->request->getPost();
 
     if ( !empty(session()->userData['buyerId']) ) {
-      $data['order_qty'] = 10;
+      // $data['order_qty'] = 10;
       // $data['prd_section'] = (!empty($this->getBuyerInfo()) ? $this->getBuyerInfo()['margin_level'] : 2);
       $data['prd_section'] = session()->userData['buyerMargin'];
       $data['buyer_id'] = session()->userData['buyerId'];
@@ -248,6 +248,7 @@ class Order extends BaseController
         unset($data['cart_idx']);
       }
       if ( !empty($data['prd_id']) ) {
+        $orderQty = 10;        
         $productPrice = $this->productPrice
                             ->where(['product_idx' => $data['prd_id']
                                   , 'available' => 1])
@@ -261,26 +262,40 @@ class Order extends BaseController
                                   , 'available' => 1])
                             ->first();
         if ( !empty($productSpq) ) {
-          $data['order_qty'] = !empty($productSpq['spq_inBox']) ? $productSpq['spq_inBox'] : 10;
+          if ( !empty($productSpq['moq']) ) {
+            $orderQty = $productSpq['moq'];
+          } else {
+            if ( !empty($productSpq['spq_inBox']) ) {
+              $orderQty = $productSpq['spq_inBox'];
+            } else {
+              if ( !empty($productSpq['spq_outBox']) ) {
+                $orderQty = $productSpq['spq_outBox'];
+              }
+            }
+          }
+          $data['order_qty'] = $orderQty;
         }
-      }
 
-      $cart = $this->cart
+        $cart = $this->cart
                 ->where(['buyer_id' => $data['buyer_id']
                         , 'prd_id' => $data['prd_id']])
                 ->first();
-      if ( empty($cart) ) {
-        if ( $this->cart->save($data) ) {
-          $code = 200;
-          $msg = $this->cart->getInsertID();
-          $aaaa = $productSpq;
+        if ( empty($cart) ) {
+          if ( $this->cart->save($data) ) {
+            $code = 200;
+            $msg = $this->cart->getInsertID();
+            $aaaa = $productSpq;
+          } else {
+            $code = 500;
+            $msg = $this->cart->error();
+          }
         } else {
           $code = 500;
-          $msg = $this->cart->error();
+          $msg = lang('Order.alreadyExists');
         }
       } else {
         $code = 500;
-        $msg = lang('Order.alreadyExists');
+        $msg = "cart insert error";
       }
     } else {
       $code = 401;
