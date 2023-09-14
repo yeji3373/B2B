@@ -22,7 +22,7 @@
                 if ( empty($product['spec_pcs']) ) echo "/pc";
                 // else if ( !empty($product['spec_detail']))
               }
-              echo "<span class='parenthesis font-monospace font-size-middle ms-1'>".$product['in_the_box']."pcs/Box</span>";
+              echo "<span class='parenthesis font-monospace font-size-middle ms-1'>".$product['in_the_box']."ea/Box</span>";
             }
 
             // echo ($product['box'] == 2 ? "<span class='parenthesis font-monospace font-size-middle ms-1'>".$product['in_the_box']."pcs</span>" : "");
@@ -46,9 +46,9 @@
                       }
                       for($i = 0; $i < count($box_component_spec); $i++ ) {
                         if ( $i > 0 ) $temp.='/';
-                        $temp.=$box_component_spec[$i].'&#215;'.$box_component_pcs[$i].($box_component_pcs[$i] > 1 ? 'pcs' : 'pc');
+                        $temp.=$box_component_spec[$i].'&#215;'.$box_component_pcs[$i].'ea';
                       }
-                    } else $temp.= $product['in_the_box']."pcs";
+                    } else $temp.= $product['in_the_box']."ea";
                     echo $temp;
                     echo "</span>";
                   } else {
@@ -79,7 +79,7 @@
               if ( $product['box'] == 0 ) {
                 echo "<span class='parenthesis font-monospace font-size-middle'>";
                 echo $product['spec_detail'];
-                echo ($product['spec_pcs'] >= 1 ? '&#215;'.$product['spec_pcs'].'p' : '');
+                echo '&#215;'.$product['spec_pcs'].'ea';
                 echo '</span>';
               }
             }

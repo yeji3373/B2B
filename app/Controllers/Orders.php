@@ -72,7 +72,7 @@ class Orders extends BaseController {
                                     ->findAll(10);
     } else {
       $this->data['order'] = $this->getOrder();
-      echo $this->orderId;
+      // echo $this->orderId;
       $this->data['paymentMethod'] = $this->getPaymentMethod();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
@@ -314,7 +314,7 @@ class Orders extends BaseController {
                         , 'orders_receipt.display' => 1])
                 ->where($addWhere)
                 ->findAll();
-    echo $this->receipt->getLastQuery();
+    // echo $this->receipt->getLastQuery();
 
     if ( !empty($receipts) ) {
       foreach ($receipts as $i => $receipt) {
@@ -331,7 +331,7 @@ class Orders extends BaseController {
               }
 
               if ( strtoupper($paypal_detail['data']['status']) == 'CANCELLED' ) {
-                echo "<br/><Br/>cencelled<br/><Br/>";
+                // echo "<br/><Br/>cencelled<br/><Br/>";
                 $this->receipt
                   ->where(['receipt_id' => $receipt['receipt_id']])
                   ->set(['due_amount' => 0, 'payment_status' => -100])
@@ -440,7 +440,7 @@ class Orders extends BaseController {
     // print_r($this->request->getVar());
     $data['order'] = $this->getOrder();
     $data['payment'] = $this->getPaymentMethod();
-    // echo 'orderId '.$this->orderId.'<br/><br/>';
+     'orderId '.$this->orderId.'<br/><br/>';
     $data['orderDetails'] = $this->getOrderDetails();
     // $data['orderRequirement'] = $this->getRequirement();
     // $data['receipts'] = $this->getOrderReceipts($this->request->getPost('receiptId'));
@@ -532,7 +532,7 @@ class Orders extends BaseController {
                     ->orderBy('brand.brand_id ASC, product.id ASC')
                     ->findAll($offset, $start);
     
-    echo $this->products->getLastQuery();
+    // echo $this->products->getLastQuery();
 
     $this->data['products'] = $products;
     $this->data['search'] =  $this->request->getPost();
@@ -568,7 +568,7 @@ class Orders extends BaseController {
   //요청사항 radio check
   public function getOrderOption() {
     $params = $this->request->getVar();
-    print_r($params);
+    // print_r($params);
     if ( $this->request->isAJAX()) { 
       if(!empty($params)){
         //요청사항 : 유통기한 체크
