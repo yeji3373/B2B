@@ -55,14 +55,14 @@ class AddressController extends BaseController {
 
       if ( $this->address->affectedRows() ) {
         $code = 200;
-        $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'success']);
+        $msg = lang('Lang.addrOperate', ['type' => $type, 'result' => 'success']);
       } else {
         $code = 500;
-        $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'error']);
+        $msg = lang('Lang.addrOperate', ['type' => $type, 'result' => 'error']);
       }
     else :
       $code = 500;
-      $msg = lang('Order.addrOperate', ['type' => $type, 'result' => 'error']);
+      $msg = lang('Lang.addrOperate', ['type' => $type, 'result' => 'error']);
     endif;
 
     // if ( $this->request->isAJAX() ) {

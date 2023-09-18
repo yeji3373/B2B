@@ -1,7 +1,7 @@
 <?php if (!empty($carts) && isset($carts)) :
   foreach($carts as $cart) : ?>
-  <div class='d-grid py-1 px-2 list-group-item w-100 slideUp'>
-    <div class='d-flex flex-column product-item-info'>
+  <div class='d-grid pt-1 pb-0 px-2 list-group-item w-100 slideUp'>
+    <div class='d-flex flex-column position-relative product-item-info'>
       <div class='d-flex flex-row align-items-baseline align-self-baseline me-2'>
         <!-- <input type='checkbox' class='bsk-check' value='<?=$cart['chkd']?>' <?=($cart['chkd'] ? 'checked' : '')?>> -->
         <?=img(esc($cart['img_url']), false, ['class' => 'thumbnail align-self-start'])?>
@@ -9,14 +9,13 @@
           <div class='name-group'>
             <span class='brand_name'><?=stripslashes($cart['brand_name'])?></span>
             <span class='product_name'><?=stripslashes($cart['name_en'].' '.$cart['spec'])?></span>
-          </div>          
+          </div>
           <?php if ( $cart['type_en'] != "" ) : ?>
           <div class='type'>
-            <label class='item-name'><?=lang('Order.productType')?> : </label>
+            <label class='item-name'><?=lang('Lang.productType')?> : </label>
             <span><?="#".$cart['type_en']?></span>
           </div>
           <?php endif ?>
-
           <?php if ( $cart['barcode'] > 0 ) : ?>
           <div class='barcode'>
             <label class='item-name'>Barcode : </label>
@@ -37,11 +36,11 @@
                 }
                 if ( $cart['box'] == 1 ) :
                   echo "/pc";
-                  echo "<span class='fw-bold'> (".$cart['spec']."&#215;".$cart['in_the_box']."pcs)</span>";
+                  echo "<span class='fw-bold'> (".$cart['spec']."&#215;".$cart['in_the_box']."ea)</span>";
                 endif;
                 echo $cart['container'] == 1 && $cart['spec_detail']  > 0 ? 
                       "<span class>".
-                        " (".$cart['spec_detail']."&#215;".$cart['spec_pcs']."pcs)".
+                        " (".$cart['spec_detail']."&#215;".$cart['spec_pcs']."ea)".
                       "</span>" : 
                       "";
               ?>
@@ -50,13 +49,13 @@
           
           <?php if ( $cart['container'] == 0 && $cart['spec_detail'] > 0 ) : ?>
           <div class='product-info-item spec-detail'>
-            <label class='item-name'><?=lang('Order.bundleSpec')?></label>
+            <label class='item-name'><?=lang('Lang.bundleSpec')?></label>
             <span><?=$cart['spec_detail']."&#215;".$cart['spec_pcs']."pcs"?></span>
           </div>
           <?php endif ?>
 
           <div class='product-info-item ship-weight'>
-            <label class='item-name'><?=lang('Order.productWeight')?></label>
+            <label class='item-name'><?=lang('Lang.productWeight')?></label>
             <span>
               <?=$cart['shipping_weight'] != 0 ? number_format($cart['shipping_weight'])."g" : "-";?>
             </span>
@@ -105,7 +104,7 @@
               <?php if ( !empty($cart['available_stock']) && ($cart['available_stock'] > 0 && empty($cart['stock_req']))) : ?>
               <?=number_format($cart['available_stock'])?>
               <?php else:
-                // echo lang('Order.noStock'); 
+                // echo lang('Lang.noStock'); 
               echo "-"; ?>
               <?php endif ?>
             </span>
@@ -135,7 +134,7 @@
             <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq'>
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
           </div>
-          <div class='p-1 mb-1 text-end btn /*btn-link*/ btn-dark qty-change-btn'><?=lang('Order.changeQtyBtn')?></div>
+          <div class='p-1 mb-1 text-end btn /*btn-link*/ btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div>
         </div>
         <div class='text-end price-group'>
           <div>
@@ -144,6 +143,9 @@
           </div>
         </div>
       </form>
+    </div>
+    <div class='w-100 grid-column-span-2 p-0 m-0 h-1rem d-flex justify-content-center'>
+      <span class='btn btn-sm btn-secondary badge rounded-0 py-0 px-2 font-size-6 more-btn view-more'>View More</span>
     </div>
   </div>
   <?php endforeach; ?>

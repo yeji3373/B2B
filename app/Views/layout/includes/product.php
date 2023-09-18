@@ -1,6 +1,6 @@
 <?php if( empty($products) ) : ?>
   <div class='py-5 px-2 text-center'>
-    <?=lang('Order.noResultSearch')?>
+    <?=lang('Lang.noResultSearch')?>
   </div>  
 <?php else : ?>
   <div class='product-list'>

@@ -175,21 +175,13 @@
   overflow-y: auto;
 }
 
-.w-450px {
-  width: 450px;
-}
-
 .btn-small{
   font-size: 0.5rem;
 }
 
-.margin-right-1 {
-  margin-right: 0.25rem;
-}
-
 .orders-main legend {
   top: -9%;
-  transform: translateY(18%);
+  transform: translateY(9%);
   left: 0.3rem;
   clear: both;
   width: inherit;

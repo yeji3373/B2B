@@ -165,12 +165,29 @@ $(document).ready(function() {
       }
     }
   }
-}).on('click', '.product-invoice-section .list-group-item .product-item-info', function() {
-  if ( $(this).parent().hasClass('slideUp') ) {
-    $(this).parent().removeClass('slideUp');
-  } else { 
-    $(this).parent().addClass('slideUp');
+// }).on('click', '.product-invoice-section .list-group-item .product-item-info', function() {
+//   if ( $(this).parent().hasClass('slideUp') ) {
+//     $(this).parent().removeClass('slideUp');
+//     $(this).children('.view-more').removeClass('view-more').addClass('hide-more').text('Hide More');
+//   } else { 
+//     $(this).parent().addClass('slideUp');
+//     $(this).children('.hide-more').removeClass('hide-more').addClass('view-more').text('Hide More');
 
+//   }
+}).on('click', '.more-btn', function() {
+  console.log("more view");
+  if ( $(this).hasClass('view-more') ) {
+    console.log('has view more');
+    $(this).closest('.list-group-item').removeClass('slideUp');
+    $(this).removeClass('view-more').addClass('hide-more').text('Hide More');
+    return;
+  }
+
+  if ( $(this).hasClass('hide-more') ) {
+    console.log('has hide more');
+    $(this).closest('.list-group-item').addClass('slideUp');
+    $(this).removeClass('hide-more').addClass('view-more').text('View More');
+    return;
   }
 }).on("click", '.order-req', function(e) {
   e.preventDefault();

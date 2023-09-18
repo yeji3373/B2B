@@ -89,23 +89,23 @@
       <div class='font-size-middle'>
         <?php
           if ( !empty($product['type_en']) ) {
-            echo "<span class='fw-bold type-en text-capitalize'>".lang('Order.productType')." : #".$product['type_en']."</span>";
+            echo "<span class='fw-bold type-en text-capitalize'>".lang('Lang.productType')." : #".$product['type_en']."</span>";
           }
 
           if ( !empty($product['package']) && !empty($product['package_detail'])) {
-            echo "<span class='fw-bold text-capitalize'>".lang('Order.compo')." : ".$product['package_detail']."</span>";
+            echo "<span class='fw-bold text-capitalize'>".lang('Lang.compo')." : ".$product['package_detail']."</span>";
           }
         ?>            
       </div>
       <div class='tag-group d-flex flex-row flex-nowrap'>
         <?php
-          echo "<span class='tag-item on-sale'>".lang('Order.onsale')."</span>";
+          echo "<span class='tag-item on-sale'>".lang('Lang.onsale')."</span>";
           if ( !empty($product['taxation']) && $product['taxation'] == 1 ) {
             echo "<span class='tag-item taxation'>zero tax</span>";
           }
           // echo ($product['box'] == 1 ? "<span class='tag-item inTheBox'>".$product['in_the_box']."pcs/Box</span>" : "");
           if ( !empty($product['sample']) ) {
-            echo "<span class='tag-item sample'>".lang('Order.sample')."</span>";
+            echo "<span class='tag-item sample'>".lang('Lang.sample')."</span>";
           }
         ?>
       </div>
@@ -140,8 +140,8 @@
               data-prd-id='<?=$product['id']?>'
               data-add-class='bsk-del-btn' 
               data-remove-class='order-req'
-              data-btn='<?=lang('Order.unselectBtn')?>'>
-          <?=lang('Order.selectBtn')?>
+              data-btn='<?=lang('Lang.unselectBtn')?>'>
+          <?=lang('Lang.selectBtn')?>
         </button>
         <?php else : ?>
         <input type='hidden' class='cart_idx' value='<?=$cartId?>'>
@@ -149,8 +149,8 @@
               data-prd-id='<?=$product['id']?>' 
               data-add-class='order-req' 
               data-remove-class='bsk-del-btn'
-              data-btn='<?=lang('Order.selectBtn')?>'>
-          <?=lang('Order.unselectBtn')?>
+              data-btn='<?=lang('Lang.selectBtn')?>'>
+          <?=lang('Lang.unselectBtn')?>
         </button>
         <?php endif; ?>
       </form>

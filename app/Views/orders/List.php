@@ -19,7 +19,7 @@
         </div>
         <?=$ordersPager->links('default', 'pager_simple');?>
         <?php else : ?>
-          <div class='w-100 order-item'><?=lang('Order.isEmpty')?></div>
+          <div class='w-100 order-item'><?=lang('Lang.isEmpty')?></div>
         <?php endif ?>
       </div>
     </section>
