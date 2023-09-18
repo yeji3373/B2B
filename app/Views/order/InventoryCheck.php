@@ -11,14 +11,14 @@
         <?=view('/layout/includes/AddressForm')?>
       </div>
       <div class='mt-3 w-100'>
-        <h7><?=lang('Order.inventoryRequest.requestCheck')?></h7>
+        <h7><?=lang('Lang.inventoryRequest.requestCheck')?></h7>
         <div class='requirements accordion border border-1 rounded-1'>
           <div class='accordion-body d-flex flex-column py-2'>
             <div class='w-100 d-flex'>
               <!-- <label class='w-10 pe-1'>선택</label> -->
               <div class='w-100 d-flex flex-column ps-1'>
                 <select class='mb-4 w-100' aria-target='.requirements-group'>
-                  <option aria-appended='true'><?=lang('Order.inventoryRequest.requestCheckSelect')?></option>
+                  <option aria-appended='true'><?=lang('Lang.inventoryRequest.requestCheckSelect')?></option>
                   <?php if (!empty($requirements)) :
                     foreach ($requirements AS $requirement): ?>
                     <option value='<?=$requirement['idx']?>' data-placeholder='<?=$requirement['placeholder']?>'><?=$requirement['requirement_en']?></option>

@@ -566,21 +566,32 @@ class Orders extends BaseController {
     return $products;
   }
   //요청사항 radio check
-  public function getOrderOption() {
+  public function setOrderOption() {
     $params = $this->request->getVar();
-    // print_r($params);
-    if ( $this->request->isAJAX()) { 
-      if(!empty($params)){
-        //요청사항 : 유통기한 체크
-        if($params['requirement_id'] == 1){
-          $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['expirationOption']]);
-        //요청사항 : leadtime check 
-        }else{
-          $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['leadtimeOption']]);
-        }
+    $result['Code'] = 500;
+
+    if ( !empty($params) ) {
+      if ( $this->requirement->save($params) ) {
+        $result['Code'] = 200;
+        $result['Params'] = $params;
+      } else {
+        $result['error'] = 'retry';
       }
-      return json_encode(['result' => true, 'params' => $params]);
     }
-    return "result";
+    return json_encode($result);
+    // // print_r($params);
+    // if ( $this->request->isAJAX()) { 
+    //   if(!empty($params)){
+    //     //요청사항 : 유통기한 체크
+    //     if($params['requirement_id'] == 1){
+    //       $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['expirationOption']]);
+    //     //요청사항 : leadtime check 
+    //     }else{
+    //       $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['leadtimeOption']]);
+    //     }
+    //   }
+    //   // return json_encode(['result' => true, 'params' => $params]);
+    // }
+    // return $this->respond();
   }
 }

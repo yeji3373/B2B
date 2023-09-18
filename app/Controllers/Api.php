@@ -12,8 +12,7 @@ use App\Models\BuyerModel;
 // use CodeIgniter\Database\RawSql;
 
 // class Api extends BaseController
-class Api extends ResourceController
-{
+class Api extends ResourceController {
   use ResponseTrait;
   protected $data;
   protected $format = 'json';

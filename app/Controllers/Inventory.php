@@ -58,9 +58,9 @@ class Inventory extends BaseController {
 
     if ( $this->CartController->checkMinimumAmount() === false ) {
       if ( $this->request->isAJAX()) {
-        return json_encode(['Code'=> 500, 'error' => lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
+        return json_encode(['Code'=> 500, 'error' => lang('Lang.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
       } 
-      return redirect()->to(site_url('/order'))->with('error', lang('Order.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
+      return redirect()->to(site_url('/order'))->with('error', lang('Lang.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
     }
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->orderBy('idx DESC')->findAll(0, 1);

@@ -6,7 +6,7 @@
       <div class='accordion-button'
           data-bs-toggle='collapse' data-bs-target='#address-prev-body'
           aria-expanded='true' aria-controls='address-prev-body'>
-        <?=lang('Order.previouslyAddrss')?>
+        <?=lang('Lang.previouslyAddrss')?>
       </div>
     </div>
     <div id='address-prev-body' class='accordion-collapse collapse show' aria-labelledby='address-prev-head' data-bs-parent='#address-accordion'>
@@ -16,8 +16,8 @@
           <div class='d-flex flex-row justify-content-between align-items-center mb-1'>
             <span><?=$address['consignee']?></span>
             <div>
-              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-edit' data-id='<?=$address['idx']?>'><?=lang('Order.edit')?></div>
-              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-del' data-id='<?=$address['idx']?>'><?=lang('Order.del')?></div>
+              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-edit' data-id='<?=$address['idx']?>'><?=lang('Lang.edit')?></div>
+              <div class='btn btn-outline-primary btn-sm py-1 prev-addr-del' data-id='<?=$address['idx']?>'><?=lang('Lang.del')?></div>
             </div>
           </div>
           <div class='d-flex flex-column border rounded py-1 px-3 bg-opacity-10 bg-secondary prev-addr-sel' data-id='<?=$address['idx']?>'>
@@ -50,7 +50,7 @@
       <div class='accordion-button <?=!empty($prevAddrList) ? 'collapsed' : ''?>'
         data-bs-toggle='collapse' data-bs-target='#address-new-body'
         aria-expanded='<?=empty($prevAddrList) ? true : false?>' aria-controls='address-new-body'>
-        <?=lang('Order.addNewAddress')?>
+        <?=lang('Lang.addNewAddress')?>
       </div>
     </div>
     <div id='address-new-body' 
@@ -58,7 +58,7 @@
         aria-labelledby='address-new-head' data-bs-parent='#address-accordion'>
       <div class='accordion-body address-new-form'>
         <div class='body-item'>
-          <label><?=lang('Order.consignee')?></label>
+          <label><?=lang('Lang.consignee')?></label>
           <!-- <input type='text' name='address[consignee' value='<?//=isset($prevAddrList) ? $prevAddrList[0]['consignee'] : ''?>' required> -->
           <input type='text' name='address[consignee]' value aria-required='true' <?=empty($prevAddrList) ? 'required' : ''?>>
         </div>
@@ -101,7 +101,7 @@
           <label>Phone number</label>
           <div class='d-flex flex-direction-row align-items-center'>
             +<select class='col-1 me-2 w-auto' name='address[phone_code]' <?=empty($prevAddrList) ? 'required' : ''?>>
-              <option><?=lang('Order.selectBtn')?></option>
+              <option><?=lang('Lang.selectBtn')?></option>
               <?php if ( !empty($itus) ) :
               foreach ($itus as $itu) : ?>
                 <option value='<?=$itu['country_no']?>'>

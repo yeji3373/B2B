@@ -53,7 +53,7 @@ $(document).ready(function() {
   }).on("click", ".btn-small", function() {
     let formData = $(this).closest('form').serializeArray();
     console.log(formData);
-    result = getData('/orders/getOrderOption', formData);
+    result = getData('/orders/setOrderOption', formData);
     console.log(result);
     return false;
   // packaging_status -> 6 (고객확인완료) 로 변경
@@ -93,20 +93,29 @@ $(document).ready(function() {
     }
   }).on('click', '.confirmbtn', function(e) {
     e.preventDefault();
-    if(confirm('order confirmation')){
-      let formData;
-      let selectedOption = $(this).closest('form').find('input[name="requirement_id"]').val();
-      if(selectedOption == 1){
-        formData = $(this).closest('#requirmentOptForm').serializeArray();
-      }else{
-        formData = $(this).closest('#requirmentOptForm').serializeArray();
-      }
-      console.log(formData);
-      result = getData('/orders/getOrderOption', formData);
-      console.log(result);
-      return true;
-    }else{
-      return false;
+    formData = $(this).closest('.requirmentOptForm').serializeArray();
+    result = getData('/orders/setOrderOption', formData, true);
+    
+    if ( $.inArray('error', result) === true ) {
+      console.log("inarray");
+      alert(result['error']);
+      return;
     }
-    // return false;
+    return;
+    // if(confirm('order confirmation')){
+    //   let formData;
+    //   let selectedOption = $(this).closest('form').find('input[name="requirement_id"]').val();
+    //   if(selectedOption == 1){
+    //     formData = $(this).closest('#requirmentOptForm').serializeArray();
+    //   }else{
+    //     formData = $(this).closest('#requirmentOptForm').serializeArray();
+    //   }
+    //   console.log(formData);
+    //   result = getData('/orders/setOrderOption', formData);
+    //   console.log(result);
+    //   return true;
+    // }else{
+    //   return false;
+    // }
+    // // return false;
   });

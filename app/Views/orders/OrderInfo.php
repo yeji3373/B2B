@@ -2,17 +2,17 @@
 <?php if ( isset($order) && !empty($order) ) : ?>
 <div class='w-100 fw-bold d-flex flex-row flex-wrap py-2'>
   <div class='me-3'>
-    <label><?=lang('Order.orders.orderDate')?></label>
+    <label><?=lang('Lang.orders.orderDate')?></label>
     <span><?=date('Y-m-d', strtotime($order['created_at']))?></span>
   </div>
   <div>
-    <label><?=lang('Order.orders.orderNumber')?></label>
+    <label><?=lang('Lang.orders.orderNumber')?></label>
     <span><?=$order['order_number']?></span>
   </div>
 </div>
 <div class='d-flex flex-column flex-wrap p-0 product-payment-info-section'>
   <div class='info-sec p-0'>
-    <label class='py-2 ps-2'><?=lang('Order.orders.paymentType')?></label>
+    <label class='py-2 ps-2'><?=lang('Lang.orders.paymentType')?></label>
     <?php if ( !empty($paymentMethod) ) : ?>      
       <span class='py-2 pm-2'><?=$paymentMethod['payment']?></span>
       <?php if ( $paymentMethod['show_info'] == 1 ) : ?>
@@ -27,17 +27,17 @@
         <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
         <?php if($nowPackStatus['requirement_option_check']) : 
                 if(is_null($nowPackStatus['requirement_option_disabled'])) : ?>
-                  <button class='btn btn-sm btn-dark my-1 order-check'><?=lang('Order.orders.detail.paymentConfirm')?></button>
+                  <button class='btn btn-sm btn-dark my-1 order-check'><?=lang('Lang.orders.detail.paymentConfirm')?></button>
           <?php else :
                   if (($nowPackStatus['payment_request'])) : ?>
-                    <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Order.checkout')?></button>
+                    <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Lang.checkout')?></button>
             <?php else : ?>
-                    <span class='py-2 pm-2'><?=lang('Order.orders.orderChecking')?>
+                    <span class='py-2 pm-2'><?=lang('Lang.orders.orderChecking')?>
             <?php endif; 
                 endif; ?>
         </form>
         <?php else : ?>
-                <span class='py-2 pm-2'><?=lang('Order.orders.inventoryChecking')?>
+                <span class='py-2 pm-2'><?=lang('Lang.orders.inventoryChecking')?>
         <?php endif; ?>
       <?php else : ?>
         <!-- 현재 상태값이 없음 -->
@@ -45,17 +45,17 @@
     <?php endif; ?>
   </div>
     <div class='info-sec p-0'>
-    <label class='py-2 ps-2'><?=lang('Order.orders.currency')?></label>
+    <label class='py-2 ps-2'><?=lang('Lang.orders.currency')?></label>
     <span class='py-2 pm-2'><?=$order['currency_code']?></span>
   </div>
   <div class='info-sec p-0'>
     <?php if ( empty($order['order_amount'])) : ?>
-    <label class='py-2 ps-2'><?=lang('Order.orders.amount')?></label>
+    <label class='py-2 ps-2'><?=lang('Lang.orders.amount')?></label>
     <span class='py-2 pm-2'><?=$order['currency_sign'].number_format($order['request_amount'], $order['currency_float'])?></span>
     <!-- 재고요청 완료 후, 결제하기 버튼 보여지기. -->
     <?php else: ?>
     <div class='w-100 py-1 px-1 bg-light sub-sec fw-bold'>
-      <label class='py-2 ps-2'><?=lang('Order.orders.amount')?></label>
+      <label class='py-2 ps-2'><?=lang('Lang.orders.amount')?></label>
       <span class='py-2 pm-2 fs-6'><?=$order['currency_sign'].number_format($order['order_amount'], $order['currency_float'])?></span>
     </div>
     <?php endif; ?>
@@ -66,28 +66,28 @@
 <?php if ( !empty($receipts) ) : ?>
 <div class='p-0 receipt-info-section'>
   <div class='info-sec p-0 d-flex flex-column'>
-    <div class='py-2 ps-2 border-bottom text-capitalize w-100'><?=lang('Order.orders.detail.payment.receipts')?></div>
+    <div class='py-2 ps-2 border-bottom text-capitalize w-100'><?=lang('Lang.orders.detail.payment.receipts')?></div>
     <div class='w-100 sub-sec p-2'>
       <div class='d-flex flex-column border border-1'>
         <div class='w-100 head d-grid text-center text-capitalize'>
-          <div><?=lang('Order.orders.payment.receipt')?></div>
-          <div><?=lang('Order.orders.payment.status')?></div>
-          <div><?=lang('Order.orders.payment.toBePaid')?></div>
-          <div><?=lang('Order.orders.payment.remainBalance')?></div>
-          <div><?=lang('Order.orders.shippingFee')?></div>
-          <div><?=lang('Order.remark')?></div>
+          <div><?=lang('Lang.orders.payment.receipt')?></div>
+          <div><?=lang('Lang.orders.payment.status')?></div>
+          <div><?=lang('Lang.orders.payment.toBePaid')?></div>
+          <div><?=lang('Lang.orders.payment.remainBalance')?></div>
+          <div><?=lang('Lang.orders.shippingFee')?></div>
+          <div><?=lang('Lang.remark')?></div>
         </div>
       <?php foreach ($receipts as $key => $receipt) {?>
         <div class='w-100 d-grid border-top'>
           <div class='p-1 border-end text-center'>
             <?php if ( $receipt['receipt_type'] == 1 ) : 
-              echo esc($receipt['receipt_type']).'st '.lang('Order.orders.payment.receipt');
+              echo esc($receipt['receipt_type']).'st '.lang('Lang.orders.payment.receipt');
             elseif ( $receipt['receipt_type'] == 2 ) : 
-              echo esc($receipt['receipt_type']).'nd '.lang('Order.orders.payment.receipt');
+              echo esc($receipt['receipt_type']).'nd '.lang('Lang.orders.payment.receipt');
             elseif ( $receipt['receipt_type'] == 2 ) : 
-              echo esc($receipt['receipt_type']).'rd' .lang('Order.orders.payment.receipt');
+              echo esc($receipt['receipt_type']).'rd' .lang('Lang.orders.payment.receipt');
             else : 
-              echo esc($receipt['receipt_type']).'th '.lang('Order.orders.payment.receipt');
+              echo esc($receipt['receipt_type']).'th '.lang('Lang.orders.payment.receipt');
             endif; ?>
           </div>
           <div class='p-1 border-end text-center'>
@@ -127,7 +127,7 @@
                 <input type='hidden' name='receipt_type' value='<?=$receipt['receipt_type']?>'>
                 <input type='hidden' name='order_number' value='<?=$order['order_number']?>'>
                 <input type='hidden' name='just_data' value='1'>
-                <div class='btn btn-dark btn-sm px-1 pi-view'><?=lang('Order.orders.pi')?> <?=lang('Order.orders.view')?></div>
+                <div class='btn btn-dark btn-sm px-1 pi-view'><?=lang('Lang.orders.pi')?> <?=lang('Lang.orders.view')?></div>
               </form>
             <?php endif; ?>
           </div>
