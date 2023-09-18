@@ -125,6 +125,7 @@ class ProductModel extends Model {
                   , orders_detail.changed_manager
                   , orders_detail.prd_order_qty
                   , orders_detail.prd_change_qty
+                  , orders_detail.prd_fixed_qty
                   , orders_detail.prd_qty_changed
                   , orders_detail.prd_price
                   , orders_detail.prd_change_price

@@ -376,7 +376,7 @@ class Order extends BaseController
     $this->data['currencies'] = $this->currency->currencyJoin()->where('currency.default_currency', 1)->find();
     $this->data['orderDetails'] = $this->products
                                       ->productOrderJoin(
-                                        ['orders_detail.order_id'=> 1
+                                        ['orders_detail.order_id'=> $where['order']['id']
                                         , 'orders_detail.order_excepted' => 0])
                                       ->findAll();
     $this->data['subTotal'] = $orderModel->where($orderWhere)->first();
