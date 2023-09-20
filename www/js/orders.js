@@ -7,20 +7,20 @@ $(document).ready(function() {
     });
   }
 }).on('keyup', '[name=order_number]', function() {
-    let orderNumber;
-    if ( $(this).val().length > 2 ) {
-      orderNumber = $(this).val();
-      $(".orders-list div").empty();
-    
+  let orderNumber;
+  if ( $(this).val().length > 2 ) {
+    orderNumber = $(this).val();
+    $(".orders-list div").empty();
+  
     result = getData('/orders/getOrderList', [{name: 'order_number', value: orderNumber}, {name: 'page',  value: 1}]);
     result = JSON.parse(result);
        
     if ( result.length > 0 ) {
       $.each(result, (i, v) => {
-        $(".orders-list div").append("<a class='list-group-item order-item fw-bold'>\
-                                    <span class='order-number'>" + v['order_number'] + "</span>\
-                                    <span class='parenthesis small'>" + v['created_at'].split(" ")[0] + "</span>\
-                                  <a/>");
+        $(".orders-list div").append("  <a class='list-group-item order-item fw-bold'>\
+                                          <span class='order-number'>" + v['order_number'] + "</span>\
+                                          <span class='parenthesis small'>" + v['created_at'].split(" ")[0] + "</span>\
+                                        <a/>");
       });
     } else $(".orders-list div").html('<div class="order-item">is Empty</div>');
   }

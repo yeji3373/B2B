@@ -25,7 +25,7 @@ class CartController extends BaseController {
   }
 
   public function getCartList($params = []) {
-    $query['select'] = ", product_spq.moq, product_spq.spq, product_spq.spq_inBox
+    $query['select'] = ", product_spq.moq, product_spq.spq_criteria, product_spq.spq_inBox
                         , product_spq.spq_outBox, product_spq.calc_code, product_spq.calc_unit
                         , cart.idx AS cart_idx, cart.chkd, cart.order_qty";;
     $query['from'] = ", ( SELECT * FROM product_spq ) AS product_spq
