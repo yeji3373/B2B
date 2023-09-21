@@ -108,6 +108,8 @@
   display: none;
   height: 0;
 }
+/* .products .product-invoice-section .list-group-item .cart-qty-request .qty-change-btn { display: block; } */
+.products .product-invoice-section .list-group-item.slideUp .cart-qty-request .qty-change-btn { display: none; }
 .products .product-invoice-section .list-group-item .cart-qty-form {
   display: flex;
   flex-direction: column;

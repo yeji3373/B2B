@@ -9,7 +9,7 @@
     <div>
       <p>
         <input type="text" name="buyerName" minlength="2" value="<?=old('buyerName')?>" placeholder=" " required />
-        <label><?=lang("Auth.vendorName")?></label>
+        <label class='required'><?=lang("Auth.vendorName")?></label>
       </p>
       <p>
         <input type="text" name="businessNumber" value="<?=old('businessNumber')?>" minlength="2" placeholder=" " />
@@ -17,17 +17,17 @@
         <span class='guide-msg color-red'><i></i><?=lang('Auth.disallowedCharacters')?></span>
       </p>
       <p>
-        <select name='buyerRegion' require>
+        <select name='buyerRegion' required>
           <option><?=lang('Auth.countrySelect')?></option>
           <?php foreach ( $countries as $country ) : ?>
           <option value='<?=$country['id']?>' data-country-no='<?=$country['country_no']?>'><?=$country['name_en']?></option>
           <?php endforeach ?>
         </select>
-        <label>Country/Region</label>
+        <label class='required'>Country/Region</label>
       </p>
       <div>
         <div class='buyer-phone-group'>
-          <select name='buyerPhoneCode' require>
+          <select name='buyerPhoneCode' required>
             <option value>-</option>
             <?php if ( !empty($itus)) : 
               foreach($itus as $itu) : ?>
@@ -35,17 +35,17 @@
             <?php endforeach; 
             endif;?>
           </select>&nbsp;-&nbsp;
-          <input type="text" name="buyerPhone" value="<?=old('buyerPhone')?>" placeholder="1234567890" pattern="[0-9].{5, 10}" require />
+          <input type="text" name="buyerPhone" value="<?=old('buyerPhone')?>" placeholder="1234567890" pattern="[0-9].{5, 10}" required />
         </div>
-        <label><?= lang('Auth.phone') ?></label>
-        <span class="guide-msg color-red"><i></i><?=lang('Auth.allowed', [])?></span>
+        <label class='required'><?= lang('Auth.phone') ?></label>
+        <span class="guide-msg color-red"><i></i><?=lang('Auth.allowedOnlyNumber')?></span>
       </div>
       <div>
         <div>
-          <input type='text' minlength="8" name="buyerAddress1" value="<?=old('buyerAddress1')?>" placeholder=" " require style='margin-bottom: 0.25rem;'>
+          <input type='text' minlength="8" name="buyerAddress1" value="<?=old('buyerAddress1')?>" placeholder=" " required style='margin-bottom: 0.25rem;'>
           <input type='text' name="buyerAddress2" value="<?=old('buyerAddress2')?>" placeholder=" " >
         </div>
-        <label><?=lang('Auth.address')?></label>
+        <label class='required'><?=lang('Auth.address')?></label>
       </div>
       <p>
         <input type='text' name='zipcode' value='<?=old('zipcode')?>'>
@@ -65,22 +65,22 @@
     <div>
       <p>
         <input minlength="2" type="text" name="name" value="<?=old('name')?>" placeholder=" " required />
-        <label><?=lang('Auth.contactName') ?></label>
+        <label class='required'><?=lang('Auth.contactName') ?></label>
       </p>
       <p>
         <input type="email" name="email" value="<?=old('email')?>" placeholder=" " required />
-        <label><?=lang('Auth.email') ?></label>
+        <label class='required'><?=lang('Auth.email') ?></label>
       </p>
       <p>
       <!-- <input minlength="5" type="password" name="password" value="" placeholder=" " required /> -->
-        <!-- <input minlength="5" type="password" name="password" pattern='.{5,}' value="" placeholder=" " required /> -->
-        <input type="password" name="password" value="" placeholder=" "
+      <!-- <input minlength="5" type="password" name="password" pattern='.{5,}' value="" placeholder=" " required /> -->
+        <input type="password" name="password"
               title="최소 하나의 숫자와, 하나의 대문자 및 소문자, 최소 5자 이상의 문자를 포함해야 합니다." required />
-        <label><?=lang('Auth.password')?></label>
+        <label class='required'><?=lang('Auth.password')?></label>
       </p>
       <p>
-        <input minlength="5" type="password" name="password_confirm" value="" placeholder=" " required />
-        <label><?=lang('Auth.passwordConfirm')?></label>
+        <input minlength="5" type="password" name="password_confirm" required />
+        <label class='required'><?=lang('Auth.passwordConfirm')?></label>
       </p>
       <div>
         <div class="checkbox-group">

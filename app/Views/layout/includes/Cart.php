@@ -82,7 +82,6 @@
           
           <div class='product-info-item spq'>
             <label class='item-name'>SPQ</label>
-            <?=isset($cart['spq_criteria']) ? $cart['spq_criteria'] : '?'?>
             <div class='d-flex flex-row flex-wrap border border-secondary w-50'>
               <div class='d-flex flex-column border-end border-secondary w-50'>
                 <label class='fw-lighter border-bottom border-secondary text-center w-100'>In box </label>
@@ -117,25 +116,34 @@
     <div class='d-flex flex-column justify-content-end cart-qty-request'>
       <form accept-charset='utf-8' method='post' class='cart-qty-form'>
         <?=csrf_field() ?>
-        <input type='hidden' name='currency-chk' value='<?=session()->currency['exchangeRate']?>'>
+        <input type='hidden' name='currency_chk' value='<?=session()->currency['exchangeRate']?>'>
         <input type='hidden' name='prd_id' value='<?=$cart['id']?>'>
         <input type='hidden' name='brd_id' value='<?=$cart['brand_id']?>'>
         <input type='hidden' name='cart_idx' value='<?=$cart['cart_idx']?>'>
         <input type='hidden' name='prd_price' value='<?=$cart['product_price']?>'>
-        <input type='hidden' name='prd-total-price' value='<?=$cart['order_price']?>'>
-        <input type='hidden' name='op-code' value='<?=$cart['calc_code']?>'>
-        <input type='hidden' name='op-val' value='<?=$cart['calc_unit']?>'>
+        <input type='hidden' name='prd_total_price' value='<?=$cart['order_price']?>'>
+        <input type='hidden' name='op_code' value='<?=$cart['calc_code']?>'>
+        <input type='hidden' name='op_val' value='<?=$cart['calc_unit']?>'>
         <input type='hidden' name='order_qty' value='<?=$cart['moq']?>'> <!-- qty stand value -->
+        <input type='hidden' name='spq' value='<?=isset($cart['spq_criteria']) ? $cart['spq_criteria'] : -1?>'>
         <!-- <input type='hidden' name='qty-maximum-val' value='<?//=!empty($cart['stock_req']) ? $cart['available_stock'] : ''?>'> -->
 
         <div class='btn btn-close border-0 end-0 position-absolute top-0 bsk-del-btn'></div>
         <div class='cart-qty-group'>
           <div class='d-flex flex-row justify-content-center align-items-center flex-nowrap border mx-auto mb-2 w-100 qty-group'>          
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='-'>-</div>
-            <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq text-center'>
+            <?php 
+              $readOnly = false;
+              if ( isset($cart['spq_criteria']) && !is_null($cart['spq_criteria']) ) { 
+              $readOnly = true; ?> 
+            <?php } ?>
+            <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq text-center' 
+              <?=($readOnly) ? 'readonly': ''?>>
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
           </div>
-          <!-- <div class='p-1 mb-1 text-end btn /*btn-link*/ btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div> -->
+          <?php if ( !$readOnly ) : ?>
+          <div class='p-1 mb-1 text-end btn btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div>
+          <?php endif; ?>
         </div>
         <div class='text-end price-group'>
           <div>
@@ -145,7 +153,7 @@
         </div>
       </form>
     </div>
-    <div class='w-100 grid-column-span-2 p-0 m-0 d-flex justify-content-center position-absolute bottom-100'>
+    <div class='w-100 grid-column-span-2 p-0 m-0 d-flex justify-content-center position-absolute bottom-0'>
       <span class='btn btn-sm btn-secondary badge rounded-0 py-0 px-2 font-size-6 position-absolute bottom-0 more-btn view-more'>View More</span>
     </div>
   </div>

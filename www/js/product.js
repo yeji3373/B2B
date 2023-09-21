@@ -175,9 +175,7 @@ $(document).ready(function() {
 
 //   }
 }).on('click', '.more-btn', function() {
-  console.log("more view");
   if ( $(this).hasClass('view-more') ) {
-    console.log('has view more');
     $(this).closest('.list-group-item').removeClass('slideUp');
     $(this).removeClass('view-more').addClass('hide-more').text('Hide More');
     return;
@@ -194,7 +192,6 @@ $(document).ready(function() {
   let data = $(this).closest('.list-group-item').find('form').serializeArray();
 
   result = getData("/order/addCartList", data, true);
-  console.log(result);
   if ( result['Code'] != "200" ) {
     console.log(result['Msg']);
     return;
@@ -231,11 +228,12 @@ $(document).ready(function() {
   let $parents = $(this).closest('.cart-qty-form');
   let $parent = $(this).parent();
   let cartId = $parents.find('[name=cart_idx]').val();
-  let opCode = $parents.find('[name=op-code]').val();
+  let opCode = $parents.find('[name=op_code]').val();
   let prdPrice = parseFloat($parents.children('[name=prd_price]').val());
   let calcSpq = $parent.find('.qty-spq').val();
   let maxSpq = $parents.find('[name=qty-maximum-val]').val();
   let standSpq = $parents.find('[name=order_qty]').val();
+  let spq = $parents.find('[name=spq]').val();
 
   calcCode = $(this).data('calc');
 
@@ -294,7 +292,7 @@ $(document).ready(function() {
   result = setCartSpq(cartId, calcSpq, prdPrice, true);
   if ( result['Code'] == 200 ) { 
     if ( result['Msg'] != '' ) {
-      $parents.find('[name=prd-total-price]').val(result['Msg']);
+      $parents.find('[name=prd_total_price]').val(result['Msg']);
       $parents.find('.prd-item-total-price').text(result['Msg']);
     }
     setSubTotalPrice();
@@ -391,7 +389,7 @@ $(document).ready(function() {
   calcSpq = $(this).val();
   standSpq = $parent.find('[name=order_qty]').val();
   maxSpq = $parent.find('[name=qty-maximum-val]').val();
-  operateVal = $parent.find('[name=op-val]').val();
+  operateVal = $parent.find('[name=op_val]').val();
   cartId = $parent.find('[name=cart_idx]').val();
   productPrice = parseFloat($parent.find('[name=prd_price]').val());
 
@@ -411,7 +409,7 @@ $(document).ready(function() {
       result = setCartSpq(cartId, calcSpq, productPrice, true);
       if ( result['Code'] == 200 ) { 
         if ( result['Msg'] != '' ) {
-          $(this).closest('.cart-qty-request').find('.prd-total-price').val(result['Msg']);
+          $(this).closest('.cart-qty-request').find('.prd_total_price').val(result['Msg']);
           $(this).closest('.cart-qty-request').find('.prd-item-total-price').text(result['Msg']);
         }
         // getCartList();

@@ -2,6 +2,7 @@
 
 return [
     // Registration
+    'required'              => 'required',
     'registration'          => 'Registration',
     'account'               => 'Account',
     'name'  				    	  => 'Name',
