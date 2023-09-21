@@ -69,4 +69,14 @@ $(document).ready(function() {
   if ( typeof $(this).children('option:selected').data('countryNo') != 'undefined' ) {
     $("[name=buyerPhoneCode]").val($(this).children('option:selected').data('countryNo')).prop('selected', true);
   }
+}).on('click', '.eye', function() {
+  if($(this).attr('id') == 'eye'){
+    $(this).hide();
+    $("#eyeslash").show();
+    $("input[name='password']").attr('type', 'text');
+  }else{
+    $(this).hide();
+    $('#eye').show();
+    $("input[name='password']").attr('type', 'password');
+  }
 });

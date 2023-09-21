@@ -27,8 +27,9 @@ return [
     'allowedFilesGuide'     => 'Only JPG, GIF, PNG is allowed',
     'allowedOnlyNumber'     => 'Only number is allowed',
     'buyerWeb'              => 'Site URL or SNS',
-    'register'		     		  => 'Register',
-    'alreadyRegistered'		  => 'Already registered? Log in!',
+    'register'		        => 'Register',
+    'alreadyRegistered'		=> 'Already registered? Log in!',
+    'requiredmsg'           => '* mark is required',
 
     // Login/out
     'login'					        => 'Log in',

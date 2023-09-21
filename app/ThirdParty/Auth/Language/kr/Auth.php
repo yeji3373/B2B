@@ -26,6 +26,7 @@ return [
     'buyerWeb'              => 'Site URL or SNS',
     'register'		     		  => 'Register',
     'alreadyRegistered'		  => 'Already registered? Log in!',
+    'requiredmsg'           => '* 표시는 필수 입력값입니다.',
 
     // Login/out
     'login'					        => 'Log in',
