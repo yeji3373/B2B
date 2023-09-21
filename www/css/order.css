@@ -28,7 +28,7 @@
   top: -0.6rem;
   left: -0.6rem;
   background-position: 0;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   z-index: 1;
 }

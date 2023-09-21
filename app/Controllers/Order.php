@@ -131,8 +131,7 @@ class Order extends BaseController
     }
     // // $this->data['cartMinimize'] = false; // cart data 최소화해서 보여줌 여부. default false. false: 전체 다 보여주기;
     $this->data['carts'] = $cartList;
-    // var_dump($cartList);
-    if ( $this->request->isAJAX() ) {
+        if ( $this->request->isAJAX() ) {
       $this->data['params'] = $data;
       return view('/layout/includes/Cart', $this->data);
     } else return $this->data;

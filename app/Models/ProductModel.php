@@ -90,7 +90,7 @@ class ProductModel extends Model {
         // // ->select('product_price.retail_price, product_price.price, product_price.taxation')
         // ->select('product_price.retail_price, product_price.taxation')
         ->select('product_price.taxation')
-        ->select('product_spq.moq, product_spq.spq, product_spq.spq_inBox, product_spq.spq_outBox')
+        ->select('product_spq.moq, product_spq.spq_criteria, product_spq.spq_inBox, product_spq.spq_outBox')
         ->select('product_spq.calc_code, product_spq.calc_unit')
         // ->select('( stocks_detail.supplied_qty - stocks_detail.stock_basis - IFNULL(stocks_detail.req_qty, 0) ) AS available_stock')
         ->join('brand', 'brand.brand_id = '.$this->table.'.brand_id')

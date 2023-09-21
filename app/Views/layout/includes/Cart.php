@@ -1,7 +1,7 @@
 <?php if (!empty($carts) && isset($carts)) :
   foreach($carts as $cart) : ?>
-  <div class='d-grid pt-1 pb-0 px-2 list-group-item w-100 slideUp'>
-    <div class='d-flex flex-column position-relative product-item-info'>
+  <div class='d-grid py-1 px-2 list-group-item position-relative w-100 slideUp'>
+    <div class='d-flex flex-column product-item-info'>
       <div class='d-flex flex-row align-items-baseline align-self-baseline me-2'>
         <!-- <input type='checkbox' class='bsk-check' value='<?=$cart['chkd']?>' <?=($cart['chkd'] ? 'checked' : '')?>> -->
         <?=img(esc($cart['img_url']), false, ['class' => 'thumbnail align-self-start'])?>
@@ -11,13 +11,13 @@
             <span class='product_name'><?=stripslashes($cart['name_en'].' '.$cart['spec'])?></span>
           </div>
           <?php if ( $cart['type_en'] != "" ) : ?>
-          <div class='type'>
+          <div class='type font-size-7'>
             <label class='item-name'><?=lang('Lang.productType')?> : </label>
             <span><?="#".$cart['type_en']?></span>
           </div>
           <?php endif ?>
           <?php if ( $cart['barcode'] > 0 ) : ?>
-          <div class='barcode'>
+          <div class='barcode font-size-7'>
             <label class='item-name'>Barcode : </label>
             <span><?=$cart['barcode']?></span>
           </div>
@@ -82,6 +82,7 @@
           
           <div class='product-info-item spq'>
             <label class='item-name'>SPQ</label>
+            <?=isset($cart['spq_criteria']) ? $cart['spq_criteria'] : '?'?>
             <div class='d-flex flex-row flex-wrap border border-secondary w-50'>
               <div class='d-flex flex-column border-end border-secondary w-50'>
                 <label class='fw-lighter border-bottom border-secondary text-center w-100'>In box </label>
@@ -113,7 +114,7 @@
         </div>
       </div>
     </div>
-    <div class='d-flex flex-column justify-content-end position-relative cart-qty-request'>
+    <div class='d-flex flex-column justify-content-end cart-qty-request'>
       <form accept-charset='utf-8' method='post' class='cart-qty-form'>
         <?=csrf_field() ?>
         <input type='hidden' name='currency-chk' value='<?=session()->currency['exchangeRate']?>'>
@@ -131,10 +132,10 @@
         <div class='cart-qty-group'>
           <div class='d-flex flex-row justify-content-center align-items-center flex-nowrap border mx-auto mb-2 w-100 qty-group'>          
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='-'>-</div>
-            <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq'>
+            <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq text-center'>
             <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
           </div>
-          <div class='p-1 mb-1 text-end btn /*btn-link*/ btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div>
+          <!-- <div class='p-1 mb-1 text-end btn /*btn-link*/ btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div> -->
         </div>
         <div class='text-end price-group'>
           <div>
@@ -144,9 +145,11 @@
         </div>
       </form>
     </div>
-    <div class='w-100 grid-column-span-2 p-0 m-0 h-1rem d-flex justify-content-center'>
-      <span class='btn btn-sm btn-secondary badge rounded-0 py-0 px-2 font-size-6 more-btn view-more'>View More</span>
+    <div class='w-100 grid-column-span-2 p-0 m-0 d-flex justify-content-center position-absolute bottom-100'>
+      <span class='btn btn-sm btn-secondary badge rounded-0 py-0 px-2 font-size-6 position-absolute bottom-0 more-btn view-more'>View More</span>
     </div>
   </div>
   <?php endforeach; ?>
+<?php else : ?>
+  <div class='isEmpty'><?=lang('Lang.isEmpty')?></div>
 <?php endif; ?>

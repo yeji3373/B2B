@@ -84,6 +84,7 @@
                 }
               } else $priceClass = 'fw-bold font-size-9';
             }
+            
             if ( !empty($product['prd_order_qty']) ) { 
               echo "<div>
                       <span class='{$priceClass}'>".number_format($product['prd_order_qty'])."ea</span>

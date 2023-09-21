@@ -25,7 +25,7 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'auth'          => Auth::class,    // auth
+        'auth'          => Auth::class,
         'paypal'        => Paypal::class,
     ];
 
@@ -38,8 +38,6 @@ class Filters extends BaseConfig
     public $globals = [
         'before' => [
           'auth'  => ['except' =>  ['login', 'register', 'forgot-password', '/', 'cafe24/*', 'api/*', 'board/getBoard/1/2']],
-          // 'auth'  => ['except' =>  ['login', 'register', 'forgot-password', 'api/*']],
-          // // 'auth'  => ['except' =>  ['login', 'register', 'forgot-password']],
           // 'honeypot',
           // 'csrf',
           // 'invalidchars',

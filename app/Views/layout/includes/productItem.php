@@ -120,7 +120,6 @@
     </div>
     <div class='d-flex flex-column align-items-end'>
       <form method='post'>
-        <!-- <?php print_r($product)?> -->
         <input type='hidden' name='brand_id' value='<?=$product['brand_id']?>'>
         <input type='hidden' name='prd_id' value='<?=$product['id']?>'>
         <input type='hidden' name='prd_price' value='<?=$product['product_price']?>'>

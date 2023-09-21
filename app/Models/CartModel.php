@@ -30,7 +30,7 @@ class CartModel extends Model {
                   brand.brand_logo_src, brand.own_brand, brand.taxation')
         ->select('product_price.idx AS product_price_idx, product_price.retail_price')
         ->select('supply_price.price')
-        ->select('product_spq.moq, product_spq.spq, product_spq.spq_inBox, product_spq.spq_outBox')
+        ->select('product_spq.moq, product_spq.spq_criteria, product_spq.spq_inBox, product_spq.spq_outBox')
         ->select('product_spq.calc_code, product_spq.calc_unit')
         ->select('margin.margin_level, margin.margin_section')
         ->select('margin_rate.margin_rate')
