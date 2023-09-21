@@ -1,4 +1,42 @@
 $(document).ready(function() {
+  var checked = $("input[name='region[]']:checked");
+  if(checked.length > 0){
+    $("input[name='region[]']:checked").each(function (index, item){
+      let group = 'region_' + $(item).val();
+      let countries;
+      if ( $("[name='region[]']:checked").length < 1 ) {
+        $(".countries").empty().hide();
+      } else $(".countries").show();
+      if ( $(item).is(":checked") ) {
+
+        countries = getData('/api/getCountry', {'region_id': $(item).val()});
+        $(".countries").append(`<fieldset class='${group}'>
+                                  <legend>
+                                    ${$(item).next().text()}
+                                  </legend>
+                                </fieldset>`);
+        
+        $.each(countries, (idx, key) => {
+          let checked = '';
+          if($("input[name=checkedCountries]").length > 0){
+            $("input[name=checkedCountries]").each(function (index, item){
+              if($(item).val() == key['id']){
+                checked = 'checked';
+              }
+            });
+          }
+          $(`.${group}`).append(
+            `<label>
+              <input type='checkbox' value='${key['id']}' name='country[]' ${checked}>
+              <span>${key['name_en']}</span>
+            </label>`
+          );
+        });
+      } else {
+        $(".countries").find(`.${group}`).remove();
+      }
+    });
+  }
 }).on("change", "[name='region[]']", function() {
   let group = 'region_' + $(this).val();
   let countries;
@@ -9,10 +47,10 @@ $(document).ready(function() {
 
     countries = getData('/api/getCountry', {'region_id': $(this).val()});
     $(".countries").append(`<fieldset class='${group}'>
-                              <legend>
-                                ${$(this).next().text()}
-                              </legend>
-                            </fieldset>`);
+                            <legend>
+                              ${$(this).next().text()}
+                            </legend>
+                          </fieldset>`);
 
     $.each(countries, (idx, key) => {
       $(`.${group}`).append(
@@ -22,6 +60,7 @@ $(document).ready(function() {
         </label>`
       );
     });
+    // test(group, countries);
   } else {
     $(".countries").find(`.${group}`).remove();
   }
@@ -31,17 +70,3 @@ $(document).ready(function() {
     $("[name=buyerPhoneCode]").val($(this).children('option:selected').data('countryNo')).prop('selected', true);
   }
 });
-// }).on('keyup','input[name=businessNumber]', function() {
-//   // let businessNoExp = /[0-9a-zA-Z\-{1}]/g;
-//   let notAllowed = /[\{\}\[\]\/?.,;:|\)*~`!^_+┼<>@\#$%&\'\"\\\(\=]/g;
-//   let temp = [];
-
-//   if ( notAllowed.test($(this).val()) ) {
-//     temp = $(this).val().substring(0, $(this).val().length - 1);
-//   } else temp = $(this).val();
-  
-//   // if ( $(this).val().match(businessNoExp) != null ) {
-//   //   temp = $(this).val().match(businessNoExp).join().replace(/,/g, "");
-//   // } else temp = "";
-
-//   $(this).val(temp); 

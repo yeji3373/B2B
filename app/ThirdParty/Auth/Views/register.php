@@ -86,7 +86,14 @@
         <div class="checkbox-group">
           <?php foreach ( $regions as $region ) : ?>
             <label>
-              <input type="checkbox" value="<?=$region['id']?>" name="region[]">
+              <input type="checkbox" value="<?=$region['id']?>" name="region[]"
+                <?php if(!empty(old('region'))) :
+                        foreach(old('region') as $checked) {
+                          if($checked == $region['id']){ echo " checked"; }
+                        };
+                      endif;
+                ?>
+              >
               <span><?=trim($region['region_en'])?></span>
             </label>
           <?php endforeach ?>
@@ -95,6 +102,12 @@
       </div>
       <div>
         <div class='checkbox-group countries'></div>
+        <?php if(!empty(old('country'))) { 
+                foreach(old('country') as $checked2) {
+                  echo "<input type='hidden' name='checkedCountries' value='{$checked2}'>";
+                };
+              }
+        ?>
         <label><?=lang('Auth.country')?></label>
       </div>
     </div>

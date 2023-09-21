@@ -95,7 +95,7 @@ class RegistrationController extends Controller
       $buyerId = $buyer['id'];
       return redirect()->back()->withInput()->with('error', lang('Auth.alreadyRegistered'));
     } else {
-      if ( isset($_FILES) ) {
+      if ( isset($_FILES) && !empty($_FILES['certificateBusiness']['name'])) {
         if ( $_FILES['certificateBusiness']['size'] <= 1572864 ) {
           $fileName = str_replace(str_split('\\/:*?"<>|'), '', $this->request->getPost('businessNumber'));
           $ftpFile->fileUpload($_FILES['certificateBusiness'], $fileName);

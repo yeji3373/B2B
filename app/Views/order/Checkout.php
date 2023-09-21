@@ -6,7 +6,7 @@
           <?=view('/layout/includes/AddressForm')?>
           <div class='py-2 px-4 mt-2 border rounded'>
             <div class='d-flex flex-row flex-wrap'>
-              <label class='title'><?=lang('Lang.orders.currency')?></label>
+              <label class='title'><?=lang('Order.orders.currency')?></label>
               <div class='w-75 radio-group'>
                 <?php foreach($currencies as $currency) : ?>
                 <label class='checkout-currency' for='checkout-currency-<?=strtolower($currency['currency_code'])?>'>
@@ -29,13 +29,13 @@
           <?php if ( !empty($buyer) && !empty($buyer['tax_check']) ) : ?>
           <div class='py-2 px-4 mt-2 border rounded currency-kr-tax-choice'>
             <div class='d-flex flex-row flex-wrap'>
-              <label class='title'><?=lang('Lang.ExportCheck')?></label>
+              <label class='title'><?=lang('Order.ExportCheck')?></label>
               <div class='w-75 radio-group'>
                 <label for='checkout-export-tax-0'>
-                  <input type='radio' name='taxation' id='checkout-export-tax-0' value='1' checked> <?=lang("Lang.zeroTax")?>
+                  <input type='radio' name='taxation' id='checkout-export-tax-0' value='1' checked> <?=lang("Order.zeroTax")?>
                 </label>
                 <label for='checkout-export-tax-vat'>
-                  <input type='radio' name='taxation' id='checkout-export-tax-vat' value='2'> <?=lang('Lang.taxation')?>
+                  <input type='radio' name='taxation' id='checkout-export-tax-vat' value='2'> <?=lang('Order.taxation')?>
                 </label>
               </div>
             </div>
@@ -45,7 +45,7 @@
           <?php endif; ?>
           <div class='py-2 px-4 mt-2 border rounded'> 
             <div class='d-flex flex-row flex-wrap'>
-              <label class='title'><?=lang('Lang.paymentMethod')?></label>
+              <label class='title'><?=lang('Order.paymentMethod')?></label>
               <div class='w-75 radio-group'>
                 <?php if ( !empty($payments) ) : 
                   foreach ($payments as $payment) : ?>
@@ -67,10 +67,10 @@
       </section>
       <section class='w-40 px-2 cart-list-section'>
         <div class>
-          <h6><?=lang('Lang.orderProduct')?><?=isset($orderDetails) ? '('.count($orderDetails).')' : ''?></h6>
+          <h6><?=lang('Order.orderProduct')?><?=isset($orderDetails) ? '('.count($orderDetails).')' : ''?></h6>
           <?php if (empty($orderDetails)) : ?>
             <div class='isEmpty'>
-              <?=lang('Lang.isEmpty')?>
+              <?=lang('Order.isEmpty')?>
             </div>
           <?php else : ?>
             <div class='accordion cart-list' id='accordionExample'>
@@ -211,7 +211,7 @@
               </p>
             </div>
             <div class='w-100 text-end'>
-              <button class='btn border-0 w-100 checkout-btn m-auto'><?=lang('Lang.checkout')?></button>
+              <button class='btn border-0 w-100 checkout-btn m-auto'><?=lang('Order.checkout')?></button>
             </div>
           </div>
         </div>
