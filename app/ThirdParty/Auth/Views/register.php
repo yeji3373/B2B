@@ -52,8 +52,7 @@
         <label>Post Code</label>
       </p>
       <p>
-        <!-- <input type="file" name="certificateBusiness" accept="image/jpeg,image/png,image/gif,application/pdf" required /> -->
-        <input type="file" name="certificateBusiness" accept="image/jpeg,image/png,image/gif" />
+        <input type="file" name="certificateBusiness" accept="image/jpeg,image/png,image/gif,application/pdf" />
         <label><?=lang('Auth.certificateBusiness').' / '.lang('Auth.businessCard') ?></label>
         <span class="guide-msg color-red"><i></i><?=lang('Auth.allowedFilesGuide')?></span>
       </p>
@@ -72,8 +71,8 @@
         <input type="email" name="email" value="<?=old('email')?>" placeholder=" " required />
         <label class='required'><?=lang('Auth.email') ?></label>
       </p>
-      <p class="password">
-        <input type="password" name="password"
+      <p>
+        <input type="password" name="password" pattern="(?=.\d)(?=.*[a-z])(?=.*[A-Z]).{5,}"
               title="최소 하나의 숫자와, 하나의 대문자 및 소문자, 최소 5자 이상의 문자를 포함해야 합니다." required />
         <span id="eyeslash" class="eye">
           <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512">

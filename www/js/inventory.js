@@ -22,4 +22,11 @@ $(document).ready(function() {
       );
     }
   }
-})
+}).on('click', '.requirment-additional', function() {
+  if ( $(".requirements-group .requirement-item.d-none").length ) {
+    $(".requirements-group .requirement-item.d-none input").removeAttr('disabled');
+    $(".requirements-group .requirement-item.d-none textarea").removeAttr('disabled');
+    $(".requirements-group .requirement-item.d-none").removeClass('d-none');
+    $(this).attr('disabled', true);
+  }
+});
