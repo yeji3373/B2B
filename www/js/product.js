@@ -182,7 +182,6 @@ $(document).ready(function() {
   }
 
   if ( $(this).hasClass('hide-more') ) {
-    console.log('has hide more');
     $(this).closest('.list-group-item').addClass('slideUp');
     $(this).removeClass('hide-more').addClass('view-more').text('View More');
     return;
@@ -233,7 +232,7 @@ $(document).ready(function() {
   let calcSpq = $parent.find('.qty-spq').val();
   let maxSpq = $parents.find('[name=qty-maximum-val]').val();
   let standSpq = $parents.find('[name=order_qty]').val();
-  let spq = $parents.find('[name=spq]').val();
+  // let spq = $parents.find('[name=spq]').val();
 
   calcCode = $(this).data('calc');
 
@@ -248,22 +247,22 @@ $(document).ready(function() {
       return;
     }
 
-    if ( $parents.find('.stock-req-cancel').length > 0 ) {
-      let stockCancel = confirm('Inventory is requested. Are you sure you want to cancel your reconsideration request?');
-      if ( stockCancel ) {
-        $parents.find('.stock-req-cancel').click();
-      } else {
-        console.log("수량을 빼기?");
-      }
-      return;
-    }
+    // if ( $parents.find('.stock-req-cancel').length > 0 ) {
+    //   let stockCancel = confirm('Inventory is requested. Are you sure you want to cancel your reconsideration request?');
+    //   if ( stockCancel ) {
+    //     $parents.find('.stock-req-cancel').click();
+    //   } else {
+    //     console.log("수량을 빼기?");
+    //   }
+    //   return;
+    // }
   } else if ( calcCode == '+' ) {
-    // // if ( opCode == 1 ) calcCode = '*';
     // if ( calcSpq == maxSpq ) {
     //   if ( $parents.find('.stock-req-cancel').length > 0 ) {
     //     alert("The stock request has already been completed.");
     //     return;
     //   } else {
+      
     //     let stockReq = confirm("This is the maximum quantity. Would you like to proceed with the stock request?");
     //     if ( stockReq ) {
     //       $parents.find('.stock-req').click();
@@ -389,7 +388,7 @@ $(document).ready(function() {
   calcSpq = $(this).val();
   standSpq = $parent.find('[name=order_qty]').val();
   maxSpq = $parent.find('[name=qty-maximum-val]').val();
-  operateVal = $parent.find('[name=op_val]').val();
+  // operateVal = $parent.find('[name=op_val]').val();
   cartId = $parent.find('[name=cart_idx]').val();
   productPrice = parseFloat($parent.find('[name=prd_price]').val());
 
@@ -419,7 +418,7 @@ $(document).ready(function() {
         return;
       }
     } else {
-
+      alert('This value is null');
     }
   }
 // }).on('click', '.pre-order-btn', function() {
@@ -438,30 +437,43 @@ $(document).ready(function() {
 //   $("body").css('overflow', 'hidden');
 //   $(".prev-addr-sel:first").click();
 }).on('click', '.inventory_check_request-btn', function() {
-  let target = $(this).data('bsTarget');
-  result = getData('/inventory/request', [], false, 'GET');
-  
-  if ( result.indexOf('Code') >= 0 ) {
-    if ( typeof JSON.parse(result) == 'object' ) {
-      result = JSON.parse(result);
-      if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
-        if ( $.inArray('error', result) ) {
-          alert(result['error']);
-          return;
+  reqeust = true;
+  if ( $('.product-selected .cart-qty-request .qty-spq').length ) {
+    Array.from($('.product-selected .cart-qty-request .qty-spq')).forEach((v) => {
+      if ( $(v).val().trim() == '' ) {
+        $(v).focus();
+        alert('This value is null');
+        request = false;
+        return false;
+      }
+    });
+  }
+  if ( reqeust ) {
+    let target = $(this).data('bsTarget');
+    result = getData('/inventory/request', [], false, 'GET');
+    
+    if ( result.indexOf('Code') >= 0 ) {
+      if ( typeof JSON.parse(result) == 'object' ) {
+        result = JSON.parse(result);
+        if ( typeof result.Code != 'undefined' && result.Code == 500 ) {
+          if ( $.inArray('error', result) ) {
+            alert(result['error']);
+            return;
+          }
         }
       }
     }
-  }
-  appendData($('.pre-order'), result, true);
-  $(target).attr('data-bs-confirm', $(this).attr('aria-confirm')).addClass('show');
-  if ( $('.prev-addr-sel').length ) {
-    $(".prev-addr-sel:eq(0)").click();
-  } else $('input[name=address_operate]').val(1);
+    appendData($('.pre-order'), result, true);
+    $(target).attr('data-bs-confirm', $(this).attr('aria-confirm')).addClass('show');
+    if ( $('.prev-addr-sel').length ) {
+      $(".prev-addr-sel:eq(0)").click();
+    } else $('input[name=address_operate]').val(1);
 
-  if ( $('.pre-order form input[name=request-total-price]').length ) {
-    $('.pre-order form input[name=request-total-price]').val(parseFloat($('.sub-total-price').text()));
-  }
-  $("body").css('overflow', 'hidden');
+    if ( $('.pre-order form input[name=request-total-price]').length ) {
+      $('.pre-order form input[name=request-total-price]').val(parseFloat($('.sub-total-price').text()));
+    }
+    $("body").css('overflow', 'hidden');
+  } else return;
 }).on('change', '[name=checkout-currency]', function() {
   console.log("changed");
   let currency = $(this);
@@ -614,10 +626,9 @@ function setCartSpq(cartId, productQty, productPrice, ref = false) {
                   {name: 'order_qty', value: productQty},
                   {name: 'product_price', value: productPrice}];
   // console.log($.param(editData));
-  result = JSON.parse(getData('/order/editCartList', editData));
+  result = getData('/order/editCartList', editData, true);
   // result = JSON.parse(result);
-  // console.log(result);
-  
+
   if ( !ref ) { // return 안받고 곧바로 처리
     if ( result['Code'] == 200 ) { 
       setSubTotalPrice();

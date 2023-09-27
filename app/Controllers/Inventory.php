@@ -74,7 +74,6 @@ class Inventory extends BaseController {
 
   public function requestInventory() {
     $data = $this->request->getVar();
-    // print_r($data['requirement']);
     $request = [];
     
     $cartList = $this->cart->where('buyer_id', session()->userData['buyerId'])->findAll();

@@ -25,8 +25,7 @@ main[id*='-main'] .requirements .requirements-group .requirement-item {
 }
         
 main[id*='-main'] .requirements .requirements-group .requirement-item:not(:last-child) {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.9rem;
 }
 main[id*='-main'] input, main[id*='-main'] select, main[id*='-main'] textarea { border-color: #acacac; }
 /* 재고요청 내역 및 합계 end */
-

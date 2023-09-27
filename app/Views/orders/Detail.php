@@ -130,29 +130,12 @@
                 }
               }
             }
-            $orderPrice = ($prd_price * $prd_qty);
           }
+          $orderPrice = ($prd_price * $prd_qty);
           ?>
           <label class='w-20'><?=lang('Lang.orders.totalAmount')?></label>
           <div class='w-80 d-flex flex-row align-items-lg-end'>
             <span><?=session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat'])?></span>
-            <?php 
-            // if(!empty($product['prd_fixed_qty'])) :
-            //   echo "<span>";
-            //   echo session()->currency['currencySign'].number_format(($product['prd_fixed_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
-            //   echo "</span>";
-            // else :
-            //   if (!empty($product['prd_qty_changed']) || !empty($product['prd_price_changed'])) :
-            //     echo "<span>";
-            //     echo session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat']);
-            //     echo "</span>";
-            //   else :
-            //     echo "<span>";
-            //     echo  session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat']);
-            //     echo "</span>";
-            //   endif;
-            // endif;
-            ?>
           </div>
         </div>
         <?php 

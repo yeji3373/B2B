@@ -131,7 +131,9 @@ return [
     'requestCheck'        => 'Details when requesting inventory',
     'requestCheckSelect'  => 'Select request details',
     'balanceReq'          => '잔금요청',
-    'balanceCheckComplete'=> '잔금입금 확인 완료'
+    'balanceCheckComplete'=> '잔금입금 확인 완료',
+    'otherAddRequirment'  => '그 외 요청사항',
+    'additional'          => 'Additional',
   ],
   /* 재고요청 선택사항 DB */
 

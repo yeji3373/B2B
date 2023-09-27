@@ -32,6 +32,7 @@ input, select, textarea {
 input:focus, select:focus, select:active, textarea:focus {
   outline: none;
 }
+input:read-only { cursor: auto; }
 
 /* form {
   margin-bottom: 2.7rem;
