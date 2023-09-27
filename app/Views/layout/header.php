@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap-utilities.min.css"/>
   <link rel="stylesheet" href="/css/common.css" />
@@ -26,7 +27,7 @@
           echo '<script type="text/javascript" src="'.$js.'"></script>';
         } else echo '<script type="text/javascript" src="/js'.$js.'"></script>';
       endforeach;
-    endif;
+    endif; 
   endforeach?>
   <?php endif ?>
   <title>Beautynetkorea B2B</title>

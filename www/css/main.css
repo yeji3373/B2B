@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&display=swap');
 .home-main { margin-bottom: 5rem; }
 /* main > div:first-child { height: 30rem; } */
 .home-main .d-grid { grid-gap: 1rem; }
@@ -20,3 +22,174 @@ div { background-position: 0; background-size: 100% 100%; background-repeat: no-
 .join_us .join_us_wrapper div { width: 12rem; position: relative; }
 .join_us .join_us_wrapper div:not(:first-child)::before { content: ''; border-width: 2px 2px 0 0; border-style: solid; border-color: #cfcfcf; position: absolute; width: 10%; height: 10%; transform: rotate(45deg); top: 45%; right: 142%; }
 .join_us .join_us_wrapper div:not(:last-child) { margin-right: 10rem; }
+
+.brand-list {
+    margin: auto;
+    padding-top: 5%;
+}
+
+.banner {
+    height : 450px;
+}
+
+.ourbrands {
+    margin-top: 15rem;
+    margin-bottom: 8.5rem;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.introduction {
+    margin-top: 15rem;
+    margin-bottom: 8.5rem;
+}
+
+.introduction div p {
+    margin-bottom: 0;
+}
+
+.manlope800 {
+    font-family: 'Manrope';
+    font-weight: 800;
+    color: #2b2b2b;
+}
+
+.manlope700 {
+    font-family: 'Manrope';
+    font-weight: 700;
+    color: #2b2b2b;
+}
+
+.pretendard {
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 300;
+    margin-bottom: 0;
+    font-size: 1.2rem;
+    color: #2b2b2b;
+}
+
+.introduction .title {
+    color: #2b2b2b;
+}
+
+.get-started:hover, .get-started:focus, .get-started:checked {
+    color: #fff;
+    background-color: #646262;
+    border-color: #646262;
+}
+
+.learn-more:hover, .learn-more:focus, .learn-more:checked {
+    color: #646262;
+    border-color: #646262;
+}
+
+.get-started {
+    box-shadow: none;
+    border-radius: 30px;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 1.3rem;
+    width: 12.3rem;
+    margin-right : 1rem;
+    color: #fff;
+    background-color: #646262;
+}
+
+.learn-more {
+    box-shadow: none;
+    border-radius: 30px;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 1.3rem;
+    width: 12.3rem;
+    color: #646262;
+    border-color: #646262;
+    border-width: 3px;
+}
+
+.introduction div .carousel-item img{
+    border-radius: 30px;
+}
+
+.introduction .carousel-control-next, .introduction .carousel-control-prev {
+    width: 5%;
+}
+
+.introduction .carousel-control-prev-icon {
+    background-image : url("/img/arrow_left.png");
+    width: 22px;
+    height: 40px;
+}
+
+.introduction .carousel-control-next-icon {
+    background-image: url("/img/arrow_right.png");
+    width: 22px;
+    height: 40px;
+}
+
+.join-us div p {
+    margin-bottom: 0;
+}
+
+.join-us {
+    margin-top: 15rem;
+    margin-bottom: 8.5rem;
+}
+
+.sub-title {
+    font-size: 1.7rem;
+    line-height: 2rem;
+}
+
+.icon-image {
+    height: 13.2rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.join-us-group {
+    margin-top: 6rem;
+}
+
+.terms:hover, .terms:focus, .terms:checked {
+    color: #fff;
+    background-color: #646262;
+    border-color: #646262;
+}
+
+.manual:hover, .manual:focus, .manual:checked {
+    color: #646262;
+    border-color: #646262;
+}
+
+.terms {
+    box-shadow: none;
+    border-radius: 40px;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 1.3rem;
+    width: 22rem;
+    margin-right : 1rem;
+    color: #fff;
+    background-color: #646262;
+}
+
+.manual {
+    box-shadow: none;
+    border-radius: 40px;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 1.3rem;
+    width: 22rem;
+    color: #646262;
+    border-color: #646262;
+    border-width: 3px;
+}
+

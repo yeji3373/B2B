@@ -190,15 +190,6 @@ datalist option {
 
 img.thumbnail { width: 2rem; }
 
-.carousel-item {
-  height : 450px;
-}
-
-.brand-list {
-  margin: auto;
-  padding-top: 5%;
-}
- 
 .required::after {
   padding-left: 0.5rem;
   content: '*';

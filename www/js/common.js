@@ -162,3 +162,19 @@ $(document).on('click', '.pre-order', function(e) {
     else return;
   }
 });
+
+$(document).ready(function(){
+  var myCarousel = $(".carousel");
+  // var carousel = new bootstrap.Carousel(myCarousel, {
+  //   interval : 4000,
+  //   wrap : false
+  // })
+
+  $(".carousel-control-prev").on("click", function(){
+    $("#infoCarousel").carousel('prev');
+  });
+
+  $(".carousel-control-next").on("click", function(){
+    $("#infoCarousel").carousel('next');
+  });
+});

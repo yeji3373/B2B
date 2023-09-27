@@ -36,8 +36,23 @@ class Home extends BaseController {
     // if ( session()->isLoggedIn ) {
     //   return call_user_func_array(array($this, 'main'), []);
     // }
+    $path = "../www/img/brand_logo/top20";
+
+    $myfiles = array_diff(scandir($path), array('.', '..'));
+    $this->data['brandList'] = $myfiles;
+
     $this->data['policy'] = $this->notice->board(['board.idx' => 2])->first();
     return $this->basicLayout('dash/index', $this->data);
+  }
+
+  public function sampleIndex() {
+    $path = "../www/img/brand_logo/top20";
+
+    $myfiles = array_diff(scandir($path), array('.', '..'));
+    $this->data['brandList'] = $myfiles;
+
+    $this->data['policy'] = $this->notice->board(['board.idx' => 2])->first();
+    return $this->basicLayout('dash/sampleIndex', $this->data);
   }
 
   public function main() {
