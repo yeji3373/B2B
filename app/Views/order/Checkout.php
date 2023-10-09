@@ -77,19 +77,13 @@
             <?php foreach ( $orderDetails as $key => $detail ) : ?>
               <?php
                 $totalPrice = 0;
-                if ( !empty($detail['prd_qty_changed']) ) : 
-                  if ( !empty($detail['prd_price_changed'])) : 
-                    $totalPrice = $detail['prd_change_price'] * $detail['prd_change_qty'];
-                  else :
-                    $totalPrice = $detail['prd_price'] * $detail['prd_change_qty'];
-                  endif;
-                else : 
-                  if ( !empty($detail['prd_price_changed'])) : 
-                    $totalPrice = $detail['prd_price'] * $detail['prd_change_price'];
-                  else :
-                    $totalPrice = $detail['prd_price'] * $detail['prd_order_qty'];
-                  endif;
+                $prd_price = $detail['prd_price'];
+                $prd_qty = $detail['prd_fixed_qty'];
+
+                if ( !empty($detail['prd_change_price']) ) : 
+                  $prd_price = $detail['prd_change_price'];
                 endif;
+                $totalPrice = $prd_price * $prd_qty;
               ?>
               <?php $ids = ++$key ?>
               <div class='accordion-item'>
@@ -123,21 +117,11 @@
                     </div>
                     <div class='d-flex flex-row justify-content-end w-12'>
                       <div>
-                        <?php if ( !empty($detail['prd_price_changed']) ) : ?>
-                        <?=session()->currency['currencySign'].number_format($detail['prd_change_price'], session()->currency['currencyFloat'])?>
-                        <?php else : ?>
-                        <?=session()->currency['currencySign'].number_format($detail['prd_price'], session()->currency['currencyFloat'])?>
-                        <?php endif ?>
+                        <?=session()->currency['currencySign'].number_format($prd_price, session()->currency['currencyFloat'])?>
                       </div>
                       <div class='px-1'>*</div>
                       <div>
-                        <?php 
-                          if ( !empty($detail['prd_qty_changed']) ) :
-                            echo number_format($detail['prd_change_qty']);
-                          else : 
-                            echo number_format($detail['prd_order_qty']);
-                          endif; 
-                          echo "EA";
+                        <?=number_format($prd_qty)."ea";
                         ?>
                       </div>
                     </div>
@@ -159,13 +143,7 @@
                       <p class='mb-0 d-flex flex-row'>
                         <label class='w-15'>Qty : </label>
                         <span class='w-85 d-block'>
-                          <?php 
-                            if ( !empty($detail['prd_qty_changed']) ) :
-                              echo number_format($detail['prd_change_qty']);
-                            else : 
-                              echo number_format($detail['prd_order_qty']);
-                            endif;
-                          ?>
+                          <?=number_format($prd_qty);?>
                         </span>
                       </p>
                       <p class='mb-0 d-flex flex-row'>

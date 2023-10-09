@@ -49,8 +49,8 @@ class PaypalController extends Controller {
   }
 
   public function paypal($req) {
+    if ( !empty($this->result) ) $this->result = Array();
     $this->orderInfo = $req;
-    // var_dump($this->orderInfo);
 
     if ( $this->config->accessTokenExpiry >= time() ) {
       if ( empty($this->config->accessToken) ) {
