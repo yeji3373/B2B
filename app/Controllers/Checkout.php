@@ -22,8 +22,7 @@ use Paypal\Controllers\PaypalController;
 use App\Controllers\CartController;
 use App\Controllers\AddressController;
 
-class Checkout extends BaseController 
-{
+class Checkout extends BaseController {
   protected $default;
 
   protected $orderInfo;
