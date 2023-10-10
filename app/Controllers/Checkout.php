@@ -225,7 +225,7 @@ class Checkout extends BaseController {
                 $invoiceData['depositRate'] = session()->currency['currencyFloat'];
                 
                 $this->paypal->paypal($invoiceData);
-                if ($this->paypal->result['code'] == 200 ) {
+                if ($this->paypal->result['code'] == 200 || $this->paypal->result['code'] == 201) {
                   $receiptData['payment_url'] = $this->paypal->result['payment_url'];
                   $receiptData['payment_invoice_id'] = $this->paypal->result['payment_invoice_id'];
                   $receiptData['payment_invoice_number'] = $this->paypal->result['payment_invoice_number'];
