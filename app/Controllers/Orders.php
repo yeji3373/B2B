@@ -72,7 +72,8 @@ class Orders extends BaseController {
                                     ->findAll(10);
     } else {
       $this->data['order'] = $this->getOrder();
-      // echo $this->orderId;
+      // echo "order id ".$this->orderId;
+      // if ( empty($this->data['order']) ) $this->basicLayout('orders/List', $this->data);
       $this->data['paymentMethod'] = $this->getPaymentMethod();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
@@ -214,7 +215,7 @@ class Orders extends BaseController {
                 ->select('buyers_address.phone_code, buyers_address.phone')
                 ->select('buyers_address.deleted_at')
                 ->join('currency', 'currency.currency_code = orders.currency_code')
-                ->join('buyers_address', 'buyers_address.idx = orders.address_id AND buyers_address.buyer_id = orders.buyer_id')
+                ->join('buyers_address', 'buyers_address.idx = orders.address_id AND buyers_address.buyer_id = orders.buyer_id', 'LEFT OUTER')
                 ->where(['order_number' => $this->request->getVar('order_number')
                         ,'orders.buyer_id' => session()->userData['buyerId']])
                 ->first();
