@@ -164,17 +164,29 @@ $(document).on('click', '.pre-order', function(e) {
 });
 
 $(document).ready(function(){
-  var myCarousel = $(".carousel");
-  // var carousel = new bootstrap.Carousel(myCarousel, {
-  //   interval : 4000,
-  //   wrap : false
-  // })
 
-  $(".carousel-control-prev").on("click", function(){
+  $("#infoPrev").on("click", function(){
     $("#infoCarousel").carousel('prev');
   });
 
-  $(".carousel-control-next").on("click", function(){
+  $("#infoNext").on("click", function(){
     $("#infoCarousel").carousel('next');
   });
+
+  $("#bannerPrev").on("click", function(){
+    $("#bannerCarousel").carousel('prev');
+  });
+
+  $("#bannerNext").on("click", function(){
+    $("#bannerCarousel").carousel('next');
+  });
+
+  $("#brandPrev").on("click", function(){
+    $("#brandCarousel").carousel('prev');
+  });
+
+  $("#brandNext").on("click", function(){
+    $("#brandCarousel").carousel('next');
+  });
+  
 });

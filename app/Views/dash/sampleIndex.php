@@ -1,6 +1,6 @@
 <main>
 <div class='w-100'>
-  <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel">
+  <div id="bannerCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item banner active">
         <img src='//beautynetkorea.daouimg.com/2023_b2b/b2b_main_open.jpg' class="d-block w-100" alt="...">
@@ -9,11 +9,11 @@
         <img src="/img/banilaco_banner.jpg" class="d-block w-100" alt="...">
       </div>
     </div>
-    <button class="carousel-control-prev shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <button id="bannerPrev" class="carousel-control-prev shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
     </button>
-    <button class="carousel-control-next shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <button id="bannerNext" class="carousel-control-next shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Next</span>
     </button>
@@ -51,11 +51,11 @@
           <img src="/img/image_3.jpg" class="d-block w-80 align-middle mx-auto align-items-center" alt="...">
         </div>
       </div>
-      <button class="carousel-control-prev shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <button id="infoPrev" class="carousel-control-prev shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
       </button>
-      <button class="carousel-control-next shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <button id="infoNext" class="carousel-control-next shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
       </button>
@@ -80,7 +80,7 @@
     </div>
     <p class='title fs-4 manlope800 text-center italic'>Other Brands</p>
     <div>
-      <div id="brandBanner" class="carousel carousel-dark slide" data-bs-ride="carousel">
+      <div id="brandCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
             <ul class='d-flex flex-wrap w-75 justify-content-between mx-auto px-1'>
@@ -97,12 +97,27 @@
             <?php endforeach; ?>
             </ul>
           </div>
+          <div class="carousel-item">
+            <ul class='d-flex flex-wrap w-75 justify-content-between mx-auto px-1'>
+            <?php $idx = 0; ?>
+            <?php foreach ( $brandList as $brand ) : ?>
+            <?php $idx++; ?>
+            <li class='w-19 text-center border border-1 d-block rounded-1 fs-5
+                    <?=(($idx % 5) > 0 ? 'me-2' : '')?>
+                    <?=($idx > 5 ) ? 'mt-3': ''?>' >
+              <a href="https://eyenlip.co.kr/" target="blank">
+                <img class='w-85' src="/img/brand_logo/top20/<?=($brand)?>" />
+              </a>
+            </li>
+            <?php endforeach; ?>
+            </ul>
+          </div>
         </div>
-        <button class="carousel-control-prev shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <button id="brandPrev" class="carousel-control-prev shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <button id="brandNext" class="carousel-control-next shadow-none" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>

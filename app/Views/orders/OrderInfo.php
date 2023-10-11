@@ -66,7 +66,7 @@
 <?php if ( !empty($receipts) ) : ?>
 <div class='p-0 receipt-info-section'>
   <div class='info-sec p-0 d-flex flex-column'>
-    <div class='py-2 ps-2 border-bottom text-capitalize w-100'><?=lang('Lang.orders.detail.payment.receipts')?></div>
+    <div class='py-2 ps-2 border-bottom text-capitalize w-100'><?=lang('Lang.orders.payment.receipts')?></div>
     <div class='w-100 sub-sec p-2'>
       <div class='d-flex flex-column border border-1'>
         <div class='w-100 head d-grid text-center text-capitalize'>
