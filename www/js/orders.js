@@ -60,9 +60,19 @@ $(document).ready(function() {
   }).on('click', '.order-check', function(e) {
     e.preventDefault()
     let data = $(this).closest('form').serializeArray();
-    console.log(data);
+
+    if ( $('.requirmentOptForm').length ) {
+      if ($('.requirmentOptForm [type=radio]:checked').length < $('.requirmentOptForm').length ) {
+        if ( confirm('재고요청 상태가 선택되지 않은 조건이 있습니다. 다시 선택하겠습니까?') ) {
+          return;
+        }
+      }
+      data = $.merge(data, $('.requirmentOptForm').serializeArray());   
+    }
+
     result = getData('/orders/orderFixed', data, true);
     console.log(result);
+
     if (result['Code'] == 200 ) {
       // if ( typeof $(this).data('nextName') != 'undefined' ) {
       //   $(this).text($(this).data('nextName'));
@@ -70,7 +80,7 @@ $(document).ready(function() {
       // $(this).removeClass('order-check').addClass('order-request');
       location.reload(true);
     }
-    return false;
+    return;
     // result = getData('/order')
   }).on('click', '.order-request', function(e) {
     e.preventDefault();

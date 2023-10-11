@@ -15,212 +15,166 @@
           </div>
           <?php if ( !empty($product['type_en']) ) : ?>
           <div>
-            <label>Type : </label>
-            <span class='fw-bold'><?="#".$product['type_en']?></span>
+            <label class='w-25'><?=lang('Lang.productType')?></label>
+            <span class='fw-bold'>
+              <?php if ( str_contains($product['type_en'], "#") ) :
+                echo $product['type_en']; 
+              else :
+                echo "#".$product['type_en']; 
+              endif; ?>
+            </span>
           </div>
           <?php endif ?>
           <div>
-            <label>Barcode:</label>
+            <label class='w-25'><?=lang('Lang.productBarcode')?></label>
             <span><?=empty($product['barcode']) ? '' : $product['barcode']?></span>
+          </div>
+          <?php if ( !empty($product['shipping_weight']) ) : ?>
+          <div>
+            <label class='w-25'><?=lang('Lang.productWeight')?></label>
+            <span><?=number_format($product['shipping_weight'])?>g</span>
+          </div>
+          <?php endif; ?>
+          <div>
+            <label class='w-25'><?=lang('Lang.productPrice')?></label>
+            <span><?=session()->currency['currencySign'].number_format($product['prd_price'], session()->currency['currencyFloat']);?></span>
+          </div>
+          <div>
+            <label class='w-25'><?=lang('Lang.qty')?></label>
+            <span><?=number_format($product['prd_order_qty'])?>ea</span>
+          </div>
+          <div>
+            <label class='w-25'><?=lang('Lang.orders.detail.initialAmount')?></label>
+            <span><?=session()->currency['currencySign'].number_format(($product['prd_order_qty'] * $product['prd_price']), session()->currency['currencyFloat'])?></span>
           </div>
         </div>
       </div>
       <div class='d-flex flex-column bg-light pt-1 pb-2 px-2'>
-      <?php if ( empty($product['order_excepted']) ) : ?>
-        <div>
-          <label class='w-20'><?=lang('Lang.productWeight')?></label>
-          <span><?=empty($product['shipping_weight']) ? '-' : number_format($product['shipping_weight']).'g';?></span>
-        </div>
+      <?php if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) : 
+        if ( empty($product['order_excepted']) ) : ?>
         <div class='d-flex flex-row'>
-          <label class='w-20'><?=lang('Lang.productPrice')?></label>
-          <div class='w-80 d-flex flex-row align-items-lg-end'>
+          <label class='w-30'><?=lang('Lang.orders.detail.fixedProductPrice')?></label>
+          <div class='w-70 d-flex flex-row align-items-lg-end'>
             <?php
-            $priceClass = NULL;
-            $changedClass = NULL;
-            
-            if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) : 
-              if ( !empty($product['prd_change_price']) ) :
-                $priceClass = 'pe-2';
-                $changedClass = 'fw-bold font-size-9';
-              else : 
-                $priceClass = 'fw-bold font-size-9';
-              endif; 
-            endif;
+            $orderPrice = 0;
+            $prd_price = $product['prd_price'];
+  
+            if ( $nowPackStatus['qty_step'] > 1 ) {
+              if ( !empty($product['prd_change_price']) ) $prd_price = $product['prd_change_price'];
+            }
 
-            echo "<span class='".$priceClass."'>";
-            echo session()->currency['currencySign'].number_format($product['prd_price'], session()->currency['currencyFloat']);
-            echo "</span>";
-            
-            if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) && !empty($product['prd_change_price'])) : 
-              echo "<span class='".$changedClass."'>";
-              echo session()->currency['currencySign'].number_format($product['prd_change_price'], session()->currency['currencyFloat']);
-              echo "</span>";
-            endif;
+            echo session()->currency['currencySign'].number_format($prd_price, session()->currency['currencyFloat']);
             ?>
           </div>
         </div>
         <div class='d-flex flex-row'>
-          <label class='w-20'><?=lang('Lang.qty')?></label>
-          <div class='w-80 d-flex flex-row align-items-lg-end'>
-          <?php
-            $priceClass = NULL;
-            $changePriceClass = NULL;
-            $fixedPriceClass = NULL;
-
-            if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) {
-              if ( !empty($product['prd_change_qty']) ) {
-                $priceClass = 'pe-1';
-                if ( !empty($order) && !empty($order['order_fixed']) ) {
-                  if ( !empty($product['prd_fixed_qty']) ) {
-                    $changePriceClass = 'pe-1';
-                    $fixedPriceClass = 'fw-bold font-size-9';
-                  } else {
-                    $changePriceClass = 'fw-bold font-size-9';
-                  }
-                } else {
-                  if ( !empty($product['prd_change_qty']) ) {
-                    $changePriceClass = 'fw-bold font-size-9';
-                  }
-                }
-              } else $priceClass = 'fw-bold font-size-9';
-            }
-            
-            if ( !empty($product['prd_order_qty']) ) { 
-              echo "<div>
-                      <span class='{$priceClass}'>".number_format($product['prd_order_qty'])."ea</span>
-                    </div>";
-            }
-
-            if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) {
-              if ( !empty($order) && !empty($order['order_fixed']) ) {
-                if ( !empty($nowPackStatus['final_check']) ) {
-                  if ( !empty($product['prd_final_qty']) ) {
-                    echo "<div>
-                            <label>".lang("Lang.orders.detail.finalQty")." : </label>
-                            <span class='{$fixedPriceClass}'>".number_format($product['prd_final_qty'])."ea</span>
-                          </div>";
-                  }
-                } else {
-                  if( !empty($product['prd_fixed_qty']) ) {
-                    echo "<div>
-                            <label>".lang("Lang.orders.detail.finalQty")." : </label>
-                            <span class='{$fixedPriceClass}'>".number_format($product['prd_fixed_qty'])."ea</span>
-                          </div>";
-                  }
-                }
-              } else {
-                if ( !empty($product['prd_change_qty']) ) {
-                  echo "<div>
-                          <label>".lang('Lang.orders.detail.securedQty')." : </label>
-                          <span class='{$changePriceClass}'>".number_format($product['prd_change_qty'])."ea</span>
-                        </div>";
-                }
+          <label class='w-30'>
+            <?php
+              if ( $nowPackStatus['qty_step'] == 3 ) echo lang('Lang.orders.detail.fixedQty');
+              else if ( $nowPackStatus['qty_step'] == 4 ) echo lang('Lang.orders.detail.finalQty');
+              else echo lang("Lang.orders.detail.securedQty");
+            ?>
+          </label>
+          <div class='w-70 d-flex flex-row align-items-lg-end'>
+            <?php
+              $prd_qty = $product['prd_order_qty'];
+              if ( $nowPackStatus['qty_step'] == 2 ) {
+                if ( !empty($product['prd_change_qty']) ) $prd_qty = $product['prd_change_qty'];
+              } else if ( $nowPackStatus['qty_step'] == 3 ) {
+                if ( !empty($product['prd_fixed_qty']) ) $prd_qty = $product['prd_fixed_qty'];
+              } else if ( $nowPackStatus['qty_step'] == 4 ) {
+                if ( !empty($product['prd_final_qty']) ) $prd_qty = $product['prd_final_qty'];
               }
-            }
-          ?>
-          </div>
-            
+              echo $prd_qty."ea";
+            ?>
+          </div>            
         </div>
         <div class='d-flex flex-row'>
           <?php
-          $orderPrice = 0;
-          $prd_price = $product['prd_price'];
-          $prd_qty = $product['prd_order_qty'];
-
-          if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) {
-            if ( !empty($product['prd_change_price']) ) $prd_price = $product['prd_change_price'];
-
-            if ( !empty($order) && !empty($order['order_fixed']) ) {
-              if ( !empty($nowPackStatus['final_check']) ) {
-                if ( !empty($product['prd_fixed_qty']) ) {
-                  $prd_qty = $product['prd_final_qty'];
-                } else {
-                  $prd_qty = $product['prd_fixed_qty'];
-                }
-              } else {
-                if ( !empty($product['prd_fixed_qty']) ) {
-                  $prd_qty = $product['prd_fixed_qty'];
-                } else $prd_qty = $product['prd_change_qty'];
-              }
-            } else  {
-              if ( !empty($product['prd_change_qty']) ) {
-                $prd_qty = $product['prd_change_qty'];
-              } else $prd_qty = $product['prd_order_qty'];
-            }
-          }
-          $orderPrice = ($prd_price * $prd_qty);
+            $orderPrice = ($prd_price * $prd_qty);
           ?>
-          <label class='w-20'><?=lang('Lang.orders.totalAmount')?></label>
-          <div class='w-80 d-flex flex-row align-items-lg-end'>
+          <label class='w-30'><?=lang('Lang.orders.detail.finalAmount')?></label>
+          <div class='w-70 d-flex flex-row align-items-lg-end'>
             <span><?=session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat'])?></span>
           </div>
         </div>
-        <?php 
-          if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) : 
-            if ( !empty($orderRequirement)) :
-              foreach($orderRequirement AS $i => $r) :
-                if($product['detail_id'] == $r['order_detail_id']) :
-                  if(isset($r['options'])) : ?>
-                  <fieldset class='border <?=$i > 0 ? 'mt-3' : 'mt-2'?> pb-2 position-relative pt-3 px-2'>
-                    <legend class='position-absolute'><?=$r['requirement_en']?></legend>
-                    <form class='requirmentOptForm'>
-                      <input type='hidden' name='idx' value="<?=$r['idx']?>">
-                      <input type='hidden' name='detail_id' value="<?=$r['order_detail_id']?>">
-                      <input type='hidden' name='requirement_id' value="<?=$r['requirement_id']?>">
-                      
-                      <?php if(!empty($r['requirement_reply'])) : ?>
-                        <div class='d-flex flex-row mb-2'>
-                          <label class='pe-2'>Answers to requirements :</label>
-                          <span><?=$r['requirement_reply']?></span>
-                        </div>
-                      <?php endif; ?> 
+        <?php if ( !empty($orderRequirement)) :
+          $rIdx = 0;
+          foreach($orderRequirement AS $r) :
+            if($product['detail_id'] == $r['order_detail_id']) :
+              if(isset($r['options'])) : ?>
+                <fieldset class='border <?=$rIdx > 0 ? 'mt-3' : 'mt-2'?> pb-2 position-relative pt-3 px-2'>
+                <legend class='position-absolute'><?=$r['requirement_en']?></legend>
+                  <form class='requirmentOptForm'>
+                    <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][idx]' value="<?=$r['idx']?>">
+                    <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][order_detail_id]' value="<?=$r['order_detail_id']?>">
+                    <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][requirement_id]' value="<?=$r['requirement_id']?>">
+                    
+                    <?php if(!empty($r['requirement_reply'])) : ?>
+                    <div class='d-flex flex-row mb-2'>
+                      <label class='pe-2'>Answers to requirements :</label>
+                      <span><?=$r['requirement_reply']?></span>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class='d-flex flex-column'>
                       <div class='d-flex flex-column'>
-                        <div class='d-flex flex-column'>
                         <?php foreach($r['options'] AS $o) : 
-                          $checked = '';
-                          $bold = '';
+                          $checked = NULL;
+                          $bold = NULL;
+                          $disabled = NULL;
 
                           if ( $o['idx'] == $r['requirement_selected_option_id'] ) {
                             $checked = " checked";
                             $bold = 'fw-bold';
                           }
-                          ?>
-                          <label class='ms-1 pb-1 d-flex flex-row align-items-center <?=$bold?>'>
-                            <input type='radio' name='requirement_selected_option_id' value='<?=$o['idx']?>'
-                              <?php 
-                                echo $checked;
-                                if ( !empty($nowPackStatus['requirement_option_disabled']) ) echo " disabled";
-                              ?>
-                            >
-                            <div class='ps-1'><?=$o['option_name_en']?></div>
-                          </label>
+                          if ( !empty($nowPackStatus['requirement_option_disabled']) ) $disabled = " disabled";
+                        ?>
+                        <label class='ms-1 pb-1 d-flex flex-row align-items-center <?=$bold?>'>
+                          <input type='radio' name='requirement[<?=$i?>][<?=$rIdx?>][requirement_selected_option_id]' value='<?=$o['idx']?>'
+                            <?php 
+                              echo $checked;
+                              echo $disabled;
+                            ?>>
+                          <div class='ps-1'><?=$o['option_name_en']?></div>
+                        </label>
                         <?php endforeach; ?>
-                        </div>
-                        <button class='btn btn-sm btn-secondary confirmbtn px-2 py-0 align-self-center'
-                        <?php 
-                          if($nowPackStatus['requirement_option_disabled'] ) echo " disabled";
-                          ?>
-                        ><?=lang('Lang.draft')?></button>
                       </div>
-                    </form>
-                  </fieldset>
-            <?php endif;
-                endif;
-              endforeach;
-            endif ;
-          endif;?>
-      <?php else: ?>
+                      <button class='btn btn-sm btn-secondary confirmbtn px-2 py-0 align-self-center'
+                        <?=$disabled?>>
+                        <?=lang('Lang.draft')?>
+                      </button>
+                    </div>
+                  </form>
+                </fieldset>
+              <?php else: 
+                if(!empty($r['requirement_reply'])) : ?>
+                <fieldset class='border <?=$rIdx > 0 ? 'mt-3' : 'mt-2'?> pb-2 position-relative pt-3 px-2'>
+                  <legend class='position-absolute'><?=$r['requirement_en']?></legend>
+                  <div class='d-flex flex-row my-2'>
+                    <label class='pe-2'>Answers to requirements :</label>
+                    <span><?=$r['requirement_reply']?></span>
+                  </div>
+                </fieldset>
+                <?php endif;  
+              $rIdx++;
+              endif;
+            endif;
+          endforeach;
+        endif ;?>
+        <?php else: ?>
         <div class='d-flex flex-row'>
-          <label class='w-20'><?=lang('Lang.orders.detail.orderStatus')?></label>
+          <label class='w-30'><?=lang('Lang.orders.detail.orderStatus')?></label>
           <span><?=lang('Lang.orders.detail.orderCanceled')?></span>
         </div>
-        <?php if ( !empty($product['detail_desc'])) : ?>
-        <div class='d-flex flex-row'>
-          <label class='w-20'><?=lang('Lang.orders.detail.cancelReason')?></label>
-          <div class='w-80'><?=$product['detail_desc']?></div>
-        </div>
         <?php endif;?>
-      <?php endif;?>
+        <?php if ( !empty($product['detail_desc'])) : ?>
+          <div class='d-flex flex-row'>
+            <label class='w-30'><?=lang('Lang.orders.detail.cancelReason')?></label>
+            <div class='w-70'><?=$product['detail_desc']?></div>
+          </div>
+        <?php endif;
+      endif;?>
       </div>
     </div>
     <?php endforeach ?>

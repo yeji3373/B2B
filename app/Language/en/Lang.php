@@ -114,6 +114,7 @@ return [
       'finalQty'            => 'Final order quantity', //최종 주문 수량
       'initialAmount'       => 'Initial order amount', //최초 주문 금액
       'finalAmount'         => 'Final order amount', //최종 주문 금액
+      'fixedProductPrice'   => 'Fixed Product price' // 확정된 제품 가격
     ],    
   ],
   /* orders */
