@@ -473,6 +473,10 @@ $(document).ready(function() {
       $('.pre-order form input[name=request-total-price]').val(parseFloat($('.sub-total-price').text()));
     }
     $("body").css('overflow', 'hidden');
+    
+    if($("#address-prev-head").length == 0){
+      $("#address-accordion input[name='address[address_operate]']").val(1);
+    }
   } else return;
 }).on('change', '[name=checkout-currency]', function() {
   console.log("changed");

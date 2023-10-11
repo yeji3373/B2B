@@ -79,7 +79,7 @@ class Inventory extends BaseController {
     $cartList = $this->cart->where('buyer_id', session()->userData['buyerId'])->findAll();
     if ( !empty($cartList) ) {
       if ( !empty($data['address']['address_operate']) ) {
-        $addressId = $this->AddressController->addressConduct();
+        $addressId = $this->AddressController->addressConduct($data['address']);
       } else {
         $addressId = $data['address']['idx'];
       }
