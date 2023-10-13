@@ -5,7 +5,7 @@
     ?>
     <div class='d-flex flex-column border <?=($i > 0 ? 'border-top-0': '')?> justify-content-between p-0 list-group-item'>
       <div class='d-flex flex-row align-items-center product-item mx-0 my-auto pt-2 pb-1 px-2'>
-        <?=img(esc($product['img_url']), false, ['class' => 'thumbnail me-2']);?>
+        <?=img(esc($product['img_url']), false, ['class' => 'thumbnail me-2 align-self-baseline']);?>
         <div class='d-flex flex-column'>
           <div class='name-group'>
             <span class='brand_name bracket text-uppercase'><?=$product['brand_name']?></span>
@@ -49,9 +49,9 @@
           </div>
         </div>
       </div>
-      <div class='d-flex flex-column bg-light pt-1 pb-2 px-2'>
-      <?php if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) : 
-        if ( empty($product['order_excepted']) ) : ?>
+      <?php if ( !empty($nowPackStatus) && !empty($nowPackStatus['requirement_option_check']) ) : ?>
+      <div class='d-flex flex-column bg-light pt-1 pb-2 px-2'>      
+        <?php if ( empty($product['order_excepted']) ) : ?>
         <div class='d-flex flex-row'>
           <label class='w-30'><?=lang('Lang.orders.detail.fixedProductPrice')?></label>
           <div class='w-70 d-flex flex-row align-items-lg-end'>
@@ -59,7 +59,7 @@
             $orderPrice = 0;
             $prd_price = $product['prd_price'];
   
-            if ( $nowPackStatus['qty_step'] > 1 ) {
+            if ( $nowPackStatus['pay_step'] > 1 ) {
               if ( !empty($product['prd_change_price']) ) $prd_price = $product['prd_change_price'];
             }
 
@@ -70,19 +70,19 @@
         <div class='d-flex flex-row'>
           <label class='w-30'>
             <?php
-              if ( $nowPackStatus['qty_step'] == 3 ) echo lang('Lang.orders.detail.fixedQty');
-              else if ( $nowPackStatus['qty_step'] == 4 ) echo lang('Lang.orders.detail.finalQty');
+              if ( $nowPackStatus['pay_step'] == 2 ) echo lang('Lang.orders.detail.fixedQty');
+              else if ( $nowPackStatus['pay_step'] >= 3 ) echo lang('Lang.orders.detail.finalQty');
               else echo lang("Lang.orders.detail.securedQty");
             ?>
           </label>
-          <div class='w-70 d-flex flex-row align-items-lg-end'>
+          <div class='w-70 d-flex flex-row align-items-end'>
             <?php
               $prd_qty = $product['prd_order_qty'];
-              if ( $nowPackStatus['qty_step'] == 2 ) {
+              if ( $nowPackStatus['pay_step'] == 1 ) {
                 if ( !empty($product['prd_change_qty']) ) $prd_qty = $product['prd_change_qty'];
-              } else if ( $nowPackStatus['qty_step'] == 3 ) {
+              } else if ( $nowPackStatus['pay_step'] == 2 ) {
                 if ( !empty($product['prd_fixed_qty']) ) $prd_qty = $product['prd_fixed_qty'];
-              } else if ( $nowPackStatus['qty_step'] == 4 ) {
+              } else if ( $nowPackStatus['pay_step'] == 3 ) {
                 if ( !empty($product['prd_final_qty']) ) $prd_qty = $product['prd_final_qty'];
               }
               echo $prd_qty."ea";
@@ -93,7 +93,13 @@
           <?php
             $orderPrice = ($prd_price * $prd_qty);
           ?>
-          <label class='w-30'><?=lang('Lang.orders.detail.finalAmount')?></label>
+          <label class='w-30'>
+            <?php if ( $nowPackStatus['pay_step'] >= 3 ) { 
+              echo lang('Lang.orders.detail.finalAmount');
+            } else {
+              echo lang('Lang.orders.detail.fixedAmount');
+            } ?>
+          </label>
           <div class='w-70 d-flex flex-row align-items-lg-end'>
             <span><?=session()->currency['currencySign'].number_format($orderPrice, session()->currency['currencyFloat'])?></span>
           </div>
@@ -173,9 +179,9 @@
             <label class='w-30'><?=lang('Lang.orders.detail.cancelReason')?></label>
             <div class='w-70'><?=$product['detail_desc']?></div>
           </div>
-        <?php endif;
-      endif;?>
+        <?php endif; ?>
       </div>
+      <?php endif;?>
     </div>
     <?php endforeach ?>
   <?php else : ?>

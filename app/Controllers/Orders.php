@@ -165,8 +165,8 @@ class Orders extends BaseController {
           $nextPackageStatus = $this->packagingStatus->where(['order_by' => ($packagingStatus['order_by'] + 1), 'available' => 1])->first();
 
           if ( !empty($nextPackageStatus) ) {
-            return json_encode(['Code' => $data, 'request' => $packagingStatus]);
-            // if ( $nextPackageStatus['department_ids'] < 0 ) {  // department_ids = -1일 경우에는 고객만 확인 완료 가능
+            // return json_encode(['Code' => $data, 'request' => $packagingStatus]);
+            // // if ( $nextPackageStatus['department_ids'] < 0 ) {  // department_ids = -1일 경우에는 고객만 확인 완료 가능
               if ( $this->packagingDetail->save(['idx' => $packagingStatus['packaging_detail_idx'], 'complete' => 1]) ) {
               $packagingDetailData['packaging_id'] = $packagingStatus['packaging_id'];
               $packagingDetailData['status_id'] = $nextPackageStatus['idx'];

@@ -111,10 +111,12 @@ return [
       'requestPrice'        => 'Request price', //재고 요청 금액
       'initialQty'          => 'Initial order quantity', //최초 주문수량
       'securedQty'          => 'Secured inventory quantity', //재고 확보 된 수량
+      'fixedQty'            => 'Fixed order quantity',
       'finalQty'            => 'Final order quantity', //최종 주문 수량
       'initialAmount'       => 'Initial order amount', //최초 주문 금액
+      'fixedAmount'         => 'Fixed order amount',
       'finalAmount'         => 'Final order amount', //최종 주문 금액
-      'fixedProductPrice'   => 'Fixed Product price' // 확정된 제품 가격
+      'fixedProductPrice'   => 'Fixed product price' // 확정된 제품 가격
     ],    
   ],
   /* orders */

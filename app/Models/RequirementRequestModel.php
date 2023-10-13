@@ -54,7 +54,8 @@ class RequirementRequestModel extends Model {
                           option_name,
                           option_name_en
                   FROM requirement_option
-                  WHERE requirement_option.idx IN ({$ids})")
+                  WHERE requirement_option.idx IN ({$ids})
+                  ORDER BY requirement_option.sort ASC")
                   ->getResultArray();
         
         $result[$j]['options'] = $options;
