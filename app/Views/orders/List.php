@@ -1,3 +1,8 @@
+<?php if (session()->has('error')) : ?>
+  <div class="mx-3 notification error">
+    <?= session('error') ?>
+  </div>
+<?php endif ?>
 <main class='m-3 w-auto orders-main'>
   <div class='w-90 m-auto d-grid orders-container'>
     <section class='orders-list-container border'>
@@ -41,3 +46,10 @@
   </div>
   <div class='pre-order'></div>
 </main>
+<script>
+$(document).ready(function() {
+  <?php if (session()->has('error')) : ?>
+    <?="alert('{session('error')}');"; ?>
+  <?php endif ?>
+});
+</script>

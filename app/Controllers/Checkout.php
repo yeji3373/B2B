@@ -172,7 +172,7 @@ class Checkout extends BaseController {
       if ( session()->has('error') ) {
         var_dump(session('error'));
       }
-    }
+    } 
     // return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber);
     // $this->requestOrders($req);
   }
@@ -182,93 +182,111 @@ class Checkout extends BaseController {
     if ( empty($data) ) return $result;
 
     if ( !empty($data['currentPackaging']) && !empty($data['currentPackaging']['payment_request']) ) {
-    //   if ( empty($data['currentPackaging']['complete']) ) {
-    //     $nextStatus = $this->packagingStatus->getNextIdx($data['currentPackaging']['status_id']);
+      $getPaymethod = $this->paymentMethod->where('id', $data['payment_id'])->first();
 
-    //     if ( empty($nextStatus) ) {
-    //       session()->setFlashdata('error', 'next status empty');
-    //       return $result;
-    //     } else {
-    //       if ( !$this->packagingDetail->save(['packaging_id' => $data['currentPackaging']['packaging_id']
-    //                                   , 'status_id' => $nextStatus->nextIdx]) ) {
-    //         session()->setFlashdata('error', 'next status error');
-    //         return $result;
-    //       } else {
-    //         if (!$this->packagingDetail->save(['idx' => $data['currentPackaging']['detail_id'], 'complete' => 1])) {
-    //           session()->setFlashdata('error', 'detail update error');
-    //           return $result;
-    //         }
-            $getPaymethod = $this->paymentMethod->where('id', $data['payment_id'])->first();
+      if ( !empty($getPaymethod) ) {
+        $subtotal = ($data['order']['order_amount'] * session()->userData['depositRate']);
+        
+        if ( $getPaymethod['payment_val'] == 'paypal' ) {
+          $phone = explode("-", $data['order']['phone']);
 
-            if ( !empty($getPaymethod) ) {
-              // var_dump($data['order']);
-              $subtotal = ($data['order']['order_amount'] * session()->userData['depositRate']);
-              
-              if ( $getPaymethod['payment_val'] == 'paypal' ) {
-                $phone = explode("-", $data['order']['phone']);
+          $invoiceData['invoice_number'] = $data['order']['buyerName']."_".date('ymd', strtotime($data['order']['created_at']))."_test4";
+          $invoiceData['buyerName'] = $data['order']['buyerName'];
+          $invoiceData['email'] = session()->userData['email'];
+          $invoiceData['currency_code'] = $data['order']['currency_code'];
+          $invoiceData['phone_code'] = empty($phone[0]) ? $data['address']['phone_code'] : $phone[0];
+          $invoiceData['phone'] = empty($phone[1]) ? $data['address']['phone'] : $phone[1];
+          $invoiceData['consignee'] = $data['address']['consignee'];
+          $invoiceData['streetAddr1'] = $data['address']['streetAddr1'];
+          $invoiceData['streetAddr2'] = $data['address']['streetAddr2'];
+          $invoiceData['zipcode'] = $data['address']['zipcode'];
+          $invoiceData['country_code'] = $data['address']['country_code'];
+          $invoiceData['subtotal'] = $subtotal;
+          $invoiceData['depositRate'] = session()->currency['currencyFloat'];
 
-                // $invoiceData['invoice_number'] = $data['order']['buyerName']."_".$data['order']['order_number'];
-                $invoiceData['invoice_number'] = $data['order']['buyerName']."_".date('ymd', strtotime($data['order']['created_at']));
-                $invoiceData['buyerName'] = $data['order']['buyerName'];
-                // $invoiceData['id'] = session()->userData['id'];
-                $invoiceData['email'] = session()->userData['email'];
-                $invoiceData['currency_code'] = $data['order']['currency_code'];
-                // $invoiceData['order_details'] = $data['order_details'];
-                $invoiceData['phone_code'] = empty($phone[0]) ? $data['address']['phone_code'] : $phone[0];
-                $invoiceData['phone'] = empty($phone[1]) ? $data['address']['phone'] : $phone[1];
-                $invoiceData['consignee'] = $data['address']['consignee'];
-                $invoiceData['streetAddr1'] = $data['address']['streetAddr1'];
-                $invoiceData['streetAddr2'] = $data['address']['streetAddr2'];
-                $invoiceData['zipcode'] = $data['address']['zipcode'];
-                $invoiceData['country_code'] = $data['address']['country_code'];
-                $invoiceData['subtotal'] = $subtotal;
-                $invoiceData['depositRate'] = session()->currency['currencyFloat'];
-                
-                $this->paypal->paypal($invoiceData);
-                if ($this->paypal->result['code'] == 200 || $this->paypal->result['code'] == 201) {
-                  $receiptData['payment_url'] = $this->paypal->result['payment_url'];
-                  $receiptData['payment_invoice_id'] = $this->paypal->result['payment_invoice_id'];
-                  $receiptData['payment_invoice_number'] = $this->paypal->result['payment_invoice_number'];
-                } else {
-                  $result['code'] = $this->paypal->result['code'];
-                  var_dump($this->paypal->result);
-                  // return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber)->with('error', 'paypal invoice error');
-                  session()->setFlashdata('error', 'paypal invoice error');
-                  return $result;
-                }
-              }
+          $receipt_id = '';
+          // makeInvoice (create draft)
+          $makeResult = $this->paypal->makeInvoice($invoiceData);
 
-              $receiptData['order_id'] = $data['order']['id'];
-              $receiptData['receipt_type'] = 1;
-              $receiptData['rq_percent'] = session()->userData['depositRate'];
-              $receiptData['rq_amount'] = $subtotal;
-              $receiptData['due_amount'] = $data['order']['order_amount'] - $subtotal;
-              $receiptData['display'] = 1; // 1차 영수증은 무조건 보여주기
+          if ($makeResult['code'] == 200 || $makeResult['code'] == 201) {
+            $receiptData['payment_invoice_id'] = $makeResult['payment_invoice_id'];
+            $receiptData['payment_invoice_number'] = $makeResult['payment_invoice_number'];
+            $receiptData['order_id'] = $data['order']['id'];
+            $receiptData['receipt_type'] =  1; // 1차영수증
+            $receiptData['rq_percent'] = session()->userData['depositRate'];
+            $receiptData['rq_amount'] = $subtotal;
+            $receiptData['due_amount'] = $data['order']['order_amount'] - $subtotal;
+            $receiptData['payment_status'] = -1; // makeInvoice 에서는 -1 상태
+  
+            // order_receipt 에 insert
+            if ( $this->receipt->save($receiptData) ) {
+              $receipt_id = $this->receipt->getInsertID();
+            } else {
+              session()->setFlashdata('error', 'receipt insert error');
+              return $result;
+            }
+          } else {
+            $result['code'] = $makeResult['code'];
+            print_r($makeResult);
+            echo "<br><br>";
+            echo $makeResult['description'];
+            session()->setFlashdata('error', $makeResult['description']);
+            return $result;
+          }
+          
+          // sendInvoice
+          $sendResult = $this->paypal->sendInvoice();
 
-              var_dump($receiptData);
-              if ( $this->receipt->save($receiptData) ) {
-                if ( !$this->order->save(['id'=> $data['order']['id']
-                                        , 'payment_id' => $data['order']['payment_id']
-                                        , 'order_amount' => $data['order']['order_amount']]) ) {
-                  session()->setFlashdata('errror', 'payment info update error');
-                  return $result;
-                } else {
-                  $result['code'] = 200;
-                  return $result;
-                }
+          // sendInvoice 후 order_receipt update
+          if ($sendResult['code'] == 200) {
+            if ( $this->receipt->save(['receipt_id' => $receipt_id
+                                  , 'payment_status' => 0
+                                  , 'payment_url' => $sendResult['payment_url']
+                                  , 'display' => 1]) ) {
+              // orders table update
+              if ( $this->order->save(['id'=> $data['order']['id']
+                                    , 'payment_id' => $data['order']['payment_id']
+                                    , 'order_amount' => $data['order']['order_amount']]) ) {
+                $result['code'] = $sendResult['code'];
+                return $result;
               } else {
-                session()->setFlashdata('error', 'receipt insert error');
+                session()->setFlashdata('errror', 'payment info update error');
                 return $result;
               }
             } else {
-              session()->setFlashdata('error', 'payment method info empty');
+              session()->setFlashdata('error', 'payment status update error');
             }
-    //       }
-    //     }
-    //   } else {
-    //     session()->setFlashdata('error', '이미 처리가 완료된 packaging');
-    //     return $result;
-    //   }
+          } else {
+            session()->setFlashdata('error', 'send Invoice error');
+            return $result;
+          }
+        // paypal 결제가 아닐 때
+        } else {
+          $receiptData['order_id'] = $data['order']['id'];
+          $receiptData['receipt_type'] = 1; // 1차영수증
+          $receiptData['rq_percent'] = session()->userData['depositRate'];
+          $receiptData['rq_amount'] = $subtotal;
+          $receiptData['due_amount'] = $data['order']['order_amount'] - $subtotal;
+          $receiptData['display'] = 1; //1차는 무조건 보이게
+
+          if ( $this->receipt->save($receiptData) ) {
+            if ( $this->order->save(['id'=> $data['order']['id']
+                                    , 'payment_id' => $data['order']['payment_id']
+                                    , 'order_amount' => $data['order']['order_amount']]) ) {
+              $result['code'] = 200;
+              return $result;
+            } else {
+              session()->setFlashdata('errror', 'payment info update error');
+              return $result;
+            }
+          } else {
+            session()->setFlashdata('error', 'receipt insert error');
+            return $result;
+          }
+        }
+      } else {
+        session()->setFlashdata('error', 'payment method info empty');
+      }
     } else {
       session()->setFlashdata('error', 'packaging error');
       return $result;
