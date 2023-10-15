@@ -235,7 +235,7 @@ class Orders extends BaseController {
                 ->select('buyers_address.phone_code, buyers_address.phone')
                 ->select('buyers_address.deleted_at')
                 ->join('currency', 'currency.currency_code = orders.currency_code')
-                ->join('buyers_address', 'buyers_address.idx = orders.address_id AND buyers_address.buyer_id = orders.buyer_id', 'LEFT OUTER')
+                ->join('buyers_address', 'buyers_address.idx = orders.address_id', 'LEFT OUTER')
                 ->where(['order_number' => $this->request->getVar('order_number')
                         ,'orders.buyer_id' => session()->userData['buyerId']])
                 ->first();
@@ -593,26 +593,14 @@ class Orders extends BaseController {
 
     if ( !empty($params) ) {
       if ( $this->requirement->save($params) ) {
-        $result['Code'] = 200;
-        $result['Params'] = $params;
+          $result['Code'] = 200;
+          $result['Params'] = $params;
       } else {
         $result['error'] = 'retry';
       }
+    } else {
+      $result['error'] = 'is empty';
     }
     return json_encode($result);
-    // // print_r($params);
-    // if ( $this->request->isAJAX()) { 
-    //   if(!empty($params)){
-    //     //요청사항 : 유통기한 체크
-    //     if($params['requirement_id'] == 1){
-    //       $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['expirationOption']]);
-    //     //요청사항 : leadtime check 
-    //     }else{
-    //       $this->requirement->save(['idx' => $params['idx'], 'requirement_selected_option_id' => $params['leadtimeOption']]);
-    //     }
-    //   }
-    //   // return json_encode(['result' => true, 'params' => $params]);
-    // }
-    // return $this->respond();
   }
 }
