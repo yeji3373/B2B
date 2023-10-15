@@ -49,14 +49,19 @@
     <span class='py-2 pm-2'><?=$order['currency_code']?></span>
   </div>
   <div class='info-sec p-0'>
-    <?php if ( empty($order['order_amount'])) : ?>
+    <?php if (!empty($nowPackStatus['pay_step']) ) : 
+      $amount = $order['request_amount'];
+      if ( $nowPackStatus['pay_step'] == 2 ) $amount = $order['inventory_fixed_amount'];
+      else if ( $nowPackStatus['pay_step'] == 3 ) $amount = $order['fixed_amount'];
+      else if ( $nowPackStatus['pay_step'] == 4 ) $amount = $order['decide_amount'];
+    ?>
     <label class='py-2 ps-2'><?=lang('Lang.orders.amount')?></label>
-    <span class='py-2 pm-2'><?=$order['currency_sign'].number_format($order['request_amount'], $order['currency_float'])?></span>
+    <span class='py-2 pm-2'><?=$order['currency_sign'].number_format($amount, $order['currency_float'])?></span>
     <!-- 재고요청 완료 후, 결제하기 버튼 보여지기. -->
     <?php else: ?>
     <div class='w-100 py-1 px-1 bg-light sub-sec fw-bold'>
       <label class='py-2 ps-2'><?=lang('Lang.orders.amount')?></label>
-      <span class='py-2 pm-2 fs-6'><?=$order['currency_sign'].number_format($order['order_amount'], $order['currency_float'])?></span>
+      <span class='py-2 pm-2 fs-6'><?=$order['currency_sign'].number_format($order['request_amount'], $order['currency_float'])?></span>
     </div>
     <?php endif; ?>
   </div>

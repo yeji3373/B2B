@@ -20,7 +20,7 @@ class PaypalController extends Controller {
   protected $invoiceId;
   protected $invoiceNumber;
 
-  public $result;
+  // public $result;
 
   public function __construct() {
     // helper('date');
@@ -63,7 +63,7 @@ class PaypalController extends Controller {
   }
 
   public function makeInvoice($req) {
-    if ( !empty($this->result) ) $this->result = Array();
+    $result = Array();
     $this->orderInfo = $req;
 
     if ( $this->config->accessTokenExpiry >= time() ) {
@@ -83,34 +83,34 @@ class PaypalController extends Controller {
     );
 
     if ( $generate['code'] == 201 ) {   // successful request returns code 
-      $this->invoiceId = $generate['data']['id'];
-      $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
-      $this->result['payment_invoice_id'] = $generate['data']['id'];
-      $this->result['payment_invoice_number'] = $generate['data']['detail']['invoice_number'];
-      $this->result['data'] = $generate;
-      $this->result['code'] = $generate['code'];
-      // $this->sendInvoice();
+      // $this->invoiceId = $generate['data']['id'];
+      // $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
+      $result['payment_invoice_id'] = $generate['data']['id'];
+      $result['payment_invoice_number'] = $generate['data']['detail']['invoice_number'];
+      $result['data'] = $generate;
+      $result['code'] = $generate['code'];
     } else if ( $generate['code'] == 200 ) {
-      $this->invoiceId = $generate['data']['id'];
-      $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
-      $this->result['payment_invoice_id'] = $generate['data']['id'];
-      $this->result['payment_invoice_number'] = $generate['data']['detail']['invoice_number'];
-      $this->result['data'] = $generate;
-      $this->result['code'] = $generate['code'];
-      // $this->sendInvoice();
+      // $this->invoiceId = $generate['data']['id'];
+      // $this->invoiceNumber = $generate['data']['detail']['invoice_number'];
+      $result['payment_invoice_id'] = $generate['data']['id'];
+      $result['payment_invoice_number'] = $generate['data']['detail']['invoice_number'];
+      $result['data'] = $generate;
+      $result['code'] = $generate['code'];
     } else {
-      echo "makeInvoice error";
-      print_r($generate);
-      $this->result['error'] = 'invoice make error '.$generate['data']['name'].' : '.json_encode($generate['data']['details']);
-      $this->result['code'] = $generate['code'];
-      $this->result['description'] = $generate['data']['details']['description'];
+      // echo "makeInvoice error";
+      // print_r($generate);
+      $result['error'] = 'invoice make error '.$generate['data']['name'].' : '.json_encode($generate['data']['details']);
+      $result['code'] = $generate['code'];
+      $result['data'] = $generate;
+      // $result['description'] = $generate['data']['details']['description'];
     }
-    return $this->result;
+    return $result;
   }
 
-  public function sendInvoice() {
+  public function sendInvoice($invoiceId) {
+    $result = Array();
     $send = $this->curlRequest(
-      $this->config->baseUrl.$this->invoiceUrl.'/'.$this->invoiceId.'/send',
+      $this->config->baseUrl.$this->invoiceUrl.'/'.$invoiceId.'/send',
       $this->header,
       '{"send_to_invoicer": true}',
       'POST'
@@ -118,21 +118,22 @@ class PaypalController extends Controller {
     
     // successful code 202 : 인보이스 발행 날짜가 미래인 경우
     if ( $send['code'] == 200 || $send['code'] == 201 || $send['code'] == 202 || $send['code'] == 204) { 
-      $this->result['payment_url'] = $send['data']['href'];
-      $this->result['payment_invoice_id'] = $this->invoiceId;
-      $this->result['payment_invoice_number'] = $this->invoiceNumber;
-      $this->result['data'] = $send;
-      $this->result['code'] = 200;
+      $result['payment_url'] = $send['data']['href'];
+      // $result['payment_invoice_id'] = $this->invoiceId;
+      // $result['payment_invoice_number'] = $this->invoiceNumber;
+      $result['data'] = $send;
+      $result['code'] = 200;
     } else {
-      // $this->result['error'] = 'invoice send error '.$send['data']['name'].' : '.json_encode($send['data']['details']);
-      // $this->result['code'] = $send['code'];
-      $this->result = $send;
+      // $result['error'] = 'invoice send error '.$send['data']['name'].' : '.json_encode($send['data']['details']);
+      // $result['code'] = $send['code'];
+      $result = $send;
     }
     
-    return $this->result;
+    return $result;
   }
 
   public function showInvoiceDetail($invoiceId) {
+    $result = Array();
     $detail = $this->curlRequest(
       $this->config->baseUrl.$this->invoiceUrl.'/'.$invoiceId,
       $this->header,
@@ -140,12 +141,12 @@ class PaypalController extends Controller {
     );
 
     if ( $detail['code'] == 200 || $detail['code'] == 201 ) {
-      $this->result = [
+      $result = [
         'data'  => $detail['data'],
         'code'  => $detail['code']
       ];
-    } else $this->result = ['code' => $detail['code'], 'data' => $detail['data']['name'].' : '.json_encode($detail['data']['details'])];
-    return $this->result;
+    } else $result = ['code' => $detail['code'], 'data' => $detail['data']['name'].' : '.json_encode($detail['data']['details'])];
+    return $result;
   }
 
   // protected function curlRequest($url, array $header, $params, $config, $method = 'GET') {

@@ -48,15 +48,6 @@ $(document).ready(function() {
     
     $('.pi-viewer').hide();
     $('body').removeClass('overflow-hidden');
-    
-  //개별상품별 주문option 결정
-  }).on("click", ".btn-small", function() {
-    let formData = $(this).closest('form').serializeArray();
-    console.log(formData);
-    result = getData('/orders/setOrderOption', formData);
-    console.log(result);
-    return false;
-  // packaging_status -> 6 (고객확인완료) 로 변경
   }).on('click', '.order-check', function(e) {
     e.preventDefault()
     let data = $(this).closest('form').serializeArray();
@@ -65,6 +56,17 @@ $(document).ready(function() {
       if ($('.requirmentOptForm [type=radio]:checked').length < $('.requirmentOptForm').length ) {
         if ( confirm('재고요청 상태가 선택되지 않은 조건이 있습니다. 다시 선택하겠습니까?') ) {
           return;
+        } else {
+          Array.from($('.requirmentOptForm')).forEach(element => {
+            if ( typeof $(element).data('type') != 'undefined' && typeof $(element).data('name') != 'undefined' ) {
+              if ( $(element).data('type') == '0' ) {
+                tempName = $(element).attr('name');
+                $(element).attr('name', $(element).data('name'));
+                $(element).data('name', tempName);
+                $(element).data('type', 1);
+              } 
+            }
+          });
         }
       }
       data = $.merge(data, $('.requirmentOptForm').serializeArray());   
@@ -103,29 +105,29 @@ $(document).ready(function() {
     }
   }).on('click', '.confirmbtn', function(e) {
     e.preventDefault();
-    formData = $(this).closest('.requirmentOptForm').serializeArray();
-    result = getData('/orders/setOrderOption', formData, true);
+    if ( $(this).closest('.requirmentOptForm').length == 0 ) return;
+    let requirmentOptForm = $(this).closest('.requirmentOptForm'); 
+    let formData = [];
+
+    Array.from(requirmentOptForm.find('input')).forEach(element => {
+      if ( typeof $(element).data('type') != "undefined" || typeof $(element).data('name') != 'undefined' ) {
+        if ( $(element).data('type') == '1' ) {
+          tempName = $(element).attr('name');
+          $(element).attr('name', $(element).data('name'));
+          $(element).data('name', tempName);
+          $(element).data('type', 0);
+        }
+      } else return;
+    });
     
+    formData = requirmentOptForm.serializeArray();
+    let result = getData('/orders/setOrderOption', formData, true);
     if ( $.inArray('error', result) === true ) {
       console.log("inarray");
       alert(result['error']);
       return;
+    // } else {
+    //   alert('임시저장 성공');
     }
     return;
-    // if(confirm('order confirmation')){
-    //   let formData;
-    //   let selectedOption = $(this).closest('form').find('input[name="requirement_id"]').val();
-    //   if(selectedOption == 1){
-    //     formData = $(this).closest('#requirmentOptForm').serializeArray();
-    //   }else{
-    //     formData = $(this).closest('#requirmentOptForm').serializeArray();
-    //   }
-    //   console.log(formData);
-    //   result = getData('/orders/setOrderOption', formData);
-    //   console.log(result);
-    //   return true;
-    // }else{
-    //   return false;
-    // }
-    // // return false;
   });
