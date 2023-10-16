@@ -43,6 +43,7 @@ class Orders extends BaseController {
     $this->requirement = new RequirementRequestModel();
     $this->products = new ProductModel();
     $this->brands = new BrandModel();
+    $this->users = new UserModel();
     $this->status = config('Status');
 
     $this->paypalController = new PaypalController();
@@ -254,10 +255,8 @@ class Orders extends BaseController {
   public function getOrderDetails($where = []) {
     $orderDetails = $this->oDetail
                     ->select('orders_detail.id AS detail_id')
-                    ->select('orders_detail.prd_price_changed')
                     ->select('orders_detail.prd_change_price')
                     ->select('orders_detail.prd_price')
-                    ->select('orders_detail.prd_qty_changed')
                     ->select('orders_detail.prd_order_qty')
                     ->select('orders_detail.prd_change_qty')
                     ->select('orders_detail.prd_fixed_qty')
@@ -426,27 +425,27 @@ class Orders extends BaseController {
     return $receipt;
   }
 
-  public function getTotalShippingCost() {
-    $delivery = $this->delivery
-                  ->select('*')
-                  // ->select('SUM(delivery_price) OVER() AS shipping_total_cost')
-                  ->select('SUM(delivery_price) AS shipping_total_cost')
-                  ->where(['order_id' => $this->orderId
-                          , 'delivery_code >' => 0])
-                  ->first();
-    // $deliveries = $this->delivery->where(['order_id' => $this->orderId])->findAll();
+  // public function getTotalShippingCost() {
+  //   $delivery = $this->delivery
+  //                 ->select('*')
+  //                 // ->select('SUM(delivery_price) OVER() AS shipping_total_cost')
+  //                 ->select('SUM(delivery_price) AS shipping_total_cost')
+  //                 ->where(['order_id' => $this->orderId
+  //                         , 'delivery_code >' => 0])
+  //                 ->first();
+  //   // $deliveries = $this->delivery->where(['order_id' => $this->orderId])->findAll();
 
-    // if ( !empty($deliveries) ) :
-    //   foreach ( $deliveries as $i => $delivery ) :
-    //     // if ($delivery['delivery_code'] < 100 ) {
-    //       // $deliveries[$i]['deliveryCode'] = self::$deliveryCode[$delivery['delivery_code']];
-    //       $deliveries[$i]['deliveryCode'] = $this->status->deliveryCode[$delivery['delivery_code']];
-    //     // }
-    //   endforeach;
-    // endif;
+  //   // if ( !empty($deliveries) ) :
+  //   //   foreach ( $deliveries as $i => $delivery ) :
+  //   //     // if ($delivery['delivery_code'] < 100 ) {
+  //   //       // $deliveries[$i]['deliveryCode'] = self::$deliveryCode[$delivery['delivery_code']];
+  //   //       $deliveries[$i]['deliveryCode'] = $this->status->deliveryCode[$delivery['delivery_code']];
+  //   //     // }
+  //   //   endforeach;
+  //   // endif;
 
-    return $delivery;
-  }
+  //   return $delivery;
+  // }
 
   public function getBuyer() {
     return $this->buyer
@@ -458,19 +457,31 @@ class Orders extends BaseController {
   }
 
   public function getOrderData() {
-    // print_r($this->request->getVar());
+    var_dump($this->request->getVar());
     $data['order'] = $this->getOrder();
     $data['payment'] = $this->getPaymentMethod();
-     'orderId '.$this->orderId.'<br/><br/>';
+    //  'orderId '.$this->orderId.'<br/><br/>';
     $data['orderDetails'] = $this->getOrderDetails();
     // $data['orderRequirement'] = $this->getRequirement();
     // $data['receipts'] = $this->getOrderReceipts($this->request->getPost('receiptId'));
     $data['receipt'] = $this->getOrderReceipt();
     $data['buyer'] = $this->getBuyer();
+    
+    $data['user'] = Array();
+    $data['delivery'] = Array();
+    
+    if ( !empty($data['order']) ) {
+      $data['user'] = $this->users->where('idx', $data['order']['user_id'])->first();
+    }
 
-   if ( $this->request->isAJAX() ) {
-      // return json_encode(['Code' => 200, 'Msg' => $data]);
-      // print_r($data);
+    if ( !empty($data['receipt']) ) {
+      if ( !empty($data['receipt']['delivery_id']) ) {
+        $deliveryIds = explode(',', $data['receipt']['delivery_id']);
+        $data['delivery'] = $this->delivery->whereIn('id', $deliveryIds)->findAll();
+      }
+    }
+
+    if ( $this->request->isAJAX() ) {
       return view('/orders/includes/ProformaInvoice', $data);
     }
     return $data;

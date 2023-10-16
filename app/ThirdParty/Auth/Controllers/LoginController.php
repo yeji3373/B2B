@@ -157,6 +157,7 @@ class LoginController extends Controller
 		    // 'id' 			      => $user['id'],
 		    'name' 			    => $user['name'],
 		    'email' 		    => $user['email'],
+        'id'            => $user['idx'],
         'buyerId'       => $buyer['id'],
         'buyerName'     => $buyer['name'],
         'buyerMargin'   => $buyer['margin_level'],

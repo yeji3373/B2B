@@ -71,7 +71,6 @@
           $canceled = TRUE;
           $prd_qty = 0;
         }
-
         $orderPrice = ($prd_price * $prd_qty);
       ?>
       <div class='d-flex flex-column pt-1 pb-2 px-2'>

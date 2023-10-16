@@ -126,10 +126,8 @@ class ProductModel extends Model {
                   , orders_detail.prd_order_qty
                   , orders_detail.prd_change_qty
                   , orders_detail.prd_fixed_qty
-                  , orders_detail.prd_qty_changed
                   , orders_detail.prd_price
                   , orders_detail.prd_change_price
-                  , orders_detail.prd_price_changed
                   , orders_detail.margin_rate_id')
     ->join('orders_detail', 'orders_detail.prd_id = product.id')
     ->join('brand', 'brand.brand_id = product.brand_id')

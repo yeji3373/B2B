@@ -88,6 +88,7 @@ class Inventory extends BaseController {
         $requestPrice = $this->CartController->getCartTotalPrice();
         if ( !empty($requestPrice) ) {
           $request['buyer_id'] = session()->userData['buyerId'];
+          $request['user_id'] = session()->userData['id'];
           $request['order_number'] = date('Ymd', time()).sprintf('%04d', ($this->makeOrderNumber() + 1));
           $request['request_amount'] = $requestPrice['order_price_total'];
           $request['inventory_fixed_amount'] = $requestPrice['order_price_total'];
@@ -95,8 +96,6 @@ class Inventory extends BaseController {
           $request['currency_code'] = session()->currency['currencyUnit'];
           $request['address_id']  = $addressId;
 
-          var_dump($request);
-        
           if ( $this->order->save($request) ) {
             $orderId = $this->order->getInsertID();
             $this->orderNumber = $request['order_number'];

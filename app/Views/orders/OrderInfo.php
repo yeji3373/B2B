@@ -89,7 +89,7 @@
               echo esc($receipt['receipt_type']).'st '.lang('Lang.orders.payment.receipt');
             elseif ( $receipt['receipt_type'] == 2 ) : 
               echo esc($receipt['receipt_type']).'nd '.lang('Lang.orders.payment.receipt');
-            elseif ( $receipt['receipt_type'] == 2 ) : 
+            elseif ( $receipt['receipt_type'] == 3 ) : 
               echo esc($receipt['receipt_type']).'rd' .lang('Lang.orders.payment.receipt');
             else : 
               echo esc($receipt['receipt_type']).'th '.lang('Lang.orders.payment.receipt');

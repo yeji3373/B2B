@@ -43,13 +43,19 @@
             <span>Tel: <?=empty($buyer['phone']) ? '-' : $buyer['phone']?></span>
             <!-- <span>Fax.82-70-4325-4806</span> -->
           </p>
+          <?php if ( isset($user) && !empty($user['name']) ) : ?>
+          <p>
+            <label>Attn.</label>
+            <span><?=$user['name']?></span>
+          </p>
+          <?php endif; ?>
           <?php endif; ?>
         </div>
       </div>
   </div>
   <div class='d-flex flex-row justify-content-end mb-2 pi-order-no'>
     <div class='w-25 border-bottom border-2 border-dark'>
-      <span class='fw-bold'>Order No.</span>
+      <span class='fw-bold'>PI. No.</span>
       <span><?=$buyer['name']."_".date('Ymd', strtotime($order['orderDate']))?></span>
     </div>
   </div>
@@ -125,7 +131,7 @@
         </td>
         <td>
           <?php if ( $detail['order_excepted'] == 1 ) : 
-            echo "주문 제외";
+            echo lang('Lang.orders.invoice.cancellation');
           endif;?>
         </td>
       </tr>
@@ -134,20 +140,40 @@
     </tboy>
     <tfoot>
     <?php if (!empty($receipt) && !empty($order)) : 
-      // print_r($order);
-      // print_r($receipt);?>
+      $totalShippingFee = 0;
+      // var_dump($order);
+      // var_dump($receipt);?>
       <tr class='fw-bold'>
         <td class='text-center py-2' colspan='5'>Product total</td>
         <td class='text-end py-2 px-1 color-red' colspan='2'>
           <?=$order['currency_sign'].' '.number_format($order['order_amount'], $order['currency_float']) ?>
         </td>
       </tr>
+      <?php 
+      if ( !empty($delivery) ) : 
+      foreach ($delivery as $key => $value) { 
+        $totalShippingFee += $value['delivery_price']; ?>
       <tr class='fw-bold'>
         <td class='text-center py-2' colspan='5'>Shipping cost</td>
         <td class='text-end py-2 px-1 color-red' colspan='2'>
-          <?=$order['currency_sign'].' '.number_format($receipt['delivery_price'], $order['currency_float']);?>
+          <?=$order['currency_sign'].' '.number_format($value['delivery_price'], $order['currency_float']);?>
         </td>
-      </tr>      
+      </tr>
+      <?php }
+      else: ?>
+      <tr class='fw-bold'>
+        <td class='text-center py-2' colspan='5'>Shipping cost</td>
+        <td class='text-end py-2 px-1 color-red' colspan='2'>
+          -
+        </td>
+      </tr>
+      <?php endif; ?>
+      <tr class='fw-bold'>
+        <td class='text-center py-2' colspan='5'>Grand total</td>
+        <td class='text-end py-2 px-1 color-red' colspan='2'>
+          <?=$order['currency_sign'].' '.number_format(($order['order_amount'] + $totalShippingFee), $order['currency_float'])?>
+        </td>
+      </tr>
       <tr class='fw-bold'>
         <td class='text-center py-2' colspan='5'>Deposit</td>
         <td class='text-end py-2 px-1 color-red' colspan='2'>
@@ -157,13 +183,7 @@
       <tr class='fw-bold'>
         <td class='text-center py-2' colspan='5'>Balance</td>
         <td class='text-end py-2 px-1 color-red' colspan='2'>
-          <?=$order['currency_sign'].' '.number_format($receipt['due_amount'], $order['currency_float'])?>
-        </td>
-      </tr>
-      <tr class='fw-bold'>
-        <td class='text-center py-2' colspan='5'>Grand total</td>
-        <td class='text-end py-2 px-1 color-red' colspan='2'>
-          <?=$order['currency_sign'].' '.number_format(($order['order_amount'] + $receipt['delivery_price']), $order['currency_float'])?>
+          <?=$order['currency_sign'].' '.number_format(($receipt['due_amount'] + $totalShippingFee), $order['currency_float'])?>
         </td>
       </tr>
       <?php endif; ?>

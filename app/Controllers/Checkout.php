@@ -276,20 +276,14 @@ class Checkout extends BaseController {
         $temp = str_replace($standardInvoiceNumber, '', $makeResult['data']['data']['details'][0]['value']);
         
         if ( !empty($temp) ) {
-          if ( strpos($temp, '_') !== false ) {
-            if ( is_numeric(str_replace('_', '', $temp)) ) {
-              $idx = (str_replace('_', '', $temp) + 1);
-            } else {
-              // echo "is not numeric<br/>";
-            }
-          } else {
-            $idx = 1;
-          }
-        } else {
-          $idx = 1;
-        }
+          if ( strpos($temp, '-') !== false ) {
+            if ( is_numeric(str_replace('-', '', $temp)) ) {
+              $idx = (str_replace('-', '', $temp) + 1);
+            } else $idx = 1;
+          } else $idx = 1;
+        } else $idx = 1;
         
-        $invoiceData['invoice_number'] = $standardInvoiceNumber."_{$idx}";
+        $invoiceData['invoice_number'] = $standardInvoiceNumber."-{$idx}";
         $this->paypalCraftInvoice($invoiceData, $order);
       }
     }
