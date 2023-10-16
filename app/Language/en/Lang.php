@@ -117,7 +117,12 @@ return [
       'fixedAmount'         => 'Fixed order amount',
       'finalAmount'         => 'Final order amount', //최종 주문 금액
       'fixedProductPrice'   => 'Fixed product price' // 확정된 제품 가격
-    ],    
+    ],
+    'invoice'               => [
+      'excludedOrder'       => 'Excluded from Order',
+      'exclued'             => 'Excluded',
+      'cancellation'        => 'cancellation',
+    ],
   ],
   /* orders */
 
