@@ -19,7 +19,7 @@
                         data-exchange='<?=$currency['addCalc']?>'
                         data-code='<?=$currency['currency_code']?>'
                         <?=$currency['currency_code'] == 'USD' ? 'checked': ''?>
-                        value='<?=$currency['cRate_idx']?>'>
+                        value='<?=$currency['idx']?>'>
                     <?=$currency['currency_code']?>
                 </label>
                 <?php endforeach ?>

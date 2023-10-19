@@ -12,7 +12,7 @@ use App\Models\CountryModel;
 use App\Models\RequirementModel;
 use App\Models\BuyerAddressModel;
 use App\Models\RequirementRequestModel;
-use App\Models\DeliveryModel;
+// use App\Models\DeliveryModel;
 use App\Models\PackagingModel;
 use App\Models\PackagingDetailModel;
 use App\Models\MarginModel;
@@ -36,7 +36,7 @@ class Inventory extends BaseController {
     $this->requirmentRequest = new RequirementRequestModel();
     $this->margin = new MarginModel();
 
-    $this->delivery = new DeliveryModel();
+    // $this->delivery = new DeliveryModel();
     $this->packaging = new PackagingModel();
     $this->packagingDetail = new PackagingDetailModel();
 
@@ -75,7 +75,7 @@ class Inventory extends BaseController {
   public function requestInventory() {
     $data = $this->request->getVar();
     $request = [];
-    
+
     $cartList = $this->cart->where('buyer_id', session()->userData['buyerId'])->findAll();
     if ( !empty($cartList) ) {
       if ( !empty($data['address']['address_operate']) ) {
@@ -103,30 +103,25 @@ class Inventory extends BaseController {
             $orderDetailFailed = $this->setOrderDetail($orderId);
             // var_dump($orderDetailFailed);
             if ( empty($orderDetailFailed) ) {  // detail 입력중 오류 없음
-              if ( $this->delivery->save(['order_id' => $orderId]) ) {
-                if ( $this->packaging->save(['order_id' => $orderId]) ) {
-                  if ( empty($this->packagingDetail->where(['packaging_id'=> $this->packaging->getInsertID(), 'status_id' => 1])->find() ) ) {
-                    if ( $this->packagingDetail->save(['packaging_id' => $this->packaging->getInsertID()
-                                                  , 'status_id' => 1
-                                                  , 'in_progress' => 1]) ) :
-                      if ( $this->order->save(['id'=> $orderId, 'available'=> 1]) ) {  
-                      } else {
-                        // order 활성화 중에 오류 발생
-                        return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
-                      }
-                    else :
-                      //  packagingDetail save error
+              if ( $this->packaging->save(['order_id' => $orderId]) ) {
+                if ( empty($this->packagingDetail->where(['packaging_id'=> $this->packaging->getInsertID(), 'status_id' => 1])->find() ) ) {
+                  if ( $this->packagingDetail->save(['packaging_id' => $this->packaging->getInsertID()
+                                                    , 'status_id' => 1
+                                                    , 'in_progress' => 1]) ) :
+                    if ( $this->order->save(['id'=> $orderId, 'available'=> 1]) ) {  
+                    } else {
+                      // order 활성화 중에 오류 발생
                       return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
-                    endif;
-                  } else {
-                    // 이미 있음...
-                  }
+                    }
+                  else :
+                    //  packagingDetail save error
+                    return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
+                  endif;
                 } else {
-                  //  packaging save error
-                  return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
+                  // 이미 있음...
                 }
               } else {
-                // delivery save error
+                //  packaging save error
                 return redirect()->to(site_url('orders'))->with('error', '처리중 오류 발생');
               }
             } else {
@@ -182,7 +177,9 @@ class Inventory extends BaseController {
 
             if ( !empty($data['requirement']) ) {
               foreach($data['requirement'] AS $requirement ){
-                $this->requirmentRequest->save(array_merge($requirement, ['order_id' => $orderId, 'order_detail_id'=> $this->orderDetail->getInsertID()]));
+                if ( $this->requirmentRequest->save(array_merge($requirement, ['order_id' => $orderId, 'order_detail_id'=> $this->orderDetail->getInsertID()])) ) {
+                  $this->requirmentOption->where(['requirement_idx' => $this->requirmentRequest->getInsertID(), 'available' => 1])->orderBy('sort ASC')->findAll();
+                }
               }
             }
             $success++;

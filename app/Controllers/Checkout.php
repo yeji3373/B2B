@@ -6,7 +6,6 @@ use App\Models\BuyerAddressModel;
 use App\Models\OrderModel;
 use App\Models\OrderDetailModel;
 use App\Models\OrdersReceiptModel;
-use App\Models\DeliveryModel;
 use App\Models\StockModel;
 use App\Models\StockDetailModel;
 use App\Models\StockRequestModel;
@@ -23,12 +22,12 @@ use App\Controllers\CartController;
 use App\Controllers\AddressController;
 
 class Checkout extends BaseController {
-  protected $default;
+  // protected $default;
 
-  protected $orderInfo;
+  // protected $orderInfo;
 
-  protected $isPaypal = false;
-  protected $orderNumber;
+  protected $isPaypal;
+  // protected $orderNumber;
   // protected $payment = 400;
 
   public function __construct() {
@@ -39,7 +38,6 @@ class Checkout extends BaseController {
     $this->order = new OrderModel();
     $this->orderDetail = new OrderDetailModel();
     $this->receipt = new OrdersReceiptModel();
-    $this->delivery = new DeliveryModel();
     $this->stocksDetail = new StockDetailModel();
     $this->stocks = new StockModel();
     $this->stockReq = new StockRequestModel();
@@ -53,83 +51,29 @@ class Checkout extends BaseController {
 
     $this->cartController = new CartController();
     $this->addressController = new AddressController();
+
+    $isPaypal = false;
   }
 
   public function index() {
+    $currencyModel = new CurrencyModel();
     $req = $this->request->getVar();
     $addressReq = empty($req['address']) ? [] : $req['address'];
-    // var_dump($req);
-    // var_dump($addressReq);
-    // return;
-    $getOrder = $this->order
-                    ->select('orders.*')
-                    ->select('buyers.name AS buyerName, buyers.phone AS phone')
-                    ->join('buyers', 'buyers.id = orders.buyer_id')
-                    ->where('orders.id', $req['order_id'])
-                    ->first();
-    if ( !empty($getOrder) ) {
-      // $invoiceIndex = $this->order->where(['buyer_id' => $getOrder['buyer_id'], 'DATE(created_at)' => DATE('Y-m-d', strtotime($getOrder['created_at']))])->countAllResults();
-      $getOrderDetails = $this->orderDetail->where(['order_id' => $getOrder['id'], 'order_excepted' => 0])->findAll();
+    $returnUrl = base_url('orders');
 
-      if ( !empty($getOrderDetails) ) {
-        $order_amount = 0;
-        foreach($getOrderDetails AS $detail ) :
-          if ( !empty($detail['order_excepted']) ) {
-            $order_amount += ($detail['prd_fixed_qty'] * $detail['prd_change_price']);  
-          }
-        endforeach;
+    $order_amount = 0;
 
-        $this->orderNumber = $getOrder['order_number'];
-        $req['order'] = $getOrder;
-        $req['order']['payment_id'] = $req['payment_id'];
-        $req['order']['order_amount'] = $order_amount;
-
-        $receiptCnt = $this->receipt->where(['order_id'=> $getOrder['id'], 'receipt_type'=> 1])->first();
-        if ( $getOrder['complete_payment'] == 1 || !empty($receiptCnt) ) {
-          if ( $receiptCnt['payment_status'] != -1 ) {
-            return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber); //->with('error', '이미 처리 끝');
-          }
-        } else {
-          $currencyModel = new CurrencyModel();
-          $currency = $currencyModel->where('idx', $req['checkout-currency'])->first();
-          if ( !empty($currency) ) {
-            var_dump($currency);
-            if ( $currency['currency_code'] != $getOrder['currency_code'] ) {
-              // 다름 체크......해야하나?
-              $req['order']['currency_code'] = $currency['currency_code'];
-            }
-          } else {
-            session()->setFlashdata('error', '해당하는 화폐단위가 없음');
-            return $result;
-          }
-        } 
-      } else return redirect()->to(site_url('orders'))->with('error', '주문된 상품 정보가 없음');
-    } else return redirect()->to(site_url('orders'))->with('error', '해당하는 주문 내역이 없음');
-    
     $getPaymethod = $this->paymentMethod->where(['id'=> $req['payment_id'], 'available' => 1])->first();
     if ( !empty($getPaymethod) ) {
       if ( $getPaymethod['payment_val'] == 'paypal' ) {
         $isPaypal = true;
       }
     } else {
-      return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber)->with('error', 'not vaild payment');
-    }
-
-    if ( !empty($addressReq) ) {
-      if ( !empty($addressReq['address_operate']) ) {
-        if ( is_null($this->addressController->addressConduct($addressReq)) ) {
-          return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber)->with('error', '주소 처리 오류');
-        } else {
-          $addressId = $this->addressController->addressConduct($addressReq);
-        }
-      } else $addressId = $addressReq['idx'];
-      $req['order']['address_id'] = $addressId;
-      unset($req['address']);
-      $req['address'] = $this->address->where('idx', $addressId)->first();
+      return redirect()->to($returnUrl)->with('error', 'not vaild payment');
     }
 
     $currentPackaging = $this->packaging
-                            ->getAllPackagingStatus(['packaging.order_id' => $getOrder['id'], 'packaging_detail.complete' => 0])
+                            ->getAllPackagingStatus(['packaging.order_id' => $req['order_id'], 'packaging_detail.complete' => 0])
                             ->select('packaging.*')
                             ->select('packaging_status.order_by, packaging_status.status_name
                                       , packaging_status.status_name_en, packaging_status.available
@@ -137,106 +81,148 @@ class Checkout extends BaseController {
                             ->select('packaging_detail.idx AS detail_id, packaging_detail.packaging_id
                                       , packaging_detail.status_id, packaging_detail.in_progress, packaging_detail.complete')
                             ->first();
-    if ( !empty($currentPackaging) ) {
-      $req['currentPackaging'] = $currentPackaging;
-    } else return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber)->with('error', 'packaging status error');
-    
-    $getReceipt = $this->receipt->where(['order_id' => $req['order_id'], 'receipt_type' => 1])->first();
-    if ( !empty($getReceipt) ) {
-      $req['order']['receipt_id'] = $getReceipt['receipt_id'];
-      if ( $getReceipt['payment_status'] == -1 ) {
-        if ( $isPaypal ) {
-          $invoiceResult = $this->paypalSendInvoice($getReceipt['receipt_id'], $req['order']);
-          if ( $invoiceResult['code'] == 404 ) {
-            $invoiceResult = $this->requestOrders($req);
-          }
-        }
-        else {
-          if ( !empty($getReceipt['payment_invoice_id'] ) ) {
-            $invoiceResult = $this->requestOrders($req);
-          }
-        }
-      } else {
-        // 이미 있음
-        return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber);
-      }
+    if ( empty($currentPackaging) ) {
+      return redirect()->to($returnUrl)->with('error', 'packaging status error');
     } else {
-      $invoiceResult = $this->requestOrders($req);
+      if ( empty($currentPackaging['payment_request']) ) {
+        return redirect()->to($returnUrl)->with('error', '결제요청 단계가 아니라 결제 진행이 불가합니다.');
+      }      
+      // $nextPackagingIdx = $this->packagingStatus->getNextIdx($currentPackaging['status_id']);
+      // if ( empty($nextPackagingIdx) ) return redirect()->to($returnUrl)->with('error', 'next status empty');
     }
 
-    if ( $invoiceResult['code'] == 200 ) { // 성공
-      if ( !empty($currentPackaging) ) {
-        $nextStatus = $this->packagingStatus->getNextIdx($currentPackaging['status_id']);
-        
-        if ( empty($nextStatus) ) {
-          session()->setFlashdata('error', 'next status empty');
-        } else {
-          if ( !$this->packagingDetail->save(['packaging_id' => $currentPackaging['packaging_id']
-                                              , 'status_id' => $nextStatus->nextIdx]) ) {
-            session()->setFlashdata('error', 'next status error');
+    $getOrder = $this->order
+                    ->select('orders.*')
+                    ->select('buyers.name AS buyerName, buyers.phone AS phone')
+                    ->join('buyers', 'buyers.id = orders.buyer_id')
+                    ->where('orders.id', $req['order_id'])
+                    ->where('orders.available', 1)
+                    ->first();
+    if ( !empty($getOrder) ) {
+      $req['order'] = $getOrder;
+      $req['order']['payment_id'] = $req['payment_id'];
+      $req['isPaypal'] = $isPaypal;
+      $returnUrl = $returnUrl.'?order_number='.$getOrder['order_number'];
+
+      $currency = $currencyModel->where('idx', $req['checkout-currency'])->first();
+      if ( empty($currency) ) {
+        return redirect()->to($returnUrl)->with('error', '해당하는 화폐단위가 없음');
+      } else {
+        if ( $isPaypal ) {
+          if ( !empty($currency['paypal_excluded']) ) {
+            return redirect()->to($returnUrl)->with('error', lang('Lang.checkout.error.paymentExcluded', ['payment' => $getPaymethod['payment'], 'currency' => $currency['currency_code']]));
           }
         }
       }
+
+      if ( !empty($getOrder['complete_payment']) ) return reirect()->to($returnUrl)->with('error', '이미 완료된 주문');
+
+      if ( !empty($addressReq) ) {
+        if ( !empty($addressReq['address_operate']) ) {
+          if ( is_null($this->addressController->addressConduct($addressReq)) ) {
+            return redirect()->to($returnUrl)->with('error', '주소 처리 오류');
+          } else {
+            $addressId = $this->addressController->addressConduct($addressReq);
+          }
+        } else $addressId = $addressReq['idx'];
+        $req['order']['address_id'] = $addressId;
+        unset($req['address']);
+        $req['address'] = $this->address->where('idx', $addressId)->first();
+      }
+
+      $getOrderAmount = $this->orderDetail
+                            ->select("ROUND(SUM(prd_fixed_qty * prd_change_price), ".session()->currency['currencyFloat'].") AS order_amount")
+                            ->where(['order_id' => $getOrder['id'], 'order_excepted' => 0])
+                            ->first();
+
+      if ( !empty($getOrderAmount) ) {
+        $invoiceResult['code'] = 500;
+        $order_amount = $getOrderAmount['order_amount'];
+        $req['subtotal'] = ROUND(($order_amount * session()->userData['depositRate']), session()->currency['currencyFloat']);
+        
+        // if ( $req['checkout-currency'] != $getOrder['currency_rate_idx'] ) {
+        //   // 화폐단위가 다르면 가격을 재계산해서 체크할 수있게 처리할것!!!  
+        // }
+        if ( $getOrder['fixed_amount'] < $order_amount && $getOrder['fixed_amount'] > $order_amount) {
+          return redirect()->to($returnUrl)->with('error', '주문 총액이 일치하지 않음');
+        }
+        
+        $getReceipt = $this->receipt->where(['order_id'=> $getOrder['id'], 'receipt_type'=> 1])->first();
+        if ( empty($getReceipt) ) {
+          $invoiceResult = $this->requestOrders($req);
+        } else {
+          $req['receipt'] = $getReceipt;
+          $req['order']['receipt_id'] = $getReceipt['receipt_id'];
+          if ( $getReceipt['payment_status'] == -1 ) {
+            if ( $isPaypal ) {
+              $invoiceResult = $this->paypalSendInvoice($getReceipt, $req['order']);
+              if ( $invoiceResult['code'] == 404 ) {
+                var_dump($invoiceResult);
+                return;
+                $invoiceResult = $this->requestOrders($req);
+              }
+            } else {
+              if ( !empty($getReceipt['payment_invoice_id'] ) ) {
+                $invoiceResult = $this->requestOrders($req);
+              }
+            }
+          } else {
+            return redirect()->to($returnUrl)->with('error', 'already updated');
+          }
+        }
+      } else return redirect()->to(site_url('orders'))->with('error', '주문된 상품 정보가 없음');
+    } else return redirect()->to(site_url('orders'))->with('error', '해당하는 주문 내역이 없음');
+
+    
+    if ( $invoiceResult['code'] == 200 ) { // 성공
+      if ( $this->order->save(['id'=> $req['order']['id']
+                              , 'payment_id' => $req['order']['payment_id']
+                              , 'order_amount' => $order_amount
+                              , 'currency_code' => $req['currency_code']
+                              , 'currency_rate_idx' => $req['checkout-currency']]) ) {
+      } else {
+        session()->setFlashdata('error', 'order update error');
+      }
     } 
-    // return redirect()->to(site_url('orders').'?order_number='.$this->orderNumber);
+    return redirect()->to($returnUrl);
   }
 
   public function requestOrders($data = []) {
     $result['code'] = 500;
-    if ( empty($data) ) return $result;
+    
+    if ( empty($data) ) return $result;    
 
-    if ( !empty($data['currentPackaging']) && !empty($data['currentPackaging']['payment_request']) ) {
-      $getPaymethod = $this->paymentMethod->where(['id'=> $data['payment_id'], 'available' => 1])->first();
+    if ( $data['isPaypal'] ) {
+      $phone = explode("-", $data['order']['phone']);
+      $invoiceData['invoice_number'] = $data['order']['buyerName']."_".date('ymd', strtotime($data['order']['created_at']));
+      $invoiceData['buyerName'] = $data['order']['buyerName'];
+      $invoiceData['email'] = session()->userData['email'];
+      $invoiceData['currency_code'] = $data['order']['currency_code'];
+      $invoiceData['phone_code'] = empty($phone[0]) ? $data['address']['phone_code'] : $phone[0];
+      $invoiceData['phone'] = empty($phone[1]) ? $data['address']['phone'] : $phone[1];
+      $invoiceData['consignee'] = $data['address']['consignee'];
+      $invoiceData['streetAddr1'] = $data['address']['streetAddr1'];
+      $invoiceData['streetAddr2'] = $data['address']['streetAddr2'];
+      $invoiceData['zipcode'] = $data['address']['zipcode'];
+      $invoiceData['country_code'] = $data['address']['country_code'];
+      $invoiceData['subtotal'] = $subtotal;
+      $invoiceData['depositRate'] = session()->currency['currencyFloat'];
+    
+      $makeResult = $this->paypalCraftInvoice($invoiceData, $data['order']);
+    } else {  // paypal 결제가 아닐 때
+      $receiptData['order_id'] = $data['order']['id'];
+      $receiptData['receipt_type'] = 1; // 1차영수증
+      $receiptData['rq_percent'] = session()->userData['depositRate'];
+      $receiptData['rq_amount'] = $subtotal;
+      $receiptData['due_amount'] = $data['order']['order_amount'] - $subtotal;
+      $receiptData['display'] = 1; //1차는 무조건 보이게
+      $receiptData['payment_invoice_id'] = NULL;
+      $receiptData['payment_invoice_number'] = NULL;
+      $receiptData['payment_url'] = NULL;
 
-      if ( !empty($getPaymethod) ) {
-        $subtotal = ($data['order']['order_amount'] * session()->userData['depositRate']);
-        
-        if ( $getPaymethod['payment_val'] == 'paypal' ) {
-          $phone = explode("-", $data['order']['phone']);
-
-          $invoiceData['invoice_number'] = $data['order']['buyerName']."_".date('ymd', strtotime($data['order']['created_at']));
-          $invoiceData['buyerName'] = $data['order']['buyerName'];
-          $invoiceData['email'] = session()->userData['email'];
-          $invoiceData['currency_code'] = $data['order']['currency_code'];
-          $invoiceData['phone_code'] = empty($phone[0]) ? $data['address']['phone_code'] : $phone[0];
-          $invoiceData['phone'] = empty($phone[1]) ? $data['address']['phone'] : $phone[1];
-          $invoiceData['consignee'] = $data['address']['consignee'];
-          $invoiceData['streetAddr1'] = $data['address']['streetAddr1'];
-          $invoiceData['streetAddr2'] = $data['address']['streetAddr2'];
-          $invoiceData['zipcode'] = $data['address']['zipcode'];
-          $invoiceData['country_code'] = $data['address']['country_code'];
-          $invoiceData['subtotal'] = $subtotal;
-          $invoiceData['depositRate'] = session()->currency['currencyFloat'];
-
-          $makeResult = $this->paypalCraftInvoice($invoiceData, $data['order']);
-        } else {  // paypal 결제가 아닐 때
-          $receiptData['order_id'] = $data['order']['id'];
-          $receiptData['receipt_type'] = 1; // 1차영수증
-          $receiptData['rq_percent'] = session()->userData['depositRate'];
-          $receiptData['rq_amount'] = $subtotal;
-          $receiptData['due_amount'] = $data['order']['order_amount'] - $subtotal;
-          $receiptData['display'] = 1; //1차는 무조건 보이게
-          $receiptData['payment_invoice_id'] = NULL;
-          $receiptData['payment_invoice_number'] = NULL;
-          $receiptData['payment_url'] = NULL;
-
-          if ( $this->receipt->save($receiptData) ) {
-            if ( $this->order->save(['id'=> $data['order']['id']
-                                    , 'payment_id' => $data['order']['payment_id']
-                                    , 'order_amount' => $data['order']['order_amount']]) ) {
-              $result['code'] = 200;
-            } else {
-              session()->setFlashdata('errror', 'payment info update error');
-            }
-          } else {
-            session()->setFlashdata('error', 'receipt insert error');
-          }
-        }
-      } else {
-        session()->setFlashdata('error', 'payment method info empty');
+      if ( !$this->receipt->save($receiptData) ) {
+        session()->setFlashdata('error', 'receipt insert error');
       }
-    } else {
-      session()->setFlashdata('error', 'packaging error');
     }
     return $result;
   }
@@ -289,41 +275,15 @@ class Checkout extends BaseController {
     }
   }
 
-  public function paypalSendInvoice($receiptId, $order) {
+  public function paypalSendInvoice($receipt, $order) {
     $result['code'] = 500;
-
-    if ( empty($receiptId) || empty($order) ) return $result;
-
-    $receiptCheck = $this->receipt->where(['receipt_id' => $receiptId])->first();
-    if ( !empty($receiptCheck) ) {
-      if ( $receiptCheck['payment_status'] != -1 ) {
-        // 이미처리 된 영수증.
-        return $result;
-      }
-      if ( empty($receiptCheck['payment_invoice_id']) ) {
-        // 페이팔이 아님.
-        return $result;
-      }
-    } else {
-      $result['error'] = "receipt into is empty";
-      return $result;
-    }
-
-    $sendResult = $this->paypal->sendInvoice($receiptCheck['payment_invoice_id']);
+    $sendResult = $this->paypal->sendInvoice($receipt['payment_invoice_id']);
     if ($sendResult['code'] == 200) {
-      if ( $this->receipt->save(['receipt_id' => $receiptId
+      if ( $this->receipt->save(['receipt_id' => $receipt['receipt_id']
                             , 'payment_status' => 0
                             , 'payment_url' => $sendResult['payment_url']
                             , 'display' => 1]) ) {
-        // orders table update
-        if ( $this->order->save(['id'=> $order['id']
-                              , 'payment_id' => $order['payment_id']
-                              , 'order_amount' => $order['order_amount']]) ) {
-          $result['code'] = $sendResult['code'];
-        } else {
-          session()->setFlashdata('errror', 'payment info update error');
-          return $result;
-        }
+        $result['code'] = $sendResult['code'];
       } else {
         session()->setFlashdata('error', 'payment status update error');
         return $result;

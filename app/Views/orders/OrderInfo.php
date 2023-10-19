@@ -13,7 +13,7 @@
 <div class='d-flex flex-column flex-wrap p-0 product-payment-info-section'>
   <div class='info-sec p-0'>
     <label class='py-2 ps-2'><?=lang('Lang.orders.paymentType')?></label>
-    <?php if ( !empty($paymentMethod) ) : ?>      
+    <?php if ( !empty($paymentMethod) ) : ?>
       <span class='py-2 pm-2'><?=$paymentMethod['payment']?></span>
       <?php if ( $paymentMethod['show_info'] == 1 ) : ?>
       <div class='w-100 p-2 bg-opacity-10 bg-secondary sub-sec'>
@@ -27,10 +27,10 @@
         <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
         <?php if($nowPackStatus['requirement_option_check']) : 
                 if(is_null($nowPackStatus['requirement_option_disabled'])) : ?>
-                  <button class='btn btn-sm btn-dark my-1 order-check'><?=lang('Lang.orders.detail.paymentConfirm')?></button>
+                  <button class='btn btn-sm btn-dark my-1 order-check' data-confirm-msg='<?=lang('Lang.msg.statusChooseReCheck')?>'><?=lang('Lang.orders.detail.paymentConfirm')?></button>
           <?php else :
                   if (($nowPackStatus['payment_request'])) : ?>
-                    <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Lang.checkout')?></button>
+                    <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Lang.checkout.checkout')?></button>
             <?php else : ?>
                     <span class='py-2 pm-2'><?=lang('Lang.orders.orderChecking')?>
             <?php endif; 

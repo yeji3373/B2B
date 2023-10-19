@@ -130,6 +130,12 @@ return [
   'consignee'           => 'Recipient\'s name', // 수령자 이름
   'paymentMethod'       => 'Payment method',
   'orderProduct'        => 'Order Product List',
+  'checkout'            => [
+    'checkout'          => 'Checkout',
+    'error'             => [
+      'paymentExcluded' =>  '{payment} payment excluded when paying {currency}',
+    ],
+  ],
   /* checkout */
 
   /* 재고요청 선택사항 DB */
@@ -147,5 +153,8 @@ return [
 
   /* 공통 */
   'remark'                => 'remark', //비고
+  'msg'                   => [
+    'statusChooseReCheck' => 'There are conditions that you did not select. Are you sure you want to choose?', // 선택되지 않은 조건이 있습니다. 다시 선택하시겠습니까?
+  ],
   /* 공통 */
 ];

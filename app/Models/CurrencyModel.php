@@ -20,6 +20,10 @@ class CurrencyModel extends Model {
 
   public function currencyJoin() {
     return $this
+            ->select("{$this->table}.*")
+            ->select('currency_rate.cRate_idx
+                    , currency_rate.exchange_rate
+                    , currency_rate.default_set')
             ->join('currency_rate', 'currency_rate.currency_idx = '.$this->table.'.idx')
             ->where($this->default)
             ->where('currency_rate.available', 1)

@@ -46,10 +46,3 @@
   </div>
   <div class='pre-order'></div>
 </main>
-<script>
-$(document).ready(function() {
-  <?php if (session()->has('error')) : ?>
-    <?="alert('{session('error')}');"; ?>
-  <?php endif ?>
-});
-</script>

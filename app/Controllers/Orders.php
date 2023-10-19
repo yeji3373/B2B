@@ -10,6 +10,7 @@ use App\Models\PackagingModel;
 use App\Models\PackagingStatusModel;
 use App\Models\PackagingDetailModel;
 use App\Models\PaymentMethodModel;
+use App\Models\RequirementOptionModel;
 use App\Models\RequirementRequestModel;
 use App\Models\BrandModel;
 use App\Models\ProductModel;
@@ -39,8 +40,9 @@ class Orders extends BaseController {
     $this->packaging = new PackagingModel();
     $this->packagingStatus = new PackagingStatusModel();
     $this->packagingDetail = new PackagingDetailModel();
-    $this->paymentMethodModel = new PaymentMethodModel();
-    $this->requirement = new RequirementRequestModel();
+    $this->paymentMethod = new PaymentMethodModel();
+    $this->requirementRequest = new RequirementRequestModel();
+    $this->requirementOption = new RequirementOptionModel();
     $this->products = new ProductModel();
     $this->brands = new BrandModel();
     $this->users = new UserModel();
@@ -73,16 +75,13 @@ class Orders extends BaseController {
                                     ->findAll(10);
     } else {
       $this->data['order'] = $this->getOrder();
-      // echo "order id ".$this->orderId;
-      // if ( empty($this->data['order']) ) $this->basicLayout('orders/List', $this->data);
+      if ( empty($this->data['order']) ) {
+        return redirect()->to(base_url('orders'))->with('error', 'There is no sush order information');
+      }
       $this->data['paymentMethod'] = $this->getPaymentMethod();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
-      // $this->data['orderRequirement'] = $this->getRequirement(); // all requirement request
-      $this->data['orderRequirement'] = $this->requirement->getRequirementOptions($this->orderId);
-      // $this->data['shippinCost'] = $this->getTotalShippingCost();
-      // $this->data['buyer'] = $this->getBuyer();
-      // $this->data['packaging'] = $this->packaging->where('order_id', $this->orderId)->first();
+      $this->data['orderRequirement'] = $this->requirementRequest->getRequirementOptions($this->orderId);
       $this->data['packagingStatus'] = $this->packagingStatus
                                             ->select('packaging_status.*')
                                             ->select('packaging.complete')
@@ -120,10 +119,6 @@ class Orders extends BaseController {
     $this->basicLayout('orders/List', $this->data);
   }
 
-  // public function apiOrderDetail() {
-  //   $this->getOrderDetail()->->where('order_number', $this->request->getGet('order_number'))->first();
-  // }
-
   public function ordersStatistics() {
     return $this->order->orderStatistics()->getResultArray();
   }
@@ -132,23 +127,38 @@ class Orders extends BaseController {
     $data = $this->request->getPost();
     $code = 500;
     $msg = NULL; 
-
+    
     if ( isset($data['order']) && !empty($data['order']) ) {
-      if ( isset($data['requirement']) && !empty($data['requirement']) ) {
-        foreach($data['requirement'] AS $_requirement ) {
-          foreach($_requirement AS $requirement ) {
-            if ( isset($requirement['requirement_selected_option_id'] ) ) {
-              $requirementCheck = $this->requirement->where(['order_id' => $data['order']['id'], 'idx' => $requirement['idx']])->first();
-              if ( !empty($requirementCheck) ) {
-                if ( $requirementCheck['requirement_selected_option_id'] != $requirement['requirement_selected_option_id'] ) {
-                  $this->requirement->save(['idx'=> $requirement['idx'], 'requirement_selected_option_id' => $requirement['requirement_selected_option_id']]);
+      if ( isset($data['requirement']) && !empty($data['requirement']) ) {        
+        foreach($data['requirement'] AS $requirement ) {
+          foreach($requirement AS $require ) {           
+            $getRequirements = $this->requirementRequest->where(['order_id' => $data['order']['id'], 'idx' => $require['idx']])->first();
+            if ( !empty($getRequirements) ) {
+              if ( isset($requirement['requirement_selected_option_id'] ) ) {
+                  if ( $getRequirements['requirement_selected_option_id'] != $require['requirement_selected_option_id'] ) {
+                    $this->requirementRequest->save(['idx'=> $require['idx'], 'requirement_selected_option_id' => $require['requirement_selected_option_id']]);
+                  }
+              } else {
+                if ( empty($getRequirements['requirement_selected_option_id']) ) {
+                  $getRequirementOptions = $this->requirementOption
+                                              ->whereIn('idx', explode(',', $getRequirements['requirement_option_ids']))
+                                              // ->where(['available' => 1])
+                                              ->orderBy('sort')
+                                              ->first();
+                  
+                  if ( !empty($getRequirementOptions) ) {
+                    if ( !$this->requirementRequest->save(['idx' => $getRequirements['idx'], 'requirement_selected_option_id' => $getRequirementOptions['idx']]) ) {
+                      session()->setFlashdata('error', 'request option update error');
+                      // echo "a";
+                    }
+                  }
                 }
               }
             }
           }
         }
       }
-      
+      // return;
       $packagingStatus = $this->packaging
                               ->packagingJoin(['packaging.order_id'=> $data['order']['id']])
                               ->select('packaging.*')
@@ -220,7 +230,7 @@ class Orders extends BaseController {
     if ( !empty($this->getOrder()) ) {
       $where['id'] = $this->getOrder()['payment_id'];
     }
-    $paymentMethod = $this->paymentMethodModel->where($where)->first();
+    $paymentMethod = $this->paymentMethod->where($where)->first();
     return $paymentMethod;
   }
 
@@ -303,19 +313,6 @@ class Orders extends BaseController {
                     //  echo $this->oDetail->getLastQuery();
     return $orderDetails;
   }
-  //요구사항
-  // public function getRequirement() {
-  //   $orderRequirement = $this->requirement-> requirementRequest($this->orderId)->getResultArray();
-  //   $requirementOps = [];
-  //   foreach($orderRequirement as $i => $detail) {
-  //     if(!empty($detail['requirement_option_ids'])){
-  //       $requirementOps['requirement_id'] = $detail['requirement_id'];
-  //       array_push($requirementOps, $detail['requirement_option_ids']);
-  //       $requirementOps['idx'] = $detail['requirement_option_ids']; 
-  //     }
-  //   }
-  //   return $orderRequirement;
-  // }
 
   public function getOrderReceipts() {
     $addWhere = [];
@@ -327,10 +324,10 @@ class Orders extends BaseController {
     }
     
     $receipts = $this->receipt
-                // ->select("orders_receipt.*, CONVERT(IFNULL(delivery.delivery_price, 0), FLOAT) AS delivery_price")
                 ->select("orders_receipt.*, CAST(IFNULL(delivery.delivery_price, 0) AS DOUBLE) AS delivery_price")
                 ->join("delivery", "delivery.id = orders_receipt.delivery_id", "left outer")
                 ->where(['orders_receipt.order_id'=> $this->orderId
+                        , 'orders_receipt.payment_status !=' => -1
                         , 'orders_receipt.display' => 1])
                 ->where($addWhere)
                 ->findAll();
@@ -460,16 +457,15 @@ class Orders extends BaseController {
     var_dump($this->request->getVar());
     $data['order'] = $this->getOrder();
     $data['payment'] = $this->getPaymentMethod();
-    //  'orderId '.$this->orderId.'<br/><br/>';
     $data['orderDetails'] = $this->getOrderDetails();
-    // $data['orderRequirement'] = $this->getRequirement();
-    // $data['receipts'] = $this->getOrderReceipts($this->request->getPost('receiptId'));
     $data['receipt'] = $this->getOrderReceipt();
     $data['buyer'] = $this->getBuyer();
     
     $data['user'] = Array();
     $data['delivery'] = Array();
     
+    var_dump($data);
+    return; 
     if ( !empty($data['order']) ) {
       $data['user'] = $this->users->where('idx', $data['order']['user_id'])->first();
     }
@@ -603,7 +599,7 @@ class Orders extends BaseController {
     $result['Code'] = 500;
 
     if ( !empty($params) ) {
-      if ( $this->requirement->save($params) ) {
+      if ( $this->requirementRequest->save($params) ) {
           $result['Code'] = 200;
           $result['Params'] = $params;
       } else {

@@ -17,7 +17,7 @@ $(document).ready(function() {
        
     if ( result.length > 0 ) {
       $.each(result, (i, v) => {
-        $(".orders-list div").append("  <a class='list-group-item order-item fw-bold'>\
+        $(".orders-list div").append("  <a class='list-group-item order-item fw-bold' href='/orders?order_number=" + v['order_number'] + "'>\
                                           <span class='order-number'>" + v['order_number'] + "</span>\
                                           <span class='parenthesis small'>" + v['created_at'].split(" ")[0] + "</span>\
                                         <a/>");
@@ -36,7 +36,6 @@ $(document).ready(function() {
   //   }
   //   $(this).addClass('active');
   }).on('click', '.pi-view', function() {
-    // console.log($("[name=receipt_id]").val());
     $form = $(this).closest('form');
     result = getData('/orders/getOrderData', $form.serializeArray());
 
@@ -49,14 +48,20 @@ $(document).ready(function() {
     $('.pi-viewer').hide();
     $('body').removeClass('overflow-hidden');
   }).on('click', '.order-check', function(e) {
-    e.preventDefault()
+    e.preventDefault();
     let data = $(this).closest('form').serializeArray();
-
+    let msg = '재고요청 상태가 선택되지 않은 조건이 있습니다. 다시 선택하겠습니까?';
+  
     if ( $('.requirmentOptForm').length ) {
       if ($('.requirmentOptForm [type=radio]:checked').length < $('.requirmentOptForm').length ) {
-        if ( confirm('재고요청 상태가 선택되지 않은 조건이 있습니다. 다시 선택하겠습니까?') ) {
+        if ( typeof $(this).data('confirmMsg') != 'undefined' ) {
+          msg = $(this).data('confirmMsg');
+        }
+      
+        if ( confirm(msg) ) {
           return;
         } else {
+          console.log('???');
           Array.from($('.requirmentOptForm')).forEach(element => {
             if ( typeof $(element).data('type') != 'undefined' && typeof $(element).data('name') != 'undefined' ) {
               if ( $(element).data('type') == '0' ) {
@@ -69,21 +74,20 @@ $(document).ready(function() {
           });
         }
       }
-      data = $.merge(data, $('.requirmentOptForm').serializeArray());   
+      data = $.merge(data, $('.requirmentOptForm').serializeArray());
     }
+    // $(this).closest('form')
+    //     .attr({'action' : '/orders/orderFixed', 'method' : 'post'})
+    //     .append($(".requirmentOptForm input"));
+    // $(this).closest('form').submit();
+    // data = $(this).closest('form').serializeArray();
+    console.log(data);
 
     result = getData('/orders/orderFixed', data, true);
-    console.log(result);
-
     if (result['Code'] == 200 ) {
-      // if ( typeof $(this).data('nextName') != 'undefined' ) {
-      //   $(this).text($(this).data('nextName'));
-      // }
-      // $(this).removeClass('order-check').addClass('order-request');
       location.reload(true);
     }
     return;
-    // result = getData('/order')
   }).on('click', '.order-request', function(e) {
     e.preventDefault();
     result = getData('/order/orderForm', $(this).closest('form').serializeArray());
