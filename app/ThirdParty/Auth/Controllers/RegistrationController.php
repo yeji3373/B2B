@@ -104,19 +104,20 @@ class RegistrationController extends Controller
           $fileName = $fileName.".".$ext;
         } else return redirect()->back()->withInput()->with('error', 'Files Size Error');
       }
+
       $buyerData = [
-              'name'  => $this->request->getPost('buyerName'),
-              'business_number' => $this->request->getPost('businessNumber'),
-              'region_ids' => implode(',', $this->request->getPost('region')),
-              'countries_ids' => !empty($this->request->getPost('country')) ? implode(',', $this->request->getPost('country')) : '',
-              'country_id' => $this->request->getPost('buyerRegion'),
-              'address' => $this->request->getPost('buyerAddress1').$this->request->getPost('buyerAddress2'),
-              'zipcode' => $this->request->getPost('zipcode'),
-              'phone' => $this->request->getPost('buyerPhoneCode').'-'.$this->request->getPost('buyerPhone'),
-              'certificate_business' => $fileName
-      ];
+          'name'  => $this->request->getPost('buyerName'),
+          'business_number' => $this->request->getPost('businessNumber'),
+          'region_ids' => implode(',', $this->request->getPost('region')),
+          'countries_ids' => !empty($this->request->getPost('country')) ? implode(',', $this->request->getPost('country')) : '',
+          'country_id' => $this->request->getPost('buyerRegion'),
+          'address' => $this->request->getPost('buyerAddress1').$this->request->getPost('buyerAddress2'),
+          'zipcode' => $this->request->getPost('zipcode'),
+          'phone' => $this->request->getPost('buyerPhoneCode').'-'.$this->request->getPost('buyerPhone'),
+          'certificate_business' => $fileName,
+          'ip_address' => $this->request->getIPAddress()];
       // var_dump($buyerData);
-      if ( !$buyers->save($buyerData)) {
+      if ( !$buyers->save($buyerData) ) {
         return redirect()->back()->withInput()->with('errors', $buyers->errors());
       }
       $buyerId = $buyers->getInsertID();

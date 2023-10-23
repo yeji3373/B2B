@@ -11,6 +11,7 @@ use App\Models\RegionModel;
 use App\Models\CountryModel;
 use App\Models\RequirementModel;
 use App\Models\BuyerAddressModel;
+use App\Models\RequirementOptionModel;
 use App\Models\RequirementRequestModel;
 // use App\Models\DeliveryModel;
 use App\Models\PackagingModel;
@@ -34,6 +35,7 @@ class Inventory extends BaseController {
     $this->buyer = new BuyerModel();
     $this->currency = new CurrencyModel();
     $this->requirmentRequest = new RequirementRequestModel();
+    $this->requirementOption = new RequirementOptionModel();
     $this->margin = new MarginModel();
 
     // $this->delivery = new DeliveryModel();
@@ -178,7 +180,7 @@ class Inventory extends BaseController {
             if ( !empty($data['requirement']) ) {
               foreach($data['requirement'] AS $requirement ){
                 if ( $this->requirmentRequest->save(array_merge($requirement, ['order_id' => $orderId, 'order_detail_id'=> $this->orderDetail->getInsertID()])) ) {
-                  $this->requirmentOption->where(['requirement_idx' => $this->requirmentRequest->getInsertID(), 'available' => 1])->orderBy('sort ASC')->findAll();
+                  $this->requirementOption->where(['requirement_idx' => $this->requirmentRequest->getInsertID(), 'available' => 1])->orderBy('sort ASC')->findAll();
                 }
               }
             }

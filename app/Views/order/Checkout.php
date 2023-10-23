@@ -79,10 +79,15 @@
                 $totalPrice = 0;
                 $prd_price = $detail['prd_price'];
                 $prd_qty = $detail['prd_fixed_qty'];
-
-                if ( !empty($detail['prd_change_price']) ) : 
-                  $prd_price = $detail['prd_change_price'];
-                endif;
+                
+                if ( !empty($detail['order_excepted']) ) {
+                  $prd_price = 0;
+                  $prd_qty = 0;
+                } else {
+                  if ( !empty($detail['prd_change_price']) ) : 
+                    $prd_price = $detail['prd_change_price'];
+                  endif;
+                }
                 $totalPrice = $prd_price * $prd_qty;
               ?>
               <?php $ids = ++$key ?>
@@ -184,7 +189,7 @@
               <p class='text-end order-subtotal'>
                 <labal>Subtotal</label>
                 <span class='currency-code order-subtotal-price'>
-                  <?=number_format($subTotal['inventory_fixed_amount'], session()->currency['currencyFloat'])?>
+                  <?=number_format($subTotal['fixed_amount'], session()->currency['currencyFloat'])?>
                 </span>
               </p>
             </div>

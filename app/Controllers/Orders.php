@@ -464,8 +464,8 @@ class Orders extends BaseController {
     $data['user'] = Array();
     $data['delivery'] = Array();
     
-    var_dump($data);
-    return; 
+    // var_dump($data);
+    // return; 
     if ( !empty($data['order']) ) {
       $data['user'] = $this->users->where('idx', $data['order']['user_id'])->first();
     }

@@ -27,7 +27,9 @@
         <input type='hidden' name='order[id]' value='<?=$order['id']?>'>
         <?php if($nowPackStatus['requirement_option_check']) : 
                 if(is_null($nowPackStatus['requirement_option_disabled'])) : ?>
-                  <button class='btn btn-sm btn-dark my-1 order-check' data-confirm-msg='<?=lang('Lang.msg.statusChooseReCheck')?>'><?=lang('Lang.orders.detail.paymentConfirm')?></button>
+                  <button class='btn btn-sm btn-dark my-1 order-check' data-confirm-msg='<?=lang('Lang.msg.statusChooseReCheck')?>'>
+                    <?=lang('Lang.orders.detail.paymentConfirm')?>
+                  </button>
           <?php else :
                   if (($nowPackStatus['payment_request'])) : ?>
                     <button class='btn btn-sm btn-dark my-1 order-request'><?=lang('Lang.checkout.checkout')?></button>
@@ -51,9 +53,9 @@
   <div class='info-sec p-0'>
     <?php if (!empty($nowPackStatus['pay_step']) ) : 
       $amount = $order['request_amount'];
-      if ( $nowPackStatus['pay_step'] == 2 ) $amount = $order['inventory_fixed_amount'];
-      else if ( $nowPackStatus['pay_step'] == 3 ) $amount = $order['fixed_amount'];
-      else if ( $nowPackStatus['pay_step'] == 4 ) $amount = $order['decide_amount'];
+      if ( $nowPackStatus['pay_step'] == 1 ) $amount = $order['inventory_fixed_amount'];
+      else if ( $nowPackStatus['pay_step'] == 2 ) $amount = $order['fixed_amount'];
+      else if ( $nowPackStatus['pay_step'] == 3 ) $amount = $order['decide_amount'];
     ?>
     <label class='py-2 ps-2'><?=lang('Lang.orders.amount')?></label>
     <span class='py-2 pm-2'><?=$order['currency_sign'].number_format($amount, $order['currency_float'])?></span>
