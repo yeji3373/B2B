@@ -86,7 +86,7 @@ class Authorization extends Controller {
                               $this->config->base_url.'/api/v2/oauth/token',
                               [ 
                                 'headers'       =>  [ 'Content-Type'  => 'x-www-form-urlencoded'],
-                                'auth'          =>  [ $this->config->client_id, $this->config->client_secret],
+                                'auth'          =>  [ $this->config->client_id, $this->config->client_secret ],
                                 'debug'         =>  true,
                                 'form_params'   =>  [ 'grant_type'      => $this->grantType,
                                                       $this->tokenType  => $this->token,
