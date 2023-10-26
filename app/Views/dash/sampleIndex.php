@@ -204,4 +204,92 @@
     </div>
   </div>
 </div>
+<div class='get-in-touch'>
+  <div class='w-75 mx-auto'>
+    <div class='mb-5'>
+      <p class='title fs-1 manlope800 text-center'>Get In Touch</p>
+    </div>
+    <div class='mb-4'>
+      <p class='sub-title manlope500 text-center'>Stay connected with us.</p>
+    </div>
+    <div>
+      <p class='describe pretendard text-center'>Subscribe today and get in touch for the latest</p>
+      <p class='describe pretendard text-center'>updates and offers with our monthly news.</p>
+    </div>
+      <div class='d-flex flex-row text-center justify-content-center mt-4 pt-4'>
+        <div class='px-2'>
+          <input type='text' name='email-address' class='form-control email-address' placeholder='Email address'>
+        </div>
+        <div class='px-2'>
+          <input type='text' name='full-name' class='form-control full-name' placeholder='Full name'>
+        </div>
+        <div class='px-2'>
+          <button class='btn subscribe'>Subscribe</button>
+        </div>
+      </div>
+  </div>
+</div>
+<div class='need-help'>
+  <div class='w-75 mx-auto'>
+    <div class='mb-5'>
+      <p class='title fs-1 manlope800 text-center'>Need more help?</p>
+    </div>
+    <div class='mb-5'>
+      <p class='pretendard text-center'>Have additional questions or need further assistance?</p>
+      <p class='pretendard text-center'>Don't hesitate to reach out to us.</p>
+      <p class='pretendard text-center'>Our dedicated team is ready to provide the multy-language support,</p>
+      <p class='pretendard text-center'>ensuring your experience is smooth and satisfactory</p>
+    </div>
+    <div>
+      <div class='d-flex flex-row text-center justify-content-center'>
+        <div class='box'>
+          <div>
+            <p class='manlope700 country'>CIS</p>
+            <p class='pretendard italic name'>Kristina</p>
+            <a class='text-decoration-none pretendard' href='mailto:cis@beautynetkorea.com' target='_blank'>cis@beautynetkorea.com</a>
+          </div>
+        </div>
+        <div class='box'>
+          <div>
+            <p class='manlope700 country'>CIS</p>
+            <p class='pretendard italic name'>Mikhail</p>
+            <a class='text-decoration-none pretendard' href='mailto:cisinfo@beautynetkorea.com' target='_blank'>cisinfo@beautynetkorea.com</a>
+          </div>
+        </div>
+        <div class='box'>
+          <div>
+            <p class='manlope700 country'>EUROPE</p>
+            <p class='pretendard italic name'>Anis</p>
+            <a class='text-decoration-none pretendard' href='mailto:europe@beautynetkorea.com' target='_blank'>europe@beautynetkorea.com</a>
+          </div>
+        </div>
+      </div>
+      <div class='d-flex flex-row text-center justify-content-center'>
+        <div class='box'>
+          <div>
+            <p class='manlope700 country' style='margin-bottom:-10px;'>North, Central</p>
+            <p class='manlope700 country'>& South America</p>
+            <p class='pretendard italic name'>Jongtae</p>
+            <a class='text-decoration-none pretendard' href='mailto:america@beautynetkorea.com' target='_blank'>america@beautynetkorea.com</a>
+          </div>
+        </div>
+        <div class='box'>
+          <div>
+            <p class='manlope700 country'>Asia</p>
+            <p class='pretendard italic name'>Suzie</p>
+            <a class='text-decoration-none pretendard' href='mailto:asia@beautynetkorea.com' target='_blank'>asia@beautynetkorea.com</a>
+          </div>
+        </div>
+        <div class='box'>
+          <div>
+            <p class='manlope700 country' style='margin-bottom:-10px;'>Middle East,</p>
+            <p class='manlope700 country'>Africa</p>
+            <p class='pretendard italic name'>Ismahene</p>
+            <a class='text-decoration-none pretendard' href='mailto:middleeast@beautynetkorea.com' target='_blank'>middleeast@beautynetkorea.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </main>

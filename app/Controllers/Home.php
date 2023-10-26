@@ -55,6 +55,23 @@ class Home extends BaseController {
     return $this->basicLayout('dash/sampleIndex', $this->data);
   }
 
+  public function subscribe() {
+
+    $parameter = $this->request->getVar();
+    
+    if($this->request->isAJAX()){
+      if(!empty($parameter)){
+        $params = ['type_idx' => 3 , 
+                  'title' => $parameter['full-name'] ,
+                  'contents' => $parameter['email-address'] ,
+                  'display' => 0];
+        if($this->notice->save($params)){
+          return json_encode(['code' => 200, 'msg' => "Your subscription has been successfully completed."]);
+        };
+      }
+    }
+  }
+
   public function main() {
     if ( session()->isLoggedIn === false ) {
       if ( session()->isLoggedIn ) {

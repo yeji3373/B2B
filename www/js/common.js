@@ -189,4 +189,28 @@ $(document).ready(function(){
     $("#brandCarousel").carousel('next');
   });
   
+  $(".subscribe").on("click", function(){
+    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+    var email = $("input[name='email-address']").val();
+    var name = $("input[name='full-name']").val();
+    if(email == ''){
+      alert("Type your e-mail address.");
+      return false;
+    }
+    if(regex.test(email) == false){
+      alert("The email field must contain a valid email address.");
+      return false;
+    }
+    if(name == ''){
+      alert("Type your full name.");
+      return false;
+    }
+
+    let result = getData("/Home/subscribe", {'email-address' : email, 'full-name' : name});
+    
+    if(result.length > 0){
+      result = JSON.parse(result);
+      alert(result.msg);
+    }
+  });
 });

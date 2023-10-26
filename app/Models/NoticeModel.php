@@ -8,10 +8,14 @@ class NoticeModel extends Model {
   protected $primaryKey = 'idx';
   protected $useSoftDeletes = false;
 
+  protected $allowedFields = [
+    'type_idx', 'title', 'contents', 'display'
+  ];
+
   protected $useTimestamps = true;
-  protected $createdField = 'create_at';
-  protected $updatedField = 'update_at';
-  protected $dateFormat = 'datetime';
+  protected $createdField  = 'created_at';
+  protected $updatedField  = 'updated_at';
+  protected $dateFormat    = 'datetime';
 
   public function board($where = array()) {
     $this->select('board.*

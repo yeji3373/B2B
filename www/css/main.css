@@ -62,9 +62,20 @@ div { background-position: 0; background-size: 100% 100%; background-repeat: no-
     color: #2b2b2b;
 }
 
+.manlope500 {
+    font-family: 'Manrope';
+    font-weight: 500;
+    color: #2b2b2b;
+}
+
+.manlope400 {
+    font-family: 'Manrope';
+    font-weight: 400;
+    color: #2b2b2b;
+}
+
 .pretendard {
     font-family: pretendard;
-    font-style: normal;
     font-weight: 300;
     margin-bottom: 0;
     font-size: 1.2rem;
@@ -173,7 +184,7 @@ div { background-position: 0; background-size: 100% 100%; background-repeat: no-
     font-family: pretendard;
     font-style: normal;
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     width: 22rem;
     margin-right : 1rem;
     color: #fff;
@@ -186,10 +197,99 @@ div { background-position: 0; background-size: 100% 100%; background-repeat: no-
     font-family: pretendard;
     font-style: normal;
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     width: 22rem;
     color: #646262;
     border-color: #646262;
     border-width: 3px;
+}
+
+.get-in-touch {
+    margin-top: 15rem;
+}
+
+.under-line {
+    padding-bottom: 8.5rem;
+    border-bottom: solid;
+    border-width: 1px;
+    border-color: #bfbfbf;
+}
+
+.get-in-touch .sub-title {
+    font-size: 2rem;
+}
+
+.get-in-touch .describe {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+.subscribe:hover, .subscribe:focus, .subscribe:checked {
+    color: #fff;
+    background-color: #646262;
+    border-color: #646262;
+}
+
+.get-in-touch .subscribe {
+    box-shadow: none;
+    border-radius: 5px;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.3rem;
+    width: 10.6rem;
+    height: 3.06rem;
+    margin-right : 1rem;
+    color: #ffffff;
+    background-color: #646262;
+}
+
+.get-in-touch .email-address {
+    border-radius: 5px;
+    width: 17.3rem;
+    height: 3.06rem;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.get-in-touch .full-name {
+    border-radius: 5px;
+    width: 17.3rem;
+    height: 3.06rem;
+    font-family: pretendard;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.need-help {
+    margin-top: 9.3rem;
+    margin-bottom: 8.5rem;
+}
+
+.box {
+    border : solid;
+    border-width: 2px;
+    border-color: #bfbfbf;
+    border-radius: 10px;
+    width: 27rem;
+    height: 16rem;
+    margin: 1.3rem;
+    display: inline-grid;
+    align-content: center;
+    vertical-align: middle;
+}
+
+.need-help .country {
+    font-size: 2.4rem;
+    margin-bottom: 0;
+}
+
+.need-help .name {
+    font-size: 1.6rem;
+}
+
+.need-help .describe {
+    font-size: 1.5rem;
 }
 
