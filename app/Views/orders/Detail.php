@@ -62,10 +62,22 @@
         if ( empty($product['order_excepted']) ) {
           if ( $nowPackStatus['pay_step'] == 1 ) {
             if ( !empty($product['prd_change_qty']) ) $prd_qty = $product['prd_change_qty'];
-          } else if ( $nowPackStatus['pay_step'] == 2 ) {
-            if ( !empty($product['prd_fixed_qty']) ) $prd_qty = $product['prd_fixed_qty'];
-          } else if ( $nowPackStatus['pay_step'] == 3 ) {
-            if ( !empty($product['prd_final_qty']) ) $prd_qty = $product['prd_final_qty'];
+          } 
+          if ( $nowPackStatus['pay_step'] >= 2 && $nowPackStatus['pay_step'] <= 3 ) {
+            // if ( $product['order_excepted'] == 1 ) {
+            //   $prd_qty = 0;
+            //   $canceled = TRUE;
+            // } else {
+              if ( !empty($product['prd_fixed_qty']) ) $prd_qty = $product['prd_fixed_qty'];
+            // }
+          } 
+          if ( $nowPackStatus['pay_step'] > 3 ) {
+            // if ( $product['order_excepted'] == 2 ) {
+            //   $prd_qty = 0;
+            //   $canceled = TRUE;
+            // } else {
+              if ( !empty($product['prd_final_qty']) ) $prd_qty = $product['prd_final_qty'];
+            // }
           }
         } else {
           $canceled = TRUE;
@@ -82,13 +94,13 @@
               </td>
               <td class='px-1 border-secondary border-opacity-50 border-end border-bottom fw-bold bg-opacity-50 text-bg-secondary text-center'>
                 <?php
-                  if ( $nowPackStatus['pay_step'] == 2 ) echo lang('Lang.orders.detail.fixedQty');
-                  else if ( $nowPackStatus['pay_step'] >= 3 ) echo lang('Lang.orders.detail.finalQty');
-                  else echo lang("Lang.orders.detail.securedQty");
+                  if ( $nowPackStatus['pay_step'] == 1 ) echo lang("Lang.orders.detail.securedQty");
+                  if ( $nowPackStatus['pay_step'] >= 2 && $nowPackStatus['pay_step'] <= 3 ) echo lang('Lang.orders.detail.fixedQty');
+                  if ( $nowPackStatus['pay_step'] > 3 ) echo lang('Lang.orders.detail.finalQty');                  
                 ?>
               </td>
               <td class='px-1 border-secondary border-opacity-50 <?=$canceled ? 'border-end' : ''?> border-bottom fw-bold bg-opacity-50 text-bg-secondary text-center'>
-                <?php if ( $nowPackStatus['pay_step'] >= 3 ) { 
+                <?php if ( $nowPackStatus['pay_step'] > 3 ) { 
                     echo lang('Lang.orders.detail.finalAmount');
                   } else {
                     echo lang('Lang.orders.detail.fixedAmount');

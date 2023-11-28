@@ -1,25 +1,39 @@
 <main>
+<?=view('/dash/map')?>
 <div class='w-100'>
-  <img class='w-100' src='//beautynetkorea.daouimg.com/2023_b2b/b2b_main_open.jpg'/>
+  <div id='mainSliderCarousel' class='carousel carousel-dark slide' data-bs-ride='carousel'>
+    <!-- <div class='carousel-indicators'>
+      <button type='button' data-bs-target='#mainSliderCarousel' data-bs-slide-to='0' class='shadow-none active' aria-current='true'></button>
+      <button type='button' data-bs-target='#mainSliderCarousel' data-bs-slide-to='0' class='shadow-none'></button>
+    </div> -->
+    <div class='carousel-inner'>
+      <div class='carousel-item active'>
+        <img class='w-100' src='//beautynetkorea.daouimg.com/2023_b2b/b2b_main_open.jpg'/>
+      </div>
+    </div>
+  </div>
 </div>
-<div class='introduction'>
+<div id='introduction' class='section mt-2'>
   <div class='d-flex flex-row w-70 justify-content-center mx-auto border-dark mt-5'>
     <div class='w-50'>
-      <p class='title fs-1 manlope800'>Unique shopping experience</p>
-      <p class='title fs-1 manlope800'>with BEAUTYNETKOREA</p>
-      <p><br></p>
-      <p class='pretendard'>BEAUTYNETKOREA is a global network specializing in Korean beauty.</p>
-      <p class='pretendard'>Based in South Korea, the company offers a wide range of cosmetics,</p>
-      <p class='pb-3 pretendard'>skincare, and beauty-related items sourced from popular Korean brands.</p>
-      <p class='pretendard'>BEAUTYNETKOREA has gained recognition for its extensive product</p>
-      <p class='pretendard'>selection, competitive pricing, and commitment to providing customers</p>
-      <p class='pretendard'>with access to the latest trends in K-beauty.</p>
-      <!-- <button class='btn get-started mt-5'>
-        GET STARTED
-      </button>
-      <button class='btn learn-more mt-5'>
-        LEARN MORE
-      </button> -->
+      <div class='title fs-1 manlope manlope800 mb-3'>
+        Unique shopping experience<br class='sm-hide'/> 
+        with BEAUTYNETKOREA
+      </div>
+      <div class='mb-3'>
+        BEAUTYNETKOREA is a global network specializing in Korean beauty.<br class='sm-hide'/> 
+        Based in South Korea, the company offers a wide range of cosmetics,<br class='sm-hide'/> 
+        skincare, and beauty-related items sourced from popular Korean brands.<br class='sm-hide'/> 
+      </div>
+      <div>
+        BEAUTYNETKOREA has gained recognition for its extensive product<br class='sm-hide'/> 
+        selection, competitive pricing, and commitment to providing customers<br class='sm-hide'/> 
+        with access to the latest trends in K-beauty.
+      </div>
+      <div>
+        <a href='/login' class='btn get-started mt-5'>GET STARTED</a>
+        <a href='//zrr.kr/5GGw' target='_blank' class='btn learn-more mt-5'>LEARN MORE</a>
+      </div>
     </div>
     <div class='w-50 my-auto'>
       <div id="infoCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
@@ -46,70 +60,179 @@
     </div>
   </div>
 </div>
-<!-- <div class='w-100'>
-  <div class='w-70 mx-auto my-5'>
-    <h2 class='fw-bold text-center mb-4'>We has 200+ cosmetics brands</h2>
-    <ul class='d-flex flex-wrap ps-0 m-0 w-100 justify-content-between'>
-      <?php for ( $i = 1; $i <= 20; $i++ ) : ?>
-      <li class='w-19 text-center border border-1 d-block rounded-1 fs-5
-              <?=(($i % 5) > 0 ? 'me-2' : '')?>
-              <?=($i > 5 ) ? 'mt-3': ''?>' >
-        <img class='w-85'
-            src='//beautynetkorea.daouimg.com/2023_b2b/brand_logo/b2b_logo_<?=($i < 10 ? '0'.$i : $i)?>.jpg' />
-      </li>
-      <?php endfor; ?>
-    </ul>
-  </div>
-</div> -->
-<div class='ourbrands'>
+<hr/>
+<div id='ourbrands' class='section'>
   <div class='w-75 mx-auto justify-content-center'>
-    <p class='title fs-1 manlope800 text-center'>OUR BRANDS</p>
-    <p class='title fs-4 manlope800 text-center italic'>Private Brands</p>
+    <p class='title fs-1 manlope manlope800 text-center'>OUR BRANDS</p>
+    <div class='title fs-4 manlope manlope800 text-center fst-italic'>
+      <div class='fw-bold'>Private Brands</div>
+      <a href='//zrr.kr/E2XS' target='_blank' class='btn learn-more py-1 px-3 mt-1 mb-3 fs-08r w-auto border-thin text-capitalize'>Cataloge</a>
+    </div>
     <div class='w-80 d-flex flex-row mx-auto mb-5'>
-      <div class='w-33 text-center'>
-        <img src='/img/brand_logo/b2b_logo_Eyenlip.jpg' class='border border-1 rounded-1'>
+      <div class='w-33 text-center d-flex flex-column align-items-center'>
+        <img src='/img/brand_logo/b2b_logo_Eyenlip.jpg' class='border border-1 rounded-1 w-72'>
+        <a href='//zrr.kr/PhrH' target='_blank' class='btn learn-more py-1 px-3 mt-1 w-auto fs-08r border-thin'>Learn more</a>
       </div>
-      <div class='w-33 text-center'>
-        <img src='/img/brand_logo/b2b_logo_Fabyou.jpg' class='border border-1 rounded-1'>
+      <div class='w-33 text-center d-flex flex-column align-items-center'>
+        <img src='/img/brand_logo/b2b_logo_Fabyou.jpg' class='border border-1 rounded-1 w-72'>
+        <a href='//zrr.kr/fwtQ' target='_blank' class='btn learn-more py-1 px-3 mt-2 fs-08r w-auto border-thin'>Learn more</a>
       </div>
-      <div class='w-33 text-center'>
-        <img src='/img/brand_logo/b2b_logo_Sumhair.jpg' class='border border-1 rounded-1'>
+      <div class='w-33 text-center d-flex flex-column align-items-center'>
+        <img src='/img/brand_logo/b2b_logo_Sumhair.jpg' class='border border-1 rounded-1 w-72'>
+        <a href='//zrr.kr/YxZX' target='_blank' class='btn learn-more py-1 px-3 mt-2 fs-08r w-auto border-thin'>Learn more</a>
       </div>
     </div>
-    <p class='title fs-4 manlope800 text-center italic'>Other Brands</p>
+    <?php if ( !empty($brandList) ) : ?>
+    <p class='title fs-4 manlope manlope800 text-center fst-italic'>Other Brands</p>
     <div>
-      <ul class='d-flex flex-wrap w-90 justify-content-between mx-auto px-1'>
-      <?php $idx = 0; ?>
-      <?php foreach ( $brandList as $brand ) : ?>
-      <?php $idx++; ?>
-      <li class='w-19 text-center border border-1 d-block rounded-1 fs-5
-              <?=(($idx % 5) > 0 ? 'me-2' : '')?>
-              <?=($idx > 5 ) ? 'mt-3': ''?>' >
-        <!-- <a href="https://eyenlip.co.kr/" target="blank"> -->
-          <img class='w-85' src="/img/brand_logo/top20/<?=($brand)?>" />
-        </a>
-      </li>
-      <?php endforeach; ?>
-      </ul>
+      <?php 
+      $brandTotal = count($brandList);
+      $a = 20;
+      $b = ceil($brandTotal / $a);
+      $c = 0;
+      $d = $a;
+      ?>
+      <div id='brandCarousel' class='carousel carousel-dark slide' data-bs-ride='carousel'>
+        <div class="carousel-indicators">
+          <?php for ($i=0; $i < $b; $i++) : ?>
+          <button type="button" 
+              data-bs-target="#brandCarousel"
+              data-bs-slide-to="<?=$i?>" 
+              class="shadow-none <?=$i == 0 ? 'active' : ''?>" 
+              <?=$i == 0 ? 'aria-current="true"' : ''?>></button>
+          <?php endfor;?>
+        </div>
+        <div class='carousel-inner'>
+          <?php for ($i=0; $i < $b; $i++) : ?>
+            <div class='carousel-item <?= $i == 0 ? 'active': ''?>' style='width: 100%; min-height: 20rem;'>
+              <div class='w-95 mx-auto' style='height: 100%;'>
+              <ul class='d-flex flex-wrap w-90 justify-content-start mx-auto'>
+              <?php for($j = $c; $j < $d; $j++) : 
+                if ( !empty($brandList[$j]['logo']) ) : ?>
+                <li class='w-19 text-center border border-1 d-block rounded-1 fs-5
+                    <?=(($j % 5) > 0 ? 'ms-2' : '')?>
+                    <?=($j > 4 ) ? 'mt-3': ''?>' >
+                  <img class='w-85' src="/img/brand_logo/other_brand_logo/<?=esc($brandList[$j]['logo'])?>" />
+                </li>
+              <?php endif;
+              endfor;
+              $c = $d;
+              $d = ($d + $a); ?>
+              </ul>
+              </div>
+            </div>
+          <?php endfor;?>
+        </div>
+        <button class="carousel-control-prev shadow-none w-auto" data-bs-target="#brandCarousel" type="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next shadow-none w-auto" data-bs-target="#brandCarousel" type="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>
-<div class='join-us'>
+<hr/>
+<div id='ourfeaturs' class='section w-75 mx-auto'>
+  <div>
+    <p class='title fs-1 manlope manlope800 text-center'>Our Features</p>
+  </div>
+  <div class='d-flex flex-row justify-content-center flex-wrap mt-4 content'>
+    <div class='w-30 d-flex flex-column text-center p-2'>
+      <div class='mb-3'><img class='icon' src='/img/icon/main/icon_Brand.png'/></div>
+      <div class='sub-title manlope manlope700 mb-3'>
+        Brands Beyond Boundaries
+      </div>
+      <div>
+        Discover our world of beauty with<br class='sm-hide'/> 
+        three exclusive private brands and<br class='sm-hide'/> 
+        an extensive selection of popular<br class='sm-hide'/> 
+        Korean cosmetics. We are constantly<br class='sm-hide'/> 
+        searching for new brands to bring<br class='sm-hide'/> 
+        you the latest in beauty innovations
+      </div>
+    </div>
+    <div class='w-30 d-flex flex-column text-center p-2'>
+      <div class='mb-3'><img class='icon' src='/img/icon/main/icon_Fast.png'/></div>
+      <div class='sub-title manlope manlope700 mb-3'>
+        Fast, Reliable, Anytime
+      </div>
+      <div>
+        Experience fast, safe, and<br class='sm-hide'/> 
+        accurate delivery with our express<br class='sm-hide'/> 
+        services. We also accommodate<br class='sm-hide'/> 
+        shipping by your appointed<br class='sm-hide'/> 
+        forwarders for your convenience
+      </div>
+    </div>
+    <div class='w-30 d-flex flex-column text-center p-2'>
+      <div class='mb-3'><img class='icon' src='/img/icon/main/icon_Payments.png'/></div>
+      <div class='sub-title manlope manlope700 mb-3'>
+        Flexible Payments
+      </div>
+      <div>
+        Tailored payment solutions to suit<br class='sm-hide'/> 
+        everyone's needs, including bank<br class='sm-hide'/> 
+        and online payments, available<br class='sm-hide'/> 
+        for any country. Also, we allow the<br class='sm-hide'/> 
+        option to split payments for your<br class='sm-hide'/> 
+        convenience
+      </div>
+    </div>
+    <div class='w-30 d-flex flex-column text-center p-2'>
+      <div class='mb-3'><img class='icon' src='/img/icon/main/icon_Global.png'/></div>
+      <div class='sub-title manlope manlope700 mb-3'>
+        Global Communication
+      </div>
+      <div>
+        Experience the ease of<br class='sm-hide'/> 
+        communication with our<br class='sm-hide'/> 
+        multilingual support team. We are<br class='sm-hide'/> 
+        here to ensure that language is never<br class='sm-hide'/> 
+        a barrier and make your experience<br class='sm-hide'/> 
+        with us as smooth as possible
+      </div>
+    </div>
+    <div class='w-30 d-flex flex-column text-center p-2'>
+      <div class='mb-3'><img class='icon' src='/img/icon/main/icon_SNS.png'/></div>
+      <div class='sub-title manlope manlope700 mb-3'>
+        Promotion, SNS 
+      </div>
+      <div>
+        Open affordability with our<br class='sm-hide'/> 
+        promotion events, making products<br class='sm-hide'/> 
+        accessible to all. Our global<br class='sm-hide'/> 
+        marketing efforts ensure that our<br class='sm-hide'/> 
+        products resonate worldwide, making<br class='sm-hide'/> 
+        them a recognizable choice for all
+      </div>
+    </div>
+  </div>
+</div>
+<hr/>
+<div id='join-us' class='section'>
   <div class='w-75 mx-auto'>
-    <p class='title fs-1 manlope800 text-center'>Join us to get unique</p>
-    <p class='title fs-1 manlope800 text-center'>shopping experience</p>
+    <p class='title fs-1 manlope manlope800 text-center'>
+      Join us to get unique<br class='sm-hide'/> 
+      shopping experience
+    </p>
     <div class='d-flex flex-row text-center mt-4 pt-4'>
       <div class='w-25 justify-content-center'>
-        <div class='d-flex flex-column'>
-          <p class='manlope700 sub-title text-break'>Fill out</p>
-          <p class='manlope700 sub-title text-break pb-3'>registration form</p>
+        <div>
+          <p class='manlope manlope700 sub-title text-break pb-3'>
+            Fill out<br class='sm-hide'/> registration form
+          </p>
         </div>
         <div class='d-flex flex-column pb-5'>
-          <p class='pretendard'>This verification process ensures</p>
-          <p class='pretendard'>you're a business owner seeking</p>
-          <p class='pretendard'>wholesale opportunities.</p>
-          <p class='pretendard'>Please note that approval may</p>
-          <p class='pretendard'>take up to 24 hours.</p>
+          This verification process ensures<br class='sm-hide'/> 
+          you're a business owner seeking<br class='sm-hide'/> 
+          wholesale opportunities.<br class='sm-hide'/> 
+          Please note that approval may<br class='sm-hide'/> 
+          take up to 24 hours
         </div>
         <div class='d-flex flex-column'>
           <img src="/img/icon1.png" class='icon-image'>
@@ -117,15 +240,16 @@
       </div>
       <div class='w-25 justify-content-center'>
         <div class='d-flex flex-column'>
-          <p class='manlope700 sub-title'>Choose the best</p>
-          <p class='manlope700 sub-title pb-3'>products you need</p>
+          <p class='manlope manlope700 sub-title pb-3'>
+            Choose the best<br class='sm-hide'/> 
+            products you need
+          </p>
         </div>
         <div class='d-flex flex-column pb-5'>
-          <p class='pretendard'>Explore our curated recommendations</p>
-          <p class='pretendard'>and streamline your search with our</p>
-          <p class='pretendard'>user-friendly filtering options to find</p>
-          <p class='pretendard'>the perfect products for your business.</p>
-          <p class='pretendard'><br></p>
+          Explore our curated recommendations<br class='sm-hide'/> 
+          and streamline your search with our<br class='sm-hide'/> 
+          user-friendly filtering options to find<br class='sm-hide'/> 
+          the perfect products for your business
         </div>
         <div class='d-flex flex-column'>
           <img src="/img/icon2.png" class='icon-image'>
@@ -133,15 +257,16 @@
       </div>
       <div class='w-25 justify-content-center'>
         <div class='d-flex flex-column'>
-          <p class='manlope700 sub-title'>Check out, pay &</p>
-          <p class='manlope700 sub-title pb-3'>track shipment</p>
+          <p class='manlope manlope700 sub-title pb-3'>
+            Check out, pay &<br class='sm-hide'/> 
+            track shipment
+          </p>
         </div>
         <div class='d-flex flex-column pb-5'>
-          <p class='pretendard'>We've streamlined our wholesale</p>
-          <p class='pretendard'>experience, prioritizing transparency,</p>
-          <p class='pretendard'>safety, and security in both payment</p>
-          <p class='pretendard'>and shipping processes.</p>
-          <p class='pretendard'><br></p>
+          We've streamlined our wholesale<br class='sm-hide'/> 
+          experience, prioritizing transparency,<br class='sm-hide'/> 
+          safety, and security in both payment<br class='sm-hide'/> 
+          and shipping processes
         </div>
         <div class='d-flex flex-column'>
           <img src="/img/icon3.png" class='icon-image'>
@@ -149,15 +274,17 @@
       </div>
       <div class='w-25 justify-content-center'>
         <div class='d-flex flex-column'>
-          <p class='manlope700 sub-title'>Check previous orders</p>
-          <p class='manlope700 sub-title pb-3'>and plan new ones</p>
+          <p class='manlope manlope700 sub-title pb-3'>
+            Check previous orders<br class='sm-hide'/> 
+            and plan new ones
+          </p>
         </div>
         <div class='d-flex flex-column pb-5'>
-          <p class='pretendard'>Stay ahead of the curve with our</p>
-          <p class='pretendard'>latest updates! Explore our B2C</p>
-          <p class='pretendard'>website, monthly newsletter,</p>
-          <p class='pretendard'>and social channels to discover</p>
-          <p class='pretendard'>your next best-selling product.</p>
+          Stay ahead of the curve with our<br class='sm-hide'/> 
+          latest updates! Explore our B2C<br class='sm-hide'/> 
+          website, monthly newsletter,<br class='sm-hide'/> 
+          and social channels to discover<br class='sm-hide'/> 
+          your next best-selling product
         </div>
         <div class='d-flex flex-column'>
           <img src="/img/icon4.png" class='icon-image'>
@@ -165,66 +292,26 @@
       </div>
     </div>
     <div class='d-flex flex-row justify-content-center join-us-group'>
-      <button class='btn terms mx-4' onclick="location.href='/board/getboard/1/2'">
-        <p>WHOLESALE ORDER</p>
-        <P>TERMS AND CONDITIONS</P>
-      </button>
+      <a class='btn terms mx-4' href='/board/getboard/1/2'>
+        WHOLESALE ORDER</br>
+        TERMS AND CONDITIONS
+      </a>
       <!-- <button class='btn manual mx-4'>DETAILED USER MANUAL</button> -->
     </div>
   </div>
 </div>
-<!-- <div class='bg-secondary bg-opacity-10 py-4 '>
-  <div class='d-flex flex-row justify-content-center w-75 mx-auto about_this'>
-    <div class='w-30 d-flex flex-column me-4'>
-      <div class='w-100 rounded-top' style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_01.jpg");'></div>
-      <div class='py-3 px-2 bg-white bg-opacity-50 rounded-bottom'>
-        <p>· Product introduction and customer service after adapting local language/users/culture</p>
-        <p>· Management of regional warehouse</p>
-        <p>· Fast and accurate delivery</p>
-        <p>· Offline connection builds a simple local storage process</p>
-      </div>
-    </div>
-    <div class='w-30 d-flex flex-column me-4'>
-      <div class='w-100 rounded-top' style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_02.jpg");'></div>
-      <div class='py-3 px-2 bg-white bg-opacity-50 rounded-bottom'>
-        <p>· Launch new items at the same time with the global market</p>
-        <p>· Effective promotion of new products at website and channels</p>
-        <p>· Collaboration with MDs in each market for country and seasonal promotions and marketing</p>
-      </div>
-    </div>
-    <div class='w-30 d-flex flex-column'>
-      <div class='w-100 rounded-top' style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_03.jpg");'></div>
-      <div class='py-3 px-2 bg-white bg-opacity-50 rounded-bottom'>
-        <p>· Promotion Event</p>
-        <p>· Practical promotion for existing customers</p>
-        <p>· Link SNS marketing promotion on search engine</p>
-        <p>· Promotion of major products with other kinds of products will have synergy effect and Manage sellers</p>
-      </div>
-    </div>
-  </div>
-</div>
-<div class='join_us'>
-  <div class='w-75 mx-auto join_us_container'>
-    <h2 class='fw-bold text-center'>Join us</h2>
-    <div class='d-flex flex-row justify-content-center join_us_wrapper'>
-      <div style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_icon_01.png");'></div>
-      <div style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_icon_02.png");'></div>
-      <div style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_icon_03.png");'></div>
-      <div style='background-image: url("//beautynetkorea.daouimg.com/2023_b2b/b2b_icon_04.png");'></div>
-    </div>
-  </div>
-</div> -->
-<div class='get-in-touch'>
-  <div class='under-line w-75 mx-auto'>
+<hr/>
+<div id='get-in-touch' class='section'>
+  <div class='w-75 mx-auto'>
     <div class='mb-5'>
-      <p class='title fs-1 manlope800 text-center'>Get In Touch</p>
+      <p class='title fs-1 manlope manlope800 text-center'>Get In Touch</p>
     </div>
     <div class='mb-4'>
-      <p class='sub-title manlope500 text-center'>Stay connected with us.</p>
+      <p class='sub-title manlope manlope500 text-center'>Stay connected with us.</p>
     </div>
-    <div>
-      <p class='describe pretendard text-center'>Subscribe today and get in touch for the latest</p>
-      <p class='describe pretendard text-center'>updates and offers with our monthly news.</p>
+    <div class='describe text-center'>
+      Stay connected with us. Subscribe today and get in touch for the latest updates and offers with our<br class='sm-hide'/> 
+      monthly news
     </div>
       <div class='d-flex flex-row text-center justify-content-center mt-4 pt-4'>
         <div class='px-2'>
@@ -239,63 +326,62 @@
       </div>
   </div>
 </div>
-<div class='need-help'>
+<hr/>
+<div id='need-help' class='section mb-1'>
   <div class='w-75 mx-auto'>
     <div class='mb-5'>
-      <p class='title fs-1 manlope800 text-center'>Need more help?</p>
+      <p class='title fs-1 manlope manlope800 text-center'>Need more help?</p>
     </div>
     <div class='mb-5'>
-      <p class='describe pretendard text-center'>Have additional questions or need further assistance?</p>
-      <p class='describe pretendard text-center'>Don't hesitate to reach out to us.</p>
-      <p class='describe pretendard text-center'>Our dedicated team is ready to provide the multy-language support,</p>
-      <p class='describe pretendard text-center'>ensuring your experience is smooth and satisfactory</p>
+      <p class='describe text-center'>
+        Have additional questions or need further assistance? Don't hesitate to reach out to us. Our dedicated team is<br class='sm-hide'/> 
+        ready to provide the multy-language support, ensuring your experience is smooth and satisfactory
+      </p>
     </div>
     <div>
       <div class='d-flex flex-row text-center justify-content-center'>
         <div class='box'>
           <div>
-            <p class='manlope700 country'>CIS</p>
-            <p class='pretendard italic name'>Kristina</p>
-            <a class='text-decoration-none pretendard' href='mailto:cis@beautynetkorea.com' target='_blank'>cis@beautynetkorea.com</a>
+            <p class='manlope manlope700 country fs-4'>CIS</p>
+            <p class='fst-italic name fw-bolder'>Kristina</p>
+            <a class='text-decoration-none fw-bolder' href='mailto:cis@beautynetkorea.com' target='_blank'>cis@beautynetkorea.com</a>
           </div>
         </div>
         <div class='box'>
           <div>
-            <p class='manlope700 country'>CIS</p>
-            <p class='pretendard italic name'>Mikhail</p>
-            <a class='text-decoration-none pretendard' href='mailto:cisinfo@beautynetkorea.com' target='_blank'>cisinfo@beautynetkorea.com</a>
+            <p class='manlope manlope700 country fs-4'>CIS</p>
+            <p class='fst-italic name fw-bolder'>Mikhail</p>
+            <a class='text-decoration-none fw-bolder' href='mailto:cisinfo@beautynetkorea.com' target='_blank'>cisinfo@beautynetkorea.com</a>
           </div>
         </div>
         <div class='box'>
           <div>
-            <p class='manlope700 country'>EUROPE</p>
-            <p class='pretendard italic name'>Anis</p>
-            <a class='text-decoration-none pretendard' href='mailto:europe@beautynetkorea.com' target='_blank'>europe@beautynetkorea.com</a>
+            <p class='manlope manlope700 country fs-4'>EUROPE</p>
+            <p class='fst-italic name fw-bolder'>Anis</p>
+            <a class='text-decoration-none fw-bolder' href='mailto:europe@beautynetkorea.com' target='_blank'>europe@beautynetkorea.com</a>
           </div>
         </div>
       </div>
       <div class='d-flex flex-row text-center justify-content-center'>
         <div class='box'>
           <div>
-            <p class='manlope700 country' style='margin-bottom:-10px;'>North, Central</p>
-            <p class='manlope700 country'>& South America</p>
-            <p class='pretendard italic name'>Jongtae</p>
-            <a class='text-decoration-none pretendard' href='mailto:america@beautynetkorea.com' target='_blank'>america@beautynetkorea.com</a>
+            <p class='manlope manlope700 country fs-4'>North, Central& South America</p>
+            <p class='fst-italic name fw-bolder'>Jongtae</p>
+            <a class='text-decoration-none fw-bolder' href='mailto:america@beautynetkorea.com' target='_blank'>america@beautynetkorea.com</a>
           </div>
         </div>
         <div class='box'>
           <div>
-            <p class='manlope700 country'>Asia</p>
-            <p class='pretendard italic name'>Suzie</p>
-            <a class='text-decoration-none pretendard' href='mailto:asia@beautynetkorea.com' target='_blank'>asia@beautynetkorea.com</a>
+            <p class='manlope manlope700 country fs-4'>Asia</p>
+            <p class='fst-italic name fw-bolder'>Suzie</p>
+            <a class='text-decoration-none fw-bolder' href='mailto:asia@beautynetkorea.com' target='_blank'>asia@beautynetkorea.com</a>
           </div>
         </div>
         <div class='box'>
           <div>
-            <p class='manlope700 country' style='margin-bottom:-10px;'>Middle East,</p>
-            <p class='manlope700 country'>Africa</p>
-            <p class='pretendard italic name'>Ismahene</p>
-            <a class='text-decoration-none pretendard' href='mailto:middleeast@beautynetkorea.com' target='_blank'>middleeast@beautynetkorea.com</a>
+            <p class='manlope manlope700 country fs-4'>Middle East, Africa</p>
+            <p class='fst-italic name fw-bolder'>Ismahene</p>
+            <a class='text-decoration-none fw-bolder' href='mailto:middleeast@beautynetkorea.com' target='_blank'>middleeast@beautynetkorea.com</a>
           </div>
         </div>
       </div>

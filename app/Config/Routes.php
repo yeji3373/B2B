@@ -34,6 +34,7 @@ $routes->setAutoRoute(true);
 $routes->group('', function($routes) {
   $routes->get('/', 'Home::index');
   $routes->get('/main', 'Home::main');
+  $routes->get('/manual', 'Home::manual');
 });
 // $routes->get('/', 'Home::index', ['filter' => 'auth']);
 $routes->get('orders/(:num)', 'Orders::getOrderDetail/$i', ['as' =>'orders']);

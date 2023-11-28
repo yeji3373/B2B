@@ -1,0 +1,9 @@
+.number-list {
+  counter-reset: index;
+  position: relative;
+}
+
+.number-item::before {
+  counter-increment: index;
+  content: counters(index, '-') '. ';
+}

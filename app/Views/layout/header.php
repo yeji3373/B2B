@@ -30,6 +30,7 @@
     endif; 
   endforeach?>
   <?php endif ?>
+  <link rel="stylesheet" href="/css/layout.css" />
   <title>Beautynetkorea B2B</title>
 </head>
 <?php if ( session()->isLoggedIn ) { ?>
