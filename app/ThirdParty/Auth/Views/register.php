@@ -18,7 +18,7 @@
       </p>
       <p>
         <select name='buyerRegion' required>
-          <option><?=lang('Auth.countrySelect')?></option>
+          <option value><?=lang('Auth.countrySelect')?></option>
           <?php foreach ( $countries as $country ) : ?>
           <option value='<?=$country['id']?>' data-country-no='<?=$country['country_no']?>'><?=$country['name_en']?></option>
           <?php endforeach ?>
