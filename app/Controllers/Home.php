@@ -50,7 +50,7 @@ class Home extends BaseController {
                 ->orderBy('sort_main', 'ASC')
                 ->findAll();
     $topBrands = array();
-    
+
     foreach( $brands AS $key => $brand ) :
       foreach( $myfiles AS $myfile ) :
         if ( strtolower(preg_replace('/.jpg|.png|.gif|[^[:alnum:]]+/', '', $myfile)) == $brand['name']) :

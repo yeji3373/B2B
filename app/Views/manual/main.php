@@ -1,360 +1,126 @@
 <main>
-  <div class='d-flex flex-row' style='min-height: 90vh;'>
-    <div class='w-16 border-end'>
-      <nav class='nav flex-column flex-nowrap h-100 manual-navigator' role='tablist' style='overflow-y:auto;'>
+  <div class='d-flex flex-row' >
+    <div class='w-16 border-end position-sticky' id='guide-navbar' style='height: 100vh;'>
+      <nav class='nav flex-column flex-nowrap h-100 manual-navigator' style='overflow-y:auto;'>
+        <!-- <a class='nav-link active text-dark border-bottom' href="#list-tab">
+          Table of contents
+        </a> -->
         <div class='nav-item'>
-          <div class='nav-link active text-dark border-bottom' 
-              id='list-tab'
-              data-bs-toggle='tab'
-              data-bs-target='#list-tab-pane'
-              type='button'
-              role='tab'
-              aria-controls="list-tab-pane"
-              aria-selected='true'>
-            Table of contents
-          </div>
-        </div>
-        <div class='nav-item'>
-          <div class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center'
-              data-bs-toggle='collapse'
-              data-bs-target='.about-collapse-menu'
-              aria-expanded='true'
-              aria-controls="about-collapse-menu">
+          <a class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center'
+            href='#about-tab'>
             Beautynetkorea B2B Site
-          </div>
-          <div class='collapse about-collapse-menu show border-bottom'>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                  id='list-tab'
-                  data-bs-toggle='tab'
-                  data-bs-target='#about-tab-pane'
-                  type='button'
-                  role='tab'
-                  aria-controls="about-tab-pane"
-                  aria-selected='true'>
-                About Beautynetkorea B2B
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='list-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#about-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls="about-tab-pane"
-                    aria-selected='true'>
-                Home
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='list-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#about-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls="about-tab-pane"
-                    aria-selected='true'>
-                Sing-up
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='list-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#about-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls="about-tab-pane"
-                    aria-selected='true'>
-                Login
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='list-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#about-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls="about-tab-pane"
-                    aria-selected='true'>
-                Main menu
-              </div>
-            </div>
-          </div>
+          </a>
+          <nav class='about-menu border-bottom nav flex-column'>
+            <a class='nav-link text-secondary ps-4' href='#about-tab-1'>
+              Home
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#about-tab-2'>
+              Sing-up
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#about-tab-3'>
+              Login
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#about-tab-4'>
+              Main menu
+            </a>
+          </nav>
         </div>
-        <div class='nav-item'>
-          <div class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center'
-                role='button' 
-                data-bs-toggle='collapse' 
-                data-bs-target='.main-collapse-menu'
-                aria-expanded='false'
-                aria-controls='main-collapse-menu'>
+        <div class='d-flex flex-column'>
+          <a class='nav-link text-dark border-bottom' href='#main-tab'>
             Main
-          </div>
-          <div class='collapse main-collapse-menu border-bottom'>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='main-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#main-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='main-tab-pane'
-                    aria-selected='true'>
-                Notice
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='main-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#main-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='main-tab-pane'
-                    aria-selected='true'>
-                Q&A
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='main-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#main-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='main-tab-pane'
-                    aria-selected='true'>
-                Add Cart & Request Inventory
-              </div>
-            </div>
-          </div>
+          </a>
         </div>
         <div class='nav-item'>
-          <div class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center' 
-                role='button' 
-                data-bs-toggle='collapse' 
-                data-bs-target='.product-collapse-menu'
-                aria-expanded='false'
-                aria-controls='product-collapse-menu'>
+          <a class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center' 
+            href='#product-tab'>
             Product/Checkout
-          </div>
-          <div class='collapse product-collapse-menu border-bottom'>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='product-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#product-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='product-tab-pane'
-                    aria-selected='true'>
-                Brands
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='product-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#product-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='product-tab-pane'
-                    aria-selected='true'>
-                Products
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='product-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#product-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='product-tab-pane'
-                    aria-selected='true'>
-                Products in cart
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='product-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#product-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='product-tab-pane'
-                    aria-selected='true'>
-                Inventory check request
-              </div>
-            </div>
-          </div>
+          </a>
+          <nav class='product-menu border-bottom nav flex-column'>
+            <a class='nav-link text-secondary ps-4' href='#product-tab-1'>
+              Brands
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#product-tab-2'>
+              Products
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#product-tab-3'>
+              Products in cart
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#product-tab-4'>
+              Inventory check request
+            </a>
+          </nav>
         </div>
         <div class='nav-item'>
-          <div class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center' 
-                role='button' 
-                data-bs-toggle='collapse' 
-                data-bs-target='.order-collapse-menu'
-                aria-expanded='false'
-                aria-controls='order-collapse-menu'>
+          <a class='nav-link text-dark btn-toggle border-bottom d-flex justify-content-between align-items-center' 
+              href='#order-tab'>
             Order Info
-          </div>
-          <div class='collapse order-collapse-menu border-bottom'>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Info Dashboard
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - inventory request
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - 재고요청 완료 후
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - 주문확정
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - 주문하기(선수금)
-              </div>
-            </div>
-            <div class='nav-item'>
-            <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - 선수금 완료 후
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab text-secondary'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - 잔금 입금
-              </div>
-            </div>
-            <div class='nav-item'>
-              <div class='nav-link text-secondary ps-4'
-                    id='order-tab'
-                    data-bs-toggle='tab'
-                    data-bs-target='#order-tab-pane'
-                    type='button'
-                    role='tab'
-                    aria-controls='order-tab-pane'
-                    aria-selected='true'>
-                Order Details - 출고 및 주문완료
-              </div>
-            </div>
-          </div>
+          </a>
+          <nav class='order-menu border-bottom nav flex-column'>
+            <a class='nav-link text-secondary ps-4' href='#order-tab-1'>
+              Dashboard
+            </a>
+            <a class='nav-link text-secondary ps-4' href='#order-tab-2'>
+              Order Detail
+            </a>
+            <nav class='nav flex-column'>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-1'>
+                inventory request
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-2'>
+                Checking inventory request
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-3'>
+                Inventory request confirmation completed
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-4'>
+                Inventory request result confirmation request
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-5'>
+                Order Confirmation
+              </a>          
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-6'>
+                Deposit payment confimed
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-7'>
+                Wrapping up
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-8'>
+                Balance payment confirmed
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-9'>
+                Packaging complete
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-10'>
+                Waiting for shipment
+              </a>
+              <a class='nav-link text-secondary ps-5' href='#order-tab-2-11'>
+                Shipment completed
+              </a>
+            </nav>
+          </nav>
         </div>
         <div class='nav-item border-bottom'>
-          <div class='nav-link text-dark' 
-                  id='contact-tab'
-                  data-bs-toggle='tab'
-                  data-bs-target='#contact-tab-pane'
-                  type='button'
-                  role='tab'
-                  aria-controls="contact-tab-pane"
-                  aria-selected='true'>
+          <a class='nav-link text-dark' href='#contact-tab'>
             Contact US
-          </div>
+          </a>
         </div>
       </nav>
     </div>
-    <div class='w-100 p-2'>
-      <?=view('/manual/guide')?>
-    </div>
+    <?=view('/manual/guide')?>
   </div>
 </main>
 
-<style>
-.manual-navigator::-webkit-scrollbar {
-  display: none;
-  width: 0;
-}
-
-[class*='collapse-menu'] {
-  font-size: 0.8rem;
-  background-color: #ececec73;
-  /* border-bottom: 1px solid; */
-}
-
-.btn-toggle[aria-expanded="true"]::after {
-  transform: rotate(90deg);
-}
-
-.btn-toggle::after {
-  display: inline-flex;
-  width: 1.25rem;
-  line-height: 0;
-  content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="rgba%280,0,0,.5%29" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 16 16"><path d="M8 14 l6-6-6-6"/></svg>');
-  transition: transform .35s ease;
-  transform-origin: 0.5rem 50%;
-}
-
-.nav-link.active {
-  color: #ffedf3 !important;
-  font-weight: bold;
-  background-color: #ff74a3;
-}
-</style>
-
 <script>
 $(document).ready(function() {
+  let HEADER_OFFSET = $("header").offset().top + $("header").outerHeight();
+
+  $(document).scroll(function() {
+    if ( HEADER_OFFSET < $(this).scrollTop()) {
+      $("#guide-navbar").addClass('top-0');
+    } else {
+      $("#guide-navbar").removeClass('top-0');
+    }
+  });
 // }).on('click', '.collapse', function() {
 //   console.log($(this).children());
 //   if ( $(this).attr('aria-expanded') == 'true' ) {

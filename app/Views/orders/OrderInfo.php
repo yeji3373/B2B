@@ -147,7 +147,7 @@
 <?php endif; ?>
 <div class='p-0 packaging-info-section'>
   <div class='info-sec p-0'>
-    <div class='py-2 ps-2 border-bottom w-100'>Adress</div>
+    <div class='py-2 ps-2 border-bottom w-100'><?=lang('Lang.orders.address')?></div>
     <div class='w-100 sub-sec p-2 pt-0'>
       <span class='consignee d-none'><?=$order['consignee']?></span>
       <div>

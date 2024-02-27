@@ -95,6 +95,7 @@ return [
     'pl'                  => 'PL',
     'view'                => 'View',
     'amount'              => 'Amount',
+    'address'             => 'Address',
     'payment'            => [
       'receipts'            => 'receipts',
       'receipt'             => 'receipt',
@@ -154,7 +155,7 @@ return [
   /* 공통 */
   'remark'                => 'remark', //비고
   'msg'                   => [
-    'statusChooseReCheck' => 'There are conditions that you did not select. Are you sure you want to choose?', // 선택되지 않은 조건이 있습니다. 다시 선택하시겠습니까?
+    'statusChooseReCheck' => 'No options have been selected. Would you like to select an option?', // 체크가 완료되지 않았습니다. 체크를 다시 진행하시겠습니까?
   ],
   /* 공통 */
 ];

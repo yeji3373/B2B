@@ -12,6 +12,7 @@ use App\Models\BuyerCurrencyModel;
 
 use App\Controllers\Order;
 use FtpFile\Controllers\FtpFileController;
+use VerifyEmail\Controllers\VerifyemailController;
 
 class RegistrationController extends Controller
 {
@@ -78,7 +79,11 @@ class RegistrationController extends Controller
 	 * Attempt to register a new user.
 	 */
 	public function attemptRegister()	{
-		helper('text');
+    if ( !self::VerifyEmailCheck($this->request->getPost('email')) ) {
+      return redirect()->back()->withInput()->with('error', lang('Auth.emailNotAvailable'));
+    }
+
+    helper('text');
     $users = new UserModel();
     $buyers = new BuyerModel();
     $ftpFile = new FtpFileController();
@@ -190,5 +195,25 @@ class RegistrationController extends Controller
         } 
       }
     }
+  }
+
+   /**
+   * Verify email
+   */
+  public function VerifyEmailCheck($email) {
+    $verifyEmail = new VerifyemailController();
+    
+    $verifyEmail->setStreamTimeoutWait(20);
+    $verifyEmail->Debug = TRUE;
+    $verifyEmail->Debugoutput = 'html';
+
+    $verifyEmail->setEmailFrom('mlee5971@beautynetkorea.com');
+    
+    $checkEmail = $email;
+
+    if ( $verifyEmail->check($checkEmail) ) {
+      return TRUE;
+    }
+    return FALSE;
   }
 }

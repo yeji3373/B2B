@@ -65,18 +65,28 @@ $(document).ready(function() {
     $(".countries").find(`.${group}`).remove();
   }
 }).on('change', '[name=buyerRegion]', function() {
-  console.log($(this).children('option:selected').data('countryNo'));
   if ( typeof $(this).children('option:selected').data('countryNo') != 'undefined' ) {
     $("[name=buyerPhoneCode]").val($(this).children('option:selected').data('countryNo')).prop('selected', true);
   }
 }).on('click', '.eye', function() {
-  if($(this).attr('id') == 'eye'){
-    $(this).hide();
-    $("#eyeslash").show();
-    $("input[name='password']").attr('type', 'text');
-  }else{
-    $(this).hide();
-    $('#eye').show();
-    $("input[name='password']").attr('type', 'password');
+  if ( $(this).hasClass('eye-slash') ) {
+    $(this).removeClass('eye-slash');
+    $(this).prev('input').attr('type', 'text');
+  } else {
+    $(this).addClass('eye-slash');
+    $(this).prev('input').attr('type', 'password');
   }
 });
+
+function registerCheck(form) {
+  let businessNumberReg = /[\{\}\[\]\/?.,;:|\)*~`!^_+<>@\#$%&\\\=\(\'\"]/g;
+  if ( businessNumberReg.test($(form).find('[name=businessNumber]').val()) ) {
+    $(form).find('[name=businessNumber]').get(0).setCustomValidity("please enter a valid input");
+    return false;
+  } else {
+    $(form).find('[name=businessNumber]').get(0).setCustomValidity("");
+  }
+  if ( $(form).find('[name=password]').val() != $(form).find('[name=password_confirm]').val() ) {
+    return false;
+  }
+}

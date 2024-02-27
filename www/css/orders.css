@@ -180,8 +180,9 @@
 }
 
 .orders-main legend {
-  top: -9%;
-  transform: translateY(9%);
+  /* top: -9%;
+  transform: translateY(9%); */
+  top: -10%;
   left: 0.3rem;
   clear: both;
   width: inherit;

@@ -142,9 +142,16 @@
                   <fieldset class='border border-secondary border-opacity-50 mt-4 pb-2 position-relative pt-3 px-2'>
                   <legend class='position-absolute'><?=$r['requirement_en']?></legend>
                     <form class='requirmentOptForm'>
-                      <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][idx]' data-name='idx' data-type='1' value="<?=$r['idx']?>">
-                      <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][order_detail_id]' data-name='order_detail_id' data-type='1' value="<?=$r['order_detail_id']?>">
-                      <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][requirement_id]' data-name='requirement_id' data-type='1' value="<?=$r['requirement_id']?>">
+                      <?php 
+                        $disabled = NULL;
+                        // if ( !empty($r['requirement_selected_option_id']) ) $disabled = " disabled";
+                      ?>
+                      <!-- <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][idx]' data-name='idx' data-type='1' value="<?=$r['idx']?>" <?=$disabled?>>
+                      <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][order_detail_id]' data-name='order_detail_id' data-type='1' value="<?=$r['order_detail_id']?>" <?=$disabled?>>
+                      <input type='hidden' name='requirement[<?=$i?>][<?=$rIdx?>][requirement_id]' data-name='requirement_id' data-type='1' value="<?=$r['requirement_id']?>" <?=$disabled?>> -->
+                      <input type='hidden' name='requirement[<?=$i?>][idx]' data-name='idx' data-type='1' value="<?=$r['idx']?>" <?=$disabled?>>
+                      <input type='hidden' name='requirement[<?=$i?>][order_detail_id]' data-name='order_detail_id' data-type='1' value="<?=$r['order_detail_id']?>" <?=$disabled?>>
+                      <input type='hidden' name='requirement[<?=$i?>][requirement_id]' data-name='requirement_id' data-type='1' value="<?=$r['requirement_id']?>" <?=$disabled?>>
                       
                       <?php if(!empty($r['requirement_reply'])) : ?>
                       <div class='d-flex flex-row mb-2'>
@@ -158,16 +165,15 @@
                           <?php foreach($r['options'] AS $o) : 
                             $checked = NULL;
                             $bold = NULL;
-                            $disabled = NULL;
 
                             if ( $o['idx'] == $r['requirement_selected_option_id'] ) {
                               $checked = " checked";
                               $bold = 'fw-bold';
                             }
-                            if ( !empty($nowPackStatus['requirement_option_disabled']) ) $disabled = " disabled";
+                            if ( !empty($nowPackStatus['requirement_option_disabled']) && empty($disabled) ) $disabled = " disabled";
                           ?>
                           <label class='ms-1 pb-1 d-flex flex-row align-items-center <?=$bold?>'>
-                            <input type='radio' name='requirement[<?=$i?>][<?=$rIdx?>][requirement_selected_option_id]' data-name='requirement_selected_option_id' data-type='1' value='<?=$o['idx']?>'
+                            <input type='radio' name='requirement[<?=$i?>][requirement_selected_option_id]' data-name='requirement_selected_option_id' data-type='1' value='<?=$o['idx']?>'
                               <?php 
                                 echo $checked;
                                 echo $disabled;

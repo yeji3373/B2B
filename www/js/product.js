@@ -106,8 +106,9 @@ $(document).ready(function() {
 
   let opts = $(".productSearchOpts option:selected").val();
   let search = $(this).val();
-
+  
   if ( search.length > 2 ) {
+    if ( opts == '' ) opts = 'name';
     formInSearchDateInit();
     if ( $("#product-form input[name=page]").val() > 1 ) $("#product-form input[name=page]").val(1);
     if ( $("#product-form input[name=request_unit]").val() == true ) $("#product-form input[name=request_unit]").val(0);

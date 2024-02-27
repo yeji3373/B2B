@@ -27,9 +27,11 @@ return [
     'allowedFilesGuide'     => 'Only JPG, GIF, PNG is allowed',
     'allowedOnlyNumber'     => 'Only number is allowed',
     'buyerWeb'              => 'Site URL or SNS',
-    'register'		        => 'Register',
-    'alreadyRegistered'		=> 'Already registered? Log in!',
+    'register'		          => 'Register',
+    'alreadyRegistered'		  => 'Already registered? Log in!',
     'requiredmsg'           => '* mark is required',
+    'pwmsg'                 => 'It must contain at least one number, at least one uppercase and lowercase letter, and at least 5 characters.',
+    'emailNotAvailable'     => 'Eamil address is not available',
 
     // Login/out
     'login'					        => 'Log in',

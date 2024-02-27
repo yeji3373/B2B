@@ -27,6 +27,8 @@ return [
     'register'		     		  => 'Register',
     'alreadyRegistered'		  => 'Already registered? Log in!',
     'requiredmsg'           => '* 표시는 필수 입력값입니다.',
+    'pwmsg'                 => '최소 하나의 숫자와, 하나의 대문자 및 소문자, 최소 5자 이상의 문자를 포함해야 합니다.',
+    'emailNotAvailable'     => '유효하지 않은 Email 주소입니다.',
 
     // Login/out
     'login'					        => 'Log in',
