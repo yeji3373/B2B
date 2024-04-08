@@ -112,25 +112,18 @@
 
 <script>
 $(document).ready(function() {
+  navPositioning();
+}).scroll(function() {
+  navPositioning();
+});
+
+function navPositioning() {
   let HEADER_OFFSET = $("header").offset().top + $("header").outerHeight();
 
-  $(document).scroll(function() {
-    if ( HEADER_OFFSET < $(this).scrollTop()) {
-      $("#guide-navbar").addClass('top-0');
-    } else {
-      $("#guide-navbar").removeClass('top-0');
-    }
-  });
-// }).on('click', '.collapse', function() {
-//   console.log($(this).children());
-//   if ( $(this).attr('aria-expanded') == 'true' ) {
-
-//   }
-// // }).on('click', '.collapse .nav-item', function() {
-
-// //  if ($(this).closest('.collapse').parent().children(":first-child").hasClass('nav-link')) {
-// //   console.log($(this).closest('.collapse').parent().children(":first-child"));
-// //   // $(this).closest('.collapse').parent().children(":first-child").addClass('active');
-// //  }
-});
+  if ( HEADER_OFFSET < $(this).scrollTop()) {
+    $("#guide-navbar").addClass('top-0');
+  } else {
+    $("#guide-navbar").removeClass('top-0');
+  }
+}
 </script>

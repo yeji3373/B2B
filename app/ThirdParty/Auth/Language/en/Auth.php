@@ -31,7 +31,10 @@ return [
     'alreadyRegistered'		  => 'Already registered? Log in!',
     'requiredmsg'           => '* mark is required',
     'pwmsg'                 => 'It must contain at least one number, at least one uppercase and lowercase letter, and at least 5 characters.',
-    'emailNotAvailable'     => 'Eamil address is not available',
+    'emailNotAvailable'     => 'The e-mail address is not available',
+    'emailAvailable'        => 'The e-mail is available',
+    'emailVerified'         => 'The e-mail address is not verified',
+    'alreadyData'           => 'The {field} is already registered',
 
     // Login/out
     'login'					        => 'Log in',
