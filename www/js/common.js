@@ -1,4 +1,24 @@
-function getData(url, data, parse = false, type = 'POST') {
+function getData(url, data, type = 'POST', parse = false) {
+  if ( type == 'GET' ) {
+    let query = '';
+
+    if ( data != '' ) {
+      if (typeof data == 'string' ) {
+        return {'Code': 500, 'error': '형식이 잘못되었습니다.'}
+      } else if ( typeof data == 'object' ) {
+          Object.entries(data).forEach(([key, value]) => {
+            if ( query == '' ) query += '?';
+            if ( query != '' ) query += '&';
+            query += `${key}=${value}`;
+          });
+      } else {
+        data.forEach(v => {
+          console.log(v);
+        });
+      }
+    }
+  }
+
   let val, errors = false;
   try {
     $.ajax({
@@ -8,13 +28,6 @@ function getData(url, data, parse = false, type = 'POST') {
       async: false,
       data: data,
       success: function(res, status, xhr) {
-        // let responseType = xhr.getResponseHeader('content-type') || "";
-        // if ( responseType.indexOf('html') > -1 ) {
-        //	 console.log(res);
-        //   if ( parse == true ) errors = true;
-        // }
-        // // if ( parse ) val = JSON.parse(res);
-        // // else val = res;
         val = res;
       },
       error: function(XMLHttpRequest, textStatus, errorThrow) {

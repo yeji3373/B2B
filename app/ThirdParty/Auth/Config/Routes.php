@@ -4,6 +4,9 @@ $routes->group('', ['namespace' => 'Auth\Controllers'], function($routes) {
 	// Registration
   $routes->get('register', 'RegistrationController::register', ['as' => 'register']);
   $routes->post('register', 'RegistrationController::attemptRegister');
+ 
+  // E-mail verify check
+  $routes->get('api/verifyCheckJS', 'RegistrationController::verifyCheckJS');
 
   // Activation
   $routes->get('activate-account', 'RegistrationController::activateAccount', ['as' => 'activate-account']);
@@ -26,6 +29,4 @@ $routes->group('', ['namespace' => 'Auth\Controllers'], function($routes) {
   $routes->get('confirm-email', 'AccountController::confirmNewEmail');
   $routes->post('change-password', 'AccountController::changePassword');
   $routes->post('delete-account', 'AccountController::deleteAccount');
-
-  $routes->get('api/verifyCheckJS', 'RegistrationController::verifyCheckJS');
 });

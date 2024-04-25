@@ -83,7 +83,7 @@ $(document).ready(function() {
     // data = $(this).closest('form').serializeArray();
     console.log(data);
 
-    result = getData('/orders/orderFixed', data, true);
+    result = getData('/orders/orderFixed', data, 'POST', true);
     if (result['Code'] == 200 ) {
       location.reload(true);
     }
@@ -125,7 +125,7 @@ $(document).ready(function() {
     });
     
     formData = requirmentOptForm.serializeArray();
-    let result = getData('/orders/setOrderOption', formData, true);
+    let result = getData('/orders/setOrderOption', formData, 'POST', true);
     if ( $.inArray('error', result) === true ) {
       console.log("inarray");
       alert(result['error']);

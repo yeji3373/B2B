@@ -51,6 +51,7 @@ $(document).ready(function (){
   result = getData('/address/edit', 
                   [ {name: 'idx', value: $(this).data('id')},
                     {name: 'oper', value: 'del'} ], 
+                  'POST',
                   true);
                   
   alert(result['Msg']);

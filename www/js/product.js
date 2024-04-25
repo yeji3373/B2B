@@ -191,7 +191,7 @@ $(document).ready(function() {
   e.preventDefault();
   let data = $(this).closest('.list-group-item').find('form').serializeArray();
 
-  result = getData("/order/addCartList", data, true);
+  result = getData("/order/addCartList", data, 'POST', true);
   if ( result['Code'] != "200" ) {
     console.log(result['Msg']);
     return;
@@ -341,7 +341,7 @@ $(document).ready(function() {
     ];
 
     let btnText, removeClass, addClass;
-    result = getData('/order/editCartList', query, true);
+    result = getData('/order/editCartList', query, 'POST', true);
     console.log(result);
     console.log($targetBtn);
     if ( result['Code'] == 200 ) {
@@ -451,7 +451,7 @@ $(document).ready(function() {
   }
   if ( reqeust ) {
     let target = $(this).data('bsTarget');
-    result = getData('/inventory/request', [], false, 'GET');
+    result = getData('/inventory/request', [], 'GET');
     
     if ( result.indexOf('Code') >= 0 ) {
       if ( typeof JSON.parse(result) == 'object' ) {
@@ -486,7 +486,7 @@ $(document).ready(function() {
                 { name: 'rId', value: currency.data('rid') }];
   let totalPrice, discountPrice, subTotalPrice, applyDiscount;
 
-  result = getData('/order/checkoutTotalPrice', data, true);
+  result = getData('/order/checkoutTotalPrice', data, 'POST',  true);
   console.log('result ', result);
   if ( result.code != 500 ) {
     totalPrice = result['order_price_total'];
@@ -539,7 +539,7 @@ $(document).ready(function() {
   // }
 
   // result = getData('/order/checkoutTotalPrice', $.merge(data, zeroTax), true);
-  result = getData('/order/checkoutTotalPrice', data, true);
+  result = getData('/order/checkoutTotalPrice', data, 'POST',  true);
   let totalPrice = result['order_price_total'];
   let discountPrice = result['order_discount_total'];
   let subTotalPrice = result['order_subTotal'];
@@ -631,7 +631,7 @@ function setCartSpq(cartId, productQty, productPrice, ref = false) {
                   {name: 'order_qty', value: productQty},
                   {name: 'product_price', value: productPrice}];
   // console.log($.param(editData));
-  result = getData('/order/editCartList', editData, true);
+  result = getData('/order/editCartList', editData, 'POST', true);
   // result = JSON.parse(result);
 
   if ( !ref ) { // return 안받고 곧바로 처리
