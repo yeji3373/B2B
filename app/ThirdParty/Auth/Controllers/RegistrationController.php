@@ -30,6 +30,8 @@ class RegistrationController extends Controller
 
   protected $uploadUrl;
 
+  protected $helpers = ['form'];
+
   //--------------------------------------------------------------------
 
 	public function __construct()
@@ -40,6 +42,8 @@ class RegistrationController extends Controller
 		// load auth settings
 		$this->config = config('Auth');
     $this->uploadUrl = "C:\\Apache24\\htdocs\\FILES\\Certificate\\";
+
+    $this->users = new UserModel();
 	}
 
     //--------------------------------------------------------------------
@@ -66,7 +70,6 @@ class RegistrationController extends Controller
     // echo "<br/>";
     // print_r($data['itus']);
     // $country = new CountryModel();
-
     // return ;
 
 		// return view($this->config->views['register'], ['config' => $this->config]);
@@ -79,15 +82,96 @@ class RegistrationController extends Controller
 	 * Attempt to register a new user.
 	 */
 	public function attemptRegister()	{
-    if ( !self::VerifyEmailCheck($this->request->getPost('email')) ) {
-      return redirect()->back()->withInput()->with('error', lang('Auth.emailNotAvailable'));
-    }
-
-    helper('text');
-    $users = new UserModel();
     $buyers = new BuyerModel();
     $ftpFile = new FtpFileController();
     $buyerCurrency = new BuyerCurrencyModel();
+    $regsiterRules = [
+      'buyerName'           => [
+        'label'   =>  'Name of the company',
+        'rules'   =>  'required|min_length[2]|is_unique[buyers.name]',
+        'errors'  =>  [
+          'is_unique' =>  lang('Auth.alreadyData', ['Name of the company']),
+        ]
+      ],
+      'businessNumber'      => [
+        'label'   =>  'Business license Number',
+        'rules'   =>  'permit_empty|min_length[2]|regex_match[/([A-Za-z0-9][\s\-])/]',
+        'errors'  =>  [
+          'regex_match' =>  '',
+        ]
+      ],
+      'buyerRegion'        => [
+        'label'   =>  'Country/Region',
+        'rules'   =>  'required'
+      ],
+      'buyerPhoneCode'     => [
+        'label'   =>  'Country Code',
+        'rules'   =>  'required'
+      ],
+      'buyerPhone'         => [
+        'label'   => 'Phone Number',
+        'rules'   =>  'required|min_length[5]|max_length[10]|regex_match[/([0-9]\s)/]|xss_clean'
+      ],
+      'buyerAddress1'      => [
+        'label'   =>  'Address',
+        'rules'   =>  'required|min_length[3]'
+      ],
+      'zipcode'             => [
+        'label'   =>  'Postal code',
+        'rules'   =>  'permit_empty|min_length[5]|regex_match[/([A-Za-z0-9][\-])/]'
+      ],
+      'certificateBusiness' => [
+        'label'   =>  'Business license/Business card',
+        'rules'   =>  'permit_empty|uploaded[certificateBusiness]|mime_in[certificateBusiness, image/jpeg,image/png,image/gif,application/pdf]'
+      ],
+      'buyerWeb'            => [
+        'lable'   =>  'Site url/SNS url',
+        'rules'   =>  'permit_empty|min_length[8]|valid_url_strict'
+      ],
+      'name'               => [
+        'label'   =>  'Contact Name',
+        'rules'   =>  'required'
+      ],
+      'verified'            => [
+        'label'   =>  'e-mail',
+        'rules'   =>  'required',
+        'errors'  =>  [
+          'required'  => lang('Auth.emailVerified'),
+        ]
+      ],
+      'email'              => [
+        'label'   =>  'e-mail',
+        'rules'   =>  'required|is_unique[users.email]|valid_email',
+        'errors'  =>  [
+          'required'  =>  'The {field} is required. ',
+          'is_unique' =>  lang('Auth.alreadyData', ['e-mail']),
+        ]
+      ],
+      'password'           => [
+        'rules'   =>  'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]/]'
+      ],
+      'password_confirm'   => [
+        'label'   => 'password confirm',
+        'rules'   =>  'required|matches[password]'
+      ],
+    ];
+
+    if ( !$this->validate($regsiterRules) ) {
+      return redirect()->back()->withInput()->with('validation', $this->validator);
+      return;
+    }
+
+    var_dump($this->request->getPost());
+
+    return;
+
+    if ( empty($this->request->getPost('email')) ) {
+      return redirect()->back()->withInput()->with('error', lang('Auth.emailVerified'));
+    }
+
+    if ( empty($this->request->getPost('verified')) ) return redirect()->back()->withInput()->with('error', lang('Auth.emailNotAvailable'));
+
+    helper('text');
     $buyerId;
     $fileName = NULL;
 
@@ -120,8 +204,8 @@ class RegistrationController extends Controller
           'zipcode' => $this->request->getPost('zipcode'),
           'phone' => $this->request->getPost('buyerPhoneCode').'-'.$this->request->getPost('buyerPhone'),
           'certificate_business' => $fileName,
-          'ip_address' => $this->request->getIPAddress()];
-      // var_dump($buyerData);
+          'regist_ip' => $this->request->getIPAddress()];
+      var_dump($buyerData);
       if ( !$buyers->save($buyerData) ) {
         return redirect()->back()->withInput()->with('errors', $buyers->errors());
       }
@@ -129,8 +213,8 @@ class RegistrationController extends Controller
     }
 
 		// save new user, validation happens in the model		
-		$getRule = $users->getRule('registration');
-		$users->setValidationRules($getRule);
+		$getRule = $this->users->getRule('registration');
+		$this->users->setValidationRules($getRule);
     $user = [
       // 'id'                => $this->request->getPost('id'),
       'name'          	  => $this->request->getPost('name'),
@@ -141,8 +225,8 @@ class RegistrationController extends Controller
     ];
     // var_dump($user);
 
-    if (!$users->save($user)) {
-			return redirect()->back()->withInput()->with('errors', $users->errors());
+    if (!$this->users->save($user)) {
+			return redirect()->back()->withInput()->with('errors', $this->users->errors());
     }
 
 		// // send activation email
@@ -158,10 +242,10 @@ class RegistrationController extends Controller
 	 * Activate account.
 	 */
 	public function activateAccount() {
-		$users = new UserModel();
+		// $users = new UserModel();
 
 		// check token
-		$user = $users->where('activate_hash', $this->request->getGet('token'))
+		$user = $this->users->where('activate_hash', $this->request->getGet('token'))
                   ->where('active', 0)
                   ->first();
 
@@ -172,7 +256,7 @@ class RegistrationController extends Controller
 		// update user account to active
 		$updatedUser['id'] = $user['id'];
 		$updatedUser['active'] = 1;
-		$users->save($updatedUser);
+		$this->users->save($updatedUser);
 
 		return redirect()->to('login')->with('success', lang('Auth.activationSuccess'));
 	}
@@ -197,18 +281,36 @@ class RegistrationController extends Controller
     }
   }
 
-   /**
-   * Verify email
-   */
+  public function verifyCheckJS() {
+    $msg = lang('Auth.emailAvailable');
+    $verified = TRUE;
+    $email = $this->request->getGet('email');    
+
+    if ( !empty($this->users->where('email', $email)->findAll()) ) {
+      $verified = FALSE;
+      $msg = lang('Auth.alreadyData', ['e-mail']);
+    } else {
+      $verified = self::VerifyEmailCheck($email);
+      if ( $verified === FALSE ) {
+        $msg = lang('Auth.emailVerified');
+      }
+    }
+
+    return json_encode(['verify' => $verified
+                      , 'msg' => $msg ]);
+  }
+
+  /**
+  * Verify email
+  */
   public function VerifyEmailCheck($email) {
     $verifyEmail = new VerifyemailController();
     
     $verifyEmail->setStreamTimeoutWait(20);
-    $verifyEmail->Debug = TRUE;
-    $verifyEmail->Debugoutput = 'html';
-
+    // $verifyEmail->Debug = TRUE;
+    // $verifyEmail->Debugoutput = 'html';
     $verifyEmail->setEmailFrom('mlee5971@beautynetkorea.com');
-    
+
     $checkEmail = $email;
 
     if ( $verifyEmail->check($checkEmail) ) {

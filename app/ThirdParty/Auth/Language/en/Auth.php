@@ -34,7 +34,7 @@ return [
     'emailNotAvailable'     => 'The e-mail address is not available',
     'emailAvailable'        => 'The e-mail is available',
     'emailVerified'         => 'The e-mail address is not verified',
-    'alreadyData'           => 'The {field} is already registered',
+    'alreadyData'           => 'The {0} is already registered',
 
     // Login/out
     'login'					        => 'Log in',
