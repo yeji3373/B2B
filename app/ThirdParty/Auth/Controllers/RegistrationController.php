@@ -297,7 +297,7 @@ class RegistrationController extends Controller
     }
 
     return json_encode(['verify' => $verified
-                      , 'msg' => $msg ]);
+                      , 'msg' => $msg, 'email' => $email ]);
   }
 
   /**
