@@ -85,6 +85,7 @@ class RegistrationController extends Controller
     $buyers = new BuyerModel();
     $ftpFile = new FtpFileController();
     $buyerCurrency = new BuyerCurrencyModel();
+
     $regsiterRules = [
       'buyerName'           => [
         'label'   =>  'Name of the company',
@@ -110,7 +111,7 @@ class RegistrationController extends Controller
       ],
       'buyerPhone'         => [
         'label'   => 'Phone Number',
-        'rules'   =>  'required|min_length[5]|max_length[10]|regex_match[/([0-9]\s)/]|xss_clean'
+        'rules'   =>  'required|min_length[5]|max_length[10]|regex_match[/([0-9])/]'
       ],
       'buyerAddress1'      => [
         'label'   =>  'Address',
@@ -118,7 +119,7 @@ class RegistrationController extends Controller
       ],
       'zipcode'             => [
         'label'   =>  'Postal code',
-        'rules'   =>  'permit_empty|min_length[5]|regex_match[/([A-Za-z0-9][\-])/]'
+        'rules'   =>  'permit_empty|min_length[5]|regex_match[/([A-Za-z0-9])/]'
       ],
       'certificateBusiness' => [
         'label'   =>  'Business license/Business card',
@@ -158,12 +159,7 @@ class RegistrationController extends Controller
 
     if ( !$this->validate($regsiterRules) ) {
       return redirect()->back()->withInput()->with('validation', $this->validator);
-      return;
     }
-
-    var_dump($this->request->getPost());
-
-    return;
 
     if ( empty($this->request->getPost('email')) ) {
       return redirect()->back()->withInput()->with('error', lang('Auth.emailVerified'));
@@ -229,7 +225,7 @@ class RegistrationController extends Controller
 			return redirect()->back()->withInput()->with('errors', $this->users->errors());
     }
 
-		// // send activation email
+		// send activation email
 		// helper('auth');
     // send_activation_email($user['email'], $user['activate_hash']);
 
