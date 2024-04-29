@@ -202,6 +202,18 @@ class AccountController extends Controller
 	/**
 	 * Deletes user account.
 	 */
+
+	public function delete() {
+		if (! $this->session->isLoggedIn) {
+			return redirect()->to('login');
+		}
+
+		return view($this->config->views['delete'], [
+			'userData' => $this->session->userData,
+			'config' => $this->config
+		]);
+	}
+	
 	public function deleteAccount()
 	{
 		// check current password
@@ -209,8 +221,8 @@ class AccountController extends Controller
 		$user = $users->find($this->session->get('userData.id'));
 
 		if (
-			! $user ||
-			! password_verify($this->request->getPost('password'), $user['password_hash'])
+			is_null($user) ||
+			!password_verify($this->request->getPost('password'), $user['password'])
 		) {
 			return redirect()->back()->withInput()->with('error', lang('Auth.wrongCredentials'));
 		}

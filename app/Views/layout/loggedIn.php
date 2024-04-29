@@ -4,9 +4,8 @@
       <?=session()->userData['email']?>
     </a>
     <ul class="dropdown-menu text-small shadow">
-      <li><a class="dropdown-item" href="#">Settings</a></li>
-      <li><a class="dropdown-item" href="#">Profile</a></li>
-      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href='<?=site_url('/account')?>'>Profile</a></li>
+      <li><hr class="dropdown-divider" style="width:100%"></li>
       <li><a class="dropdown-item" href="/logout">Sign out</a></li>
     </ul>
   </div>

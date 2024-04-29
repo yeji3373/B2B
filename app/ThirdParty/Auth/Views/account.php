@@ -1,7 +1,7 @@
 <?= $this->extend($config->viewLayout) ?>
 <?= $this->section('main') ?>
 
-<section>
+<section class='account_section'>
 <h1><?= lang('Auth.accountSettings') ?></h1>
 <?= view('Auth\Views\_notifications') ?>
 
@@ -9,26 +9,18 @@
 	<?= csrf_field() ?>
 	<p>
 		<label><?= lang('Auth.name') ?></label><br />
-		<input required type="text" name="name" value="<?= $userData['name']; ?>" />
+		<input disabled type="text" name="name" value="<?= $userData['name']; ?>"/>
 	</p>
 	<p>
 		<label><?= lang('Auth.email') ?></label><br />
-		<input disabled type="text" value="<?= $userData['email']; ?>" />
+		<input disabled type="text" value="<?= $userData['email']; ?>"/>
 	</p>
-	<?//php if ($userData['new_email']): ?>
-	<!-- <p>
-		<label><?//= lang('Auth.pendingEmail') ?></label><br />
-		<input disabled type="text" value="<?//= $userData['new_email']; ?>" />
-	</p> -->
-	<?//php endif; ?>
-    <p>
-        <button type="submit"><?= lang('Auth.update') ?></button>
-    </p>
+	<p class='text-lowercase'><a href='<?=site_url('/delete')?>'><?=lang('Auth.deleteAccount')?></a></p>
 </form>
 
 
 <!-- CHANGE EMAIL -->
-<h2><?= lang('Auth.changeEmail') ?></h2>
+<!-- <h2><?= lang('Auth.changeEmail') ?></h2>
 <p><?= lang('Auth.changeEmailInfo') ?></p>
 
 <form method="POST" action="<?= site_url('change-email'); ?>" accept-charset="UTF-8"
@@ -45,11 +37,11 @@
     <p>
         <button name="changeEmail" type="submit"><?= lang('Auth.update') ?></button>
     </p>
-</form>
+</form> -->
 
 
 <!-- CHANGE PASSWORD -->
-<h2><?= lang('Auth.changePassword') ?></h2>
+<!-- <h2><?= lang('Auth.changePassword') ?></h2>
 
 <form method="POST" action="<?= site_url('change-password'); ?>" accept-charset="UTF-8"
 	onsubmit="changePassword.disabled = true; return true;">
@@ -69,15 +61,15 @@
     <p>
         <button name="changePassword" type="submit"><?= lang('Auth.update') ?></button>
     </p>
-</form>
+</form> -->
 
 
 <!-- DELETE ACCOUNT -->
-<h2><?= lang('Auth.deleteAccount') ?></h2>
+<!-- <h2><?= lang('Auth.deleteAccount') ?></h2>
 
 <form method="POST" action="<?= site_url('delete-account') ?>" accept-charset="UTF-8">
-    <?= csrf_field() ?>
-    <p><?= lang('Auth.deleteAccountInfo') ?></p>
+	<?= csrf_field() ?>
+	<p><?= lang('Auth.deleteAccountInfo') ?></p>
 	<p>
 		<label><?= lang('Auth.currentPassword') ?></label><br />
 		<input required type="password" name="password" value="" />
@@ -87,4 +79,4 @@
 	</p>
 </form>
   </section>
-<?= $this->endSection() ?>
+<?= $this->endSection() ?> -->

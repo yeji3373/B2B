@@ -18,6 +18,7 @@
     main select,
     main select option { width: 100%; box-sizing: border-box; padding: 0.8rem; background-color: #f9f9f9; border-color: #e5e5e5; }    
     .login_section { width: 25%; }
+    .account_section { width: 25% }
     .register_section { width: 70%; }
     .register_section form { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 1.5rem; align-items: baseline; }
     .register_section form { border: 1px solid #b8b8b8; border-radius: 4.2px; padding: 0.2rem 1.5rem; }
