@@ -27,9 +27,11 @@ class CartController extends BaseController {
   public function getCartList($params = []) {
     $query['select'] = ", product_spq.moq, product_spq.spq_criteria, product_spq.spq_inBox
                         , product_spq.spq_outBox, product_spq.calc_code, product_spq.calc_unit
-                        , cart.idx AS cart_idx, cart.chkd, cart.order_qty";;
-    $query['from'] = ", ( SELECT * FROM product_spq ) AS product_spq
-                      , ( SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart";
+                        , cart.idx AS cart_idx, cart.chkd, cart.order_qty";
+    $query['join']  = " LEFT OUTER JOIN product_spq ON product_spq.product_idx = product.id
+                        LEFT OUTER JOIN ( SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart ON cart.prd_id = product.id";
+    // $query['from'] = ", ( SELECT * FROM product_spq ) AS product_spq
+    //                   , ( SELECT * FROM cart WHERE buyer_id = ".session()->userData['buyerId']." ) AS cart";
     $query['where'] = " AND product_spq.product_idx = product.id 
                         AND cart.prd_id = product.id";
     $query['orderby'] = ", cart.idx ASC";

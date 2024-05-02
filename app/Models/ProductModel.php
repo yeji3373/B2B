@@ -32,39 +32,58 @@ class ProductModel extends Model {
   public function getProductQuery($getQuery = [], $mrginLevel = 2) {
     $query = NULL;
     $limitquery = NULL;
+
+    $range = 'MAX';
+    if ( $mrginLevel < 2 ) { $range = "MIN"; } 
+    
     $selectquery = "SELECT product.id, product.category_ids, product.barcode
-          , product.hs_code, product.sample, product.img_url
-          , product.name_en, product.type_en, product.edition_en
-          , product.box, product.in_the_box, product.contents_of_box
-          , product.contents_type_of_box, product.spec, product.spec2
-          , product.container, product.spec_detail, product.spec_pcs
-          , product.package, product.package_detail, product.etc
-          , product.sales_channel, product.shipping_weight
-          , product.discontinued, product.display, product.renewal
-          , brand.brand_id, brand.brand_name, brand.brand_logo_src
-          , brand.taxation AS brand_tax, brand.own_brand
-          , brand.excluded_countries";
-    $fromquery = " FROM {$this->table}
-                  , ( SELECT * FROM brand ) AS brand
-                  , ( SELECT * FROM product_price ) AS product_price
-                  , ( SELECT * FROM supply_price WHERE margin_level = $mrginLevel) AS supply_price";
+                          , product.hs_code, product.sample, product.img_url
+                          , product.name_en, product.type_en, product.edition_en
+                          , product.box, product.in_the_box, product.contents_of_box
+                          , product.contents_type_of_box, product.spec, product.spec2
+                          , product.container, product.spec_detail, product.spec_pcs
+                          , product.package, product.package_detail, product.etc
+                          , product.sales_channel, product.shipping_weight
+                          , product.discontinued, product.display, product.renewal
+                          , brand.brand_id, brand.brand_name, brand.brand_logo_src
+                          , brand.taxation AS brand_tax, brand.own_brand
+                          , brand.excluded_countries";
+    $fromquery = " FROM {$this->table} ";
+    $joinQuery = " JOIN product_price ON product.id = product_price.product_idx
+                  JOIN supply_price ON product_price.idx = supply_price.product_price_idx
+                  JOIN brand ON brand.brand_id = product.brand_id
+                  JOIN ( SELECT margin_rate.*, margin.margin_level
+                        FROM margin_rate
+                        JOIN margin ON margin_rate.margin_idx = margin.idx
+                        JOIN (
+                              SELECT A.brand_id, {$range}(A.margin_level) AS margin_level
+                              FROM ( 	
+                                    SELECT margin.idx AS margin_idx, margin.margin_level, margin.margin_section, margin.available AS margin_avaiable
+                                        , margin_rate.idx AS margin_rate_idx, margin_rate.brand_id, margin_rate.margin_rate, margin_rate.available
+                                    FROM margin
+                                    JOIN margin_rate ON margin.idx = margin_rate.margin_idx 
+                                    WHERE margin_rate.available = 1
+                                    ORDER BY margin_rate.brand_id ASC, margin.margin_level ASC
+                                  ) AS A
+                              GROUP BY A.brand_id
+                          ) AS B ON B.brand_id = margin_rate.brand_id AND B.margin_level = margin.margin_level
+                      ) AS C ON C.brand_id = product.brand_id AND C.margin_idx = supply_price.margin_idx";
     $wherequery = " WHERE discontinued = 0 
-                      AND display = 1 
-                      AND brand.brand_id = product.brand_id
-                      AND product.id = product_price.product_idx
-                      AND product_price.idx = supply_price.product_price_idx
+                      AND display = 1
                       AND product_price.available = 1 
                       AND brand.available = 1";
     $orderbyquery = " ORDER BY brand.brand_id ASC, product.id ASC";
 
     if ( !empty($getQuery['select'])) $selectquery .= $getQuery['select'];
     if ( !empty($getQuery['from'])) $fromquery .= $getQuery['from'];
+    if ( !empty($getQuery['join'])) $joinQuery .= $getQuery['join'];
     if ( !empty($getQuery['where'])) $wherequery .= $getQuery['where'];
     if ( !empty($getQuery['orderby'])) $orderbyquery .= $getQuery['orderby'];
     if ( !empty($getQuery['limit'])) $limitquery = $getQuery['limit'];
    
     $query = $selectquery.
               $fromquery.
+              $joinQuery.
               $wherequery.
               $orderbyquery.
               $limitquery;
