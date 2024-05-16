@@ -108,8 +108,8 @@
                 <?php if(!empty(set_value('region'))) :
                         foreach(set_value('region') as $checked) {
                           if($checked == $region['id']){ echo " checked"; }
-                        };
-                      endif;
+                        }
+                      endif
                 ?>
               >
               <span><?=trim($region['region_en'])?></span>
