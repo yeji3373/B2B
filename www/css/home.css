@@ -256,20 +256,94 @@ main .site-map {
 }
 
 .need-help { font-size: 1.25rem; }
-/* .need-help .country {
-  font-size: 2.4rem;
-  margin-bottom: 0;
-}
-
-.need-help .name {
-  font-size: 1.25rem;
-}
-
-.need-help .describe {
-  font-size: 1.5rem;
-} */
 
 hr {
   margin: 0 auto;
   width: 77%;
+}
+
+.modal {
+  display: none;
+}
+
+.modal .modal-popup {
+  width: 35%;
+  height: 30rem;
+  position: absolute;
+  top: 10%;
+  left: 0.5rem;
+  background-color: #fff;
+}
+
+.modal-wrap {
+  border: solid 1px #646262;
+}
+
+.modal-contents {
+  border-bottom: solid 1px #646262;
+}
+
+.catalog {
+  border-right: 1px solid #646262;
+  background-color: #fbdae1;
+}
+
+.what-we-made {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.catalog .title {
+  color: #f31a6a;
+  line-height: 3rem;
+  text-transform: uppercase;
+}
+
+.catalog .catalog-btn-wrap {
+  text-align: center;
+}
+
+.catalog .catalog-btn {
+  line-height: normal;
+  color: #f31a6a;
+  text-decoration-line: none;
+  border-bottom: 1px solid #f31a6a;
+  width: fit-content;
+  text-align: center;
+}
+
+.eyenlip {
+  border-bottom: 1px solid #646262;
+}
+
+.eyenlip a:hover {
+  color: #f31a6a;
+}
+
+.fabyou {
+  border-bottom: 1px solid #646262;
+}
+
+.fabyou a:hover {
+  color: #f31a6a;
+}
+
+.sumhair a:hover {
+  color: #f31a6a;
+}
+
+.close-btn {
+  box-shadow: none;
+  border-radius: 0;
+  padding-bottom: 0;
+  font-style: normal;
+  color: #646262;
+  border: 1px solid #646262;
+  height: fit-content;
+}
+
+.close-btn:hover, .close-btn:focus, .close-btn:checked {
+  background-color: #fbdae1;
+  border-color: #fbdae1;
+  color: #f31a6a;
 }

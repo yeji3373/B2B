@@ -66,7 +66,7 @@
     <p class='title fs-1 manlope manlope800 text-center'>OUR BRANDS</p>
     <div class='title fs-4 manlope manlope800 text-center fst-italic'>
       <div class='fw-bold'>Private Brands</div>
-      <a href='//zrr.kr/E2XS' target='_blank' class='btn learn-more py-1 px-3 mt-1 mb-3 fs-08r w-auto border-thin text-capitalize'>Cataloge</a>
+      <a href='//zrr.kr/E2XS' target='_blank' class='btn learn-more py-1 px-3 mt-1 mb-3 fs-08r w-auto border-thin text-capitalize'>Catalog</a>
     </div>
     <div class='w-80 d-flex flex-row mx-auto mb-5'>
       <div class='w-33 text-center d-flex flex-column align-items-center'>
@@ -384,6 +384,44 @@
             <a class='text-decoration-none fw-bolder' href='mailto:middleeast@beautynetkorea.com' target='_blank'>middleeast@beautynetkorea.com</a>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class='modal'>
+  <div class='modal-popup'>
+    <div class='modal-wrap w-100 h-100'>
+      <div class='modal-contents d-flex flex-row h-90'>
+        <div class='catalog w-40'>
+          <div class='what-we-made'>
+            <p class='title fs-1 manlope manlope800 text-center'>Find out<br class='sm-hide'/>what<br class='sm-hide'/>we<br class='sm-hide'/>made</p>
+          </div>
+          <div class='catalog-btn-wrap'>
+            <a href='//zrr.kr/E2XS' target='_blank' class='catalog-btn fs-1 manlope manlope800 text-center fst-italic mx-auto'>Catalog&#8594;</a>
+          </div>
+        </div>
+        <div class='d-flex flex-column w-60 h-100'>
+          <div class='eyenlip h-33 d-flex flex-column align-items-end'>
+            <img src='/img/brand_logo/b2b_logo_Eyenlip_2.png' class='w-100 h-80'>
+            <a href='//zrr.kr/PhrH' target='_blank' class='eyenlip-btn fst-italic text-end me-3'>learn more&#8594;</a>
+          </div>
+          <div class='fabyou h-33 d-flex flex-column align-items-end'>
+            <div class='d-flex h-80 w-100 align-items-center'>
+              <img src='/img/brand_logo/b2b_logo_Fabyou_2.png' class='w-75 h-50 mx-auto'>
+            </div>
+            <div class='d-flex h-20 align-self-end'>
+            <a href='//zrr.kr/fwtQ' target='_blank' class='fabyou-btn fst-italic text-end me-3'>learn more&#8594;</a>
+            </div>
+          </div>
+          <div class='sumhair h-33 d-flex flex-column align-items-end'>
+            <img src='/img/brand_logo/b2b_logo_Sumhair_2.png' class='w-100 h-80'>
+            <a href='//zrr.kr/YxZX' target='_blank' class='sumhair-btn fst-italic text-end me-3'>learn more&#8594;</a>
+          </div>
+        </div>
+      </div>
+      <div class='d-flex flex-row h-10 justify-content-end align-items-center'>
+        <button type='button' class='btn close-btn no-today me-1'>Do not show this message today</button>
+        <button type='button' class='btn close-btn me-1'>Close</button>
       </div>
     </div>
   </div>

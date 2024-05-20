@@ -1,4 +1,11 @@
 $(document).ready(function(){
+
+  var cookieCheck = getCookie('modalYN');
+  if(cookieCheck != 'N'){
+    $('.modal').show();
+  }else{
+    $('.modal').hide();
+  }
 }).on('click', '#infoPrev', function(){
   $('#infoCarousel').carousel('prev');
 }).on('click', '#infoNext', function(){
@@ -37,6 +44,30 @@ $(document).ready(function(){
     result = JSON.parse(result);
     alert(result.msg);
   }
+}).on('click', '.close-btn', function() {
+  $('.modal').hide();
+}).on('click', '.no-today', function() {
+  setCookie('modalYN', 'N', 1);
 });
+
+function setCookie(name, value, expiredays) {
+  var date = new Date();
+  date.setDate(date.getDate() + expiredays);
+  document.cookie = name + "=" + value + ";expires=" + date.toUTCString();
+}
+
+function getCookie(name) {
+  var cookie = document.cookie;
+  if(document.cookie != "") {
+    var cookie_array = cookie.split("; ");
+    for( var index in cookie_array ) {
+      var cookie_name = cookie_array[index].split("=");
+      if( cookie_name[0] == name ) {
+        return cookie_name[1];
+      }
+    }
+  }
+}
+
 
 

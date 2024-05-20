@@ -232,7 +232,7 @@ label.error {
 .eye {
   width: 1.3rem;
   position: absolute;
-  top: 50%;
+  top: 40%;
   bottom: 0;
   right: 0.5rem;
   margin: auto 2px;
