@@ -1,9 +1,10 @@
 <?= $this->extend($config->viewLayout) ?>
 <?= $this->section('main') ?>
 
+<section class='account_section'>
 <h1><?= lang('Auth.resetPassword') ?></h1>
-
 <?= view('Auth\Views\_notifications') ?>
+<!-- RESET PASSWORD -->
 
 <form method="POST" action="<?= site_url('reset-password'); ?>" accept-charset="UTF-8">
     <?= csrf_field() ?>
@@ -20,5 +21,5 @@
         <button type="submit"><?= lang('Auth.resetPassword') ?></button>
     </p>
 </form>
-
+</section>
 <?= $this->endSection() ?>

@@ -19,5 +19,5 @@
 		<button type="submit" onclick="return confirm('<?= lang('Auth.areYouSure') ?>')"><?= lang('Auth.deleteAccount') ?></button>
 	</p>
 </form>
-  </section>
+</section>
 <?= $this->endSection() ?>

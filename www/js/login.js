@@ -90,7 +90,7 @@ $(document).ready(function() {
     }
   }
   if ( verifyEmail != 'undefined' && verifyEmail != '' && checkedVerified ) {
-    let _data = JSON.parse(getData('/api/verifyCheckJS?email=' + verifyEmail, {'email': 'aaa'}, 'GET'));
+    let _data = JSON.parse(getData('/api/verifyCheckJS?email=' + verifyEmail, {'email': verifyEmail}, 'GET'));
     if ( _data.verify === true ) {
       console.log("true");
       $this.parent().parent().find('[name=verified]').val(1).attr('data-checked', $this.parent().parent().find('[name=email]').val());

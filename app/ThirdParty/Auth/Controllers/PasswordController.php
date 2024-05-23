@@ -50,33 +50,33 @@ class PasswordController extends Controller
 	{
 		// validate request
 		if (! $this->validate(['email' => 'required|valid_email'])) {
-            return redirect()->back()->with('error', lang('Auth.wrongEmail'));
-        }
+			return redirect()->back()->with('error', lang('Auth.wrongEmail'));
+		}
 
 		// check if email exists in DB
 		$users = new UserModel();
 		$user = $users->where('email', $this->request->getPost('email'))->first();
 		if (! $user) {
-            return redirect()->back()->with('error', lang('Auth.wrongEmail'));
-        }
+			return redirect()->back()->with('error', lang('Auth.wrongEmail'));
+		}
 
-        // check if email is already sent to prevent spam
-        if (! empty($user['reset_expires']) && $user['reset_expires'] >= time()) {
+		// check if email is already sent to prevent spam
+		if (! empty($user['reset_expires']) && strtotime($user['reset_expires']) >= time()) {
 			return redirect()->back()->with('error', lang('Auth.emailAlreadySent'));
-        }
-
+		}
+		
 		// set reset hash and expiration
 		helper('text');
-		$updatedUser['id'] = $user['id'];
+		$updatedUser['idx'] = $user['idx'];
 		$updatedUser['reset_hash'] = random_string('alnum', 32);
-		$updatedUser['reset_expires'] = time() + HOUR;
+		$updatedUser['reset_expires'] = date('Y-m-d H:i:s', time() + HOUR);
 		$users->save($updatedUser);
 
 		// send password reset e-mail
 		helper('auth');
-        send_password_reset_email($this->request->getPost('email'), $updatedUser['reset_hash']);
+		$send = send_password_reset_email($this->request->getPost('email'), $updatedUser['reset_hash']);
 
-        return redirect()->back()->with('success', lang('Auth.forgottenPasswordEmail'));
+		return redirect()->back()->with('success', lang('Auth.forgottenPasswordEmail'));
 	}
 
     //--------------------------------------------------------------------
@@ -90,8 +90,8 @@ class PasswordController extends Controller
 			->first();
 
 		if (! $user) {
-            return redirect()->to('login')->with('error', lang('Auth.invalidRequest'));
-        }
+			return redirect()->to('login')->with('error', lang('Auth.invalidRequest'));
+		}
 
 		return view($this->config->views['reset-password'], ['config' => $this->config]);
 	}
@@ -107,8 +107,8 @@ class PasswordController extends Controller
 			'password_confirm' => 'matches[password]'
 		];
 		if (! $this->validate($rules)) {
-            return redirect()->back()->with('error', lang('Auth.passwordMismatch'));
-        }
+			return redirect()->back()->with('error', lang('Auth.passwordMismatch'));
+		}
 
 		// check reset hash, expiration
 		$users = new UserModel();
@@ -117,18 +117,18 @@ class PasswordController extends Controller
 			->first();
 
 		if (! $user) {
-            return redirect()->to('login')->with('error', lang('Auth.invalidRequest'));
-        }
+			return redirect()->to('login')->with('error', lang('Auth.invalidRequest'));
+		}
 
 		// update user password
-        $updatedUser['id'] = $user['id'];
-        $updatedUser['password'] = $this->request->getPost('password');
-        $updatedUser['reset_hash'] = null;
-        $updatedUser['reset_expires'] = null;
-        $users->save($updatedUser);
+		$updatedUser['idx'] = $user['idx'];
+		$updatedUser['password'] = $this->request->getPost('password');
+		$updatedUser['reset_hash'] = null;
+		$updatedUser['reset_expires'] = null;
+		$users->save($updatedUser);
 
 		// redirect to login
-        return redirect()->to('login')->with('success', lang('Auth.passwordUpdateSuccess'));
+		return redirect()->to('login')->with('success', lang('Auth.passwordUpdateSuccess'));
 
 	}
 

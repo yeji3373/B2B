@@ -89,9 +89,14 @@ if (! function_exists('send_password_reset_email'))
 
         $email = \Config\Services::email();
         $email->initialize([
-            'mailType' => 'html'
+            'protocol' => 'smtp',
+            'mailType' => 'html',
+            'SMTPHost' => 'smtp.gmail.com',
+            'SMTPUser' => 'mlee5971@beautynetkorea.com',
+            'SMTPPass' => 'jqom pqlu pkkj illw'
         ]);
 
+        $email->setFrom('mlee5971@beautynetkorea.com', 'beautynetkorea');
         $email->setTo($to);
         $email->setSubject(lang('Auth.passwordResetRequest'));
         $email->setMessage($htmlMessage);

@@ -1,4 +1,4 @@
-<p>A password update was requested on <?= base_url() ?>!</p>
+<p>A password update was requested on <?= base_url() ?> !</p>
 
 <p>Please click the following link to change your password!</p>
 <p><a href="<?= base_url('reset-password') . '?token=' . $hash ?>"><?= base_url('reset-password') . '?token=' . $hash ?></a></p>

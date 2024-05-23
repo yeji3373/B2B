@@ -18,7 +18,7 @@
       <button type="submit"><?= lang('Auth.login') ?></button>
     </p>
     <p>
-      <!-- <a href="<?//= site_url('forgot-password'); ?>" class="float-right"><?//= lang('Auth.forgotYourPassword') ?></a> -->
+      <a href="<?= site_url('forgot-password'); ?>" class="float-right"><?= lang('Auth.forgotYourPassword') ?></a>
       <a href="<?= site_url('register'); ?>" class="float-right"><?= lang('Auth.register') ?></a>
     </p>
   </form>
