@@ -14,7 +14,8 @@ class Auth extends BaseConfig {
     'forgot-password' => 'Auth\Views\forgot',
     'reset-password' => 'Auth\Views\reset',
     'account' => 'Auth\Views\account',
-    'delete' => 'Auth\Views\delete'
+    'delete' => 'Auth\Views\delete',
+    'change-password' => 'Auth\Views\change_pwd'
   ];
 
   // Layout for the views to extend

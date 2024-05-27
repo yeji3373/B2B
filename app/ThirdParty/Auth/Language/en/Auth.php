@@ -82,8 +82,8 @@ return [
     'confirmEmailSuccess'   => 'Confirmation success! Your new e-mail address is now active.',
     'passwordUpdateSuccess' => 'Password is successfully updated!',
     'wrongEmail'            => 'Wrong e-mail address!',
-    'forgottenPasswordEmail'=> 'An e-mail with instructions is sent to the address!',
-    'emailAlreadySent'      => 'An e-mail is already sent to this address!',
+    'forgottenPasswordEmail'=> "We've sent you an e-mail. It might be sitting in your spam folder, so you should check.",
+    'emailAlreadySent'      => 'An e-mail is already sent to this address. It might be sitting in your spam folder, so you should check.',
     'invalidRequest'        => 'Invalid request!',
     'confirmationNoBuyer'   => 'Approval is being requested',
 ];

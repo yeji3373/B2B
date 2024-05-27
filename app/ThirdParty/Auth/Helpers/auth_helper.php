@@ -1,6 +1,7 @@
 <?php
 
 use Config\Services;
+use Auth\Models\SMTPModel;
 
 if (! function_exists('send_activation_email'))
 {
@@ -88,12 +89,16 @@ if (! function_exists('send_password_reset_email'))
         $htmlMessage .= view('Auth\Views\emails\footer');
 
         $email = \Config\Services::email();
+        $smtp = new SMTPModel();
+
+        $smtpInfo = $smtp->first();
+
         $email->initialize([
             'protocol' => 'smtp',
             'mailType' => 'html',
-            'SMTPHost' => 'smtp.gmail.com',
-            'SMTPUser' => 'mlee5971@beautynetkorea.com',
-            'SMTPPass' => 'jqom pqlu pkkj illw'
+            'SMTPHost' => $smtpInfo['smtp_host'],
+            'SMTPUser' => $smtpInfo['smtp_user'],
+            'SMTPPass' => $smtpInfo['smtp_pwd']
         ]);
 
         $email->setFrom('mlee5971@beautynetkorea.com', 'beautynetkorea');

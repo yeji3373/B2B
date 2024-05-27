@@ -163,6 +163,17 @@ class AccountController extends Controller
 	/**
 	 * Handles password change.
 	 */
+
+	public function changePwd() {
+		if (! $this->session->isLoggedIn) {
+			return redirect()->to('login');
+		}
+
+		return view($this->config->views['change-password'], [
+			'userData' => $this->session->userData,
+			'config' => $this->config
+		]);
+	}
 	public function changePassword()
 	{
 		// validate request
@@ -183,13 +194,13 @@ class AccountController extends Controller
 
 		if (
 			! $user ||
-			! password_verify($this->request->getPost('password'), $user['password_hash'])
+			! password_verify($this->request->getPost('password'), $user['password'])
 		) {
 			return redirect()->to('account')->withInput()->with('error', lang('Auth.wrongCredentials'));
 		}
 
 		// update user's password
-		$updatedUser['id'] = $this->session->get('userData.id');
+		$updatedUser['idx'] = $this->session->get('userData.id');
 		$updatedUser['password'] = $this->request->getPost('new_password');
 		$users->save($updatedUser);
 

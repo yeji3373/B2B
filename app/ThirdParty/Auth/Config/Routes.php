@@ -27,6 +27,7 @@ $routes->group('', ['namespace' => 'Auth\Controllers'], function($routes) {
   $routes->post('account', 'AccountController::updateAccount');
   $routes->post('change-email', 'AccountController::changeEmail');
   $routes->get('confirm-email', 'AccountController::confirmNewEmail');
+  $routes->get('change-password', 'AccountController::changePwd');
   $routes->post('change-password', 'AccountController::changePassword');
   $routes->get('delete', 'AccountController::delete');
   $routes->post('delete-account', 'AccountController::deleteAccount');
