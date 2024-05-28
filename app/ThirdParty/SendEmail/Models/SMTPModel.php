@@ -1,4 +1,4 @@
-<?php namespace Auth\Models;
+<?php namespace SendEmail\Models;
 
 use CodeIgniter\Model;
 

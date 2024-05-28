@@ -73,7 +73,8 @@ class PasswordController extends Controller
 		$users->save($updatedUser);
 
 		// send password reset e-mail
-		helper('auth');
+		helper('sendEmail');
+
 		$send = send_password_reset_email($this->request->getPost('email'), $updatedUser['reset_hash']);
 
 		return redirect()->back()->with('success', lang('Auth.forgottenPasswordEmail'));
