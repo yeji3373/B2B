@@ -1,7 +1,7 @@
 <?php
 
 use Config\Services;
-use Auth\Models\SMTPModel;
+use SendEmail\Models\SMTPModel;
 
 if (! function_exists('send_activation_email'))
 {
