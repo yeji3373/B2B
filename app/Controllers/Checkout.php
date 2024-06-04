@@ -30,7 +30,6 @@ class Checkout extends BaseController {
   // protected $payment = 400;
 
   public function __construct() {
-    helper('date');
     $this->curl = service('curlrequest');
     
     $this->address = new BuyerAddressModel();

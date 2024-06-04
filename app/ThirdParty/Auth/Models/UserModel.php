@@ -87,7 +87,7 @@ class UserModel extends Model
   public function getUserIndex($data) {
     if ( !isset($data) ) return null;
 
-    $userIdx = $this->select('idx')->where('id', $data)->first();
+    $userIdx = $this->select('idx')->where('email', $data)->first();
     return $userIdx['idx'];
   }
 }

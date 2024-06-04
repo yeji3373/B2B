@@ -19,11 +19,12 @@ class Api extends ResourceController {
 
   public function __construct() {
     helper('merge');
-    // $pager = service('pager');
+    // helper('auth');
+    // // $pager = service('pager');
 
-    $this->page = 0;
-    $this->perPage = 15;
-    $this->totalPage = 5;
+    // $this->page = 0;
+    // $this->perPage = 15;
+    // $this->totalPage = 5;
   }
 
   public function __remap(...$params) {
@@ -42,6 +43,10 @@ class Api extends ResourceController {
   // {
   //     return view('welcome_message');
   //     // return view('dash/main');
+  // }
+
+  // public function getProduct() {
+  //   current_user();
   // }
 
   public function getCountry() {

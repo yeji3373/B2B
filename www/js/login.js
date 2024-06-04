@@ -76,32 +76,33 @@ $(document).ready(function() {
     $(this).addClass('eye-slash');
     $(this).prev('input').attr('type', 'password');
   }
-}).on('click', '.email-verify-check', function() {
-  let $this = $(this);
-  let verifyEmail = $this.prev().val();
-  let checkedVerified = false;
-  let msg = '';  
+// }).on('click', '.email-verify-check', function() {
+//   // let $this = $(this);
+//   // let verifyEmail = $this.prev().val();
+//   // let checkedVerified = false;
+//   // let msg = '';  
 
-  if ( $this.parent().parent().find('[name=verified]').length ) {
-    if ( parseInt($this.parent().parent().find('[name=verified]').val()) ) {
+//   // if ( $this.parent().parent().find('[name=verified]').length ) {
+//   //   if ( parseInt($this.parent().parent().find('[name=verified]').val()) ) {
       
-    } else {
-      checkedVerified = true;
-    }
-  }
-  if ( verifyEmail != 'undefined' && verifyEmail != '' && checkedVerified ) {
-    let _data = JSON.parse(getData('/api/verifyCheckJS?email=' + verifyEmail, {'email': verifyEmail}, 'GET'));
-    if ( _data.verify === true ) {
-      console.log("true");
-      $this.parent().parent().find('[name=verified]').val(1).attr('data-checked', $this.parent().parent().find('[name=email]').val());
-    } else {
-      console.log('false');
-      $this.parent().parent().find('[name=verified]').val(0);
-    }
-    msg = _data.msg;
-  }
+//   //   } else {
+//   //     checkedVerified = true;
+//   //   }
+//   // }
+//   // if ( verifyEmail != 'undefined' && verifyEmail != '' && checkedVerified ) {
+//     getData('/api/verifyCheckJS?email');
+//   //   let _data = JSON.parse(getData('/api/verifyCheckJS?email=' + verifyEmail, {'email': verifyEmail}, 'GET'));
+//   //   if ( _data.verify === true ) {
+//   //     console.log("true");
+//   //     $this.parent().parent().find('[name=verified]').val(1).attr('data-checked', $this.parent().parent().find('[name=email]').val());
+//   //   } else {
+//   //     console.log('false');
+//   //     $this.parent().parent().find('[name=verified]').val(0);
+//   //   }
+//   //   msg = _data.msg;
+//   // }
 
-  $this.parent().parent().find('.guide-msg').text(msg);
+//   // $this.parent().parent().find('.guide-msg').text(msg);
 }).on('keyup', '[name=email]', function() {
   if ( $('form').find('[name=verified]').length ) {
     if ( parseInt($('form').find('[name=verified]').val()) ) {
@@ -114,27 +115,3 @@ $(document).ready(function() {
     console.log('처음 시작');
   }
 });
-
-function registerCheck(form) {
-  // // let businessNumberReg = /[\{\}\[\]\/?.,;:|\)*~`!^_+<>@\#$%&\\\=\(\'\"]/g;
-  // let businessNumberReg = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-  // if ( businessNumberReg.test($(form).find('[name=businessNumber]').val()) ) {
-  //   $(form).find('[name=businessNumber]').get(0).setCustomValidity("please enter a valid input");
-  //   return false;
-  // } else {
-  //   console.log("맞음");
-  //   $(form).find('[name=businessNumber]').get(0).setCustomValidity("");
-  // }
-
-  // if ( $(form).find('[name=password]').val() != $(form).find('[name=password_confirm]').val() ) {
-  //   console.log("비밀번호 다름");
-  //   $(form).find('[name=password_confirm]').get(0).setCustomValidity('password is no match');
-  //   return false;
-  // }
-
-  // if ( !parseInt($(form).find('[name=verified]').val()) ) {
-  //   console.log('verified false');
-  //   $(form).find('[name=verified]').parent().find('.guide-msg').text('Please check the email verify');
-  //   return false;
-  // }
-}

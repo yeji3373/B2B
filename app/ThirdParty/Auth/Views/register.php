@@ -25,7 +25,9 @@
         <select name='buyerRegion'>
           <option value><?=lang('Auth.countrySelect')?></option>
           <?php foreach ( $countries as $country ) : ?>
-          <option value='<?=$country['id']?>' data-country-no='<?=$country['country_no']?>'><?=$country['name_en']?></option>
+          <option value='<?=$country['id']?>' 
+              data-country-no='<?=$country['country_no']?>'
+              <?=set_value('buyerRegion') != $country['id'] ? : 'selected'?>><?=$country['name_en']?></option>
           <?php endforeach ?>
         </select>
         <label class='required'>Country/Region</label>
@@ -37,7 +39,8 @@
             <option value>-</option>
             <?php if ( !empty($itus)) : 
               foreach($itus as $itu) : ?>
-              <option value='<?=$itu['country_no']?>'><?=$itu['country_no']?></option>
+              <option value='<?=$itu['country_no']?>'
+                <?=set_value('buyerPhoneCode') != $itu['country_no'] ? : 'selected'?>><?=$itu['country_no']?></option>
             <?php endforeach; 
             endif;?>
           </select>&nbsp;-&nbsp;
@@ -78,14 +81,7 @@
         <?=view('Auth\Views\_validations', ['col' => 'name', 'default' => null]);?>
       </p>
       <div>
-        <div>
-          <input type='hidden' name='verified' value='<?=set_value('verified')?>' data-checked>
-          <div class='email-rang'>
-            <input type="email" name="email" value="<?=set_value('email')?>" />
-            <div class='btn email-verify-check'>Verify</div>
-          </div>
-          <span class='guide-msg color-red'></span>
-        </div>
+        <input type="email" name="email" value="<?=set_value('email')?>" />
         <label class='required'><?=lang('Auth.email') ?></label>
         <?=view('Auth\Views\_validations', ['col' => 'email', 'default' => null]);?>
       </div>

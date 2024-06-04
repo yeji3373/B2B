@@ -31,7 +31,6 @@ class Orders extends BaseController {
   protected $isPaypal = false;
 
   public function __construct() {
-    helper('date');
     $this->order = new OrderModel();
     $this->oDetail = new OrderDetailModel();
     $this->receipt = new OrdersReceiptModel();
@@ -126,78 +125,77 @@ class Orders extends BaseController {
   public function orderFixed() {
     $data = $this->request->getPost();
     $code = 500;
-    $msg = NULL;
-
-    var_dump($data['requirement']);
+    $msg = NULL; 
+    
     if ( isset($data['order']) && !empty($data['order']) ) {
-      if ( isset($data['requirement']) && !empty($data['requirement']) ) {
-        foreach( $data['requirement'] as $requirement ) {
-          $getRequirements = $this
-                              ->requirementRequest
-                              ->where(['idx' => $requirement['idx']])
-                              ->first();
-          if ( !empty($getRequirements) ) {
-            if ( empty($requirement['requirement_selected_option_id']) ) {
-              $getRequirementOptions = $this->requirementOption
+      if ( isset($data['requirement']) && !empty($data['requirement']) ) {        
+        foreach($data['requirement'] AS $requirement ) {
+          foreach($requirement AS $require ) {           
+            $getRequirements = $this->requirementRequest->where(['order_id' => $data['order']['id'], 'idx' => $require['idx']])->first();
+            if ( !empty($getRequirements) ) {
+              if ( isset($requirement['requirement_selected_option_id'] ) ) {
+                  if ( $getRequirements['requirement_selected_option_id'] != $require['requirement_selected_option_id'] ) {
+                    $this->requirementRequest->save(['idx'=> $require['idx'], 'requirement_selected_option_id' => $require['requirement_selected_option_id']]);
+                  }
+              } else {
+                if ( empty($getRequirements['requirement_selected_option_id']) ) {
+                  $getRequirementOptions = $this->requirementOption
                                               ->whereIn('idx', explode(',', $getRequirements['requirement_option_ids']))
-                                              ->where(['available' => 1])
+                                              // ->where(['available' => 1])
                                               ->orderBy('sort')
                                               ->first();
-              if ( !empty($getRequirementOptions) ) {
-                $requirement['requirement_selected_option_id'] = $getRequirementOptions['idx'];
-              }
-            }
-            if ( $getRequirements['requirement_selected_option_id'] != $requirement['requirement_selected_option_id'] ) {
-              if ( !$this->requirementRequest->save(['idx' => $requirement['idx']
-                                              , 'requirement_selected_option_id' => $requirement['requirement_selected_option_id']]) ) {
-                session()->setFlashdata('error', 'Option update error');
-                $msg = 'option update error';
-                return;
-              }
-            }
-          }
-        }
-      }
-
-      $packagingStatus = $this
-                          ->packaging
-                          ->packagingJoin(['packaging.order_id'=> $data['order']['id']])
-                          ->select('packaging.*')
-                          ->select('packaging_status.idx AS packaging_status_id, packaging_status.order_by
-                                    , packaging_status.status_name, packaging_status.status_name_en, packaging_status.requirement_option_disabled
-                                    , packaging_status.display, packaging_status.payment_request, packaging_status.requirement_option_check
-                                    , packaging_status.available, packaging_status.has_email, packaging_status.email_id')
-                          ->select('packaging_detail.idx AS packaging_detail_idx, packaging_detail.packaging_id
-                                    , packaging_detail.status_id, packaging_detail.in_progress, packaging_detail.complete')
-                          ->orderBy('packaging_status.order_by DESC')
-                          ->first();
-      var_dump($packagingStatus);
-
-      if ( !empty($packagingStatus) ) {
-        if ( empty($packagingStatus['complete']) ) {
-          if ( !empty($packagingStatus['requirement_option_check']) ) {
-            $nextPackageStatus = $this->packagingStatus->where(['order_by' => ($packagingStatus['order_by'] + 1), 'available' => 1])->first();
-
-            var_dump($nextPackageStatus);
-
-            if ( !empty($nextPackageStatus) ) {
-              if ( $this->packagingDetail->save(['idx' => $packagingStatus['packaging_detail_idx'], 'complete' => 1]) ) {
-                if ( $this->packagingDetail->save(['packaging_id' => $packagingStatus['packaging_id'], 'status_id' => $nextPackageStatus['idx']]) ) {
-                  // email send process 넣기
-                  $code = 200; $msg = 'save';
-                } else {
-                  $this->packagingDetail->save(['idx' => $packagingStatus['packaging_detail_idx'], 'complete' => 0]);
-                  $msg = 'error';
+                  
+                  if ( !empty($getRequirementOptions) ) {
+                    if ( !$this->requirementRequest->save(['idx' => $getRequirements['idx'], 'requirement_selected_option_id' => $getRequirementOptions['idx']]) ) {
+                      session()->setFlashdata('error', 'request option update error');
+                      // echo "a";
+                    }
+                  }
                 }
               }
             }
           }
-        } else {
-          $msg = 'already saved';
         }
       }
-    } else $msg = 'Invalid data';
-    
+      // return;
+      $packagingStatus = $this->packaging
+                              ->packagingJoin(['packaging.order_id'=> $data['order']['id']])
+                              ->select('packaging.*')
+                              ->select('packaging_status.idx AS packaging_status_id, packaging_status.order_by
+                                        , packaging_status.status_name, packaging_status.status_name_en, packaging_status.requirement_option_disabled
+                                        , packaging_status.display, packaging_status.payment_request, packaging_status.requirement_option_check
+                                        , packaging_status.available, packaging_status.has_email, packaging_status.email_id')
+                              ->select('packaging_detail.idx AS packaging_detail_idx, packaging_detail.packaging_id
+                                        , packaging_detail.status_id, packaging_detail.in_progress, packaging_detail.complete')
+                              ->orderBy('packaging_status.order_by DESC')
+                              ->first();
+
+      if ( !empty($packagingStatus) && !empty($packagingStatus['requirement_option_check']) ) {
+        if ( empty($packagingStatus['complete']) ) {
+          $nextPackageStatus = $this->packagingStatus->where(['order_by' => ($packagingStatus['order_by'] + 1), 'available' => 1])->first();
+
+          if ( !empty($nextPackageStatus) ) {
+            // return json_encode(['Code' => $data, 'request' => $packagingStatus]);
+            // // if ( $nextPackageStatus['department_ids'] < 0 ) {  // department_ids = -1일 경우에는 고객만 확인 완료 가능
+              if ( $this->packagingDetail->save(['idx' => $packagingStatus['packaging_detail_idx'], 'complete' => 1]) ) {
+              $packagingDetailData['packaging_id'] = $packagingStatus['packaging_id'];
+              $packagingDetailData['status_id'] = $nextPackageStatus['idx'];
+              
+                if ( $this->packagingDetail->save($packagingDetailData) ) {
+                  // $data = array_merge($data, ['order_fixed' => 1]);
+                  // if ( $this->order->save($data) ) {
+                  // }
+                  $code = 200; $msg = 'saved';
+                }
+              }
+            }
+          // } 
+        } else {
+          $code = 500; $msg = 'already saved';
+        }
+      }
+    } else $msg = $data;
+
     if ( $this->request->isAJAX() ) {
       return json_encode(['Code' => $code, 'request'=> $msg]);
     }

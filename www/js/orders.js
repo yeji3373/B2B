@@ -130,8 +130,6 @@ $(document).ready(function() {
       console.log("inarray");
       alert(result['error']);
       return;
-    // } else {
-    //   alert('임시저장 성공');
     }
     return;
   });

@@ -188,11 +188,13 @@ $(document).ready(function() {
     return;
   }
 }).on("click", '.order-req', function(e) {
+  // $(this).closest('form').attr('action', '/order/addCartList');
   e.preventDefault();
-  let data = $(this).closest('.list-group-item').find('form').serializeArray();
+  let data = $(this).closest('form').serializeArray();
 
   result = getData("/order/addCartList", data, 'POST', true);
-  if ( result['Code'] != "200" ) {
+
+  if ( parseInt(result['Code']) != 200 ) {
     console.log(result['Msg']);
     return;
   } else {
