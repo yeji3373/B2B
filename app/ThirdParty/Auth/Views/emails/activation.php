@@ -1,4 +1,4 @@
-<p>Thank you for signing up on <?= base_url() ?>!</p>
+<p>Thank you for signing up!</p>
 
 <p>Please click the following link to activate your account!</p>
 <p><a href="<?= base_url('activate-account') . '?token=' . $hash ?>"><?= base_url('activate-account') . '?token=' . $hash ?></a></p>
