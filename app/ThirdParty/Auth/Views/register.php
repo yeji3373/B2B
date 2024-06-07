@@ -19,7 +19,7 @@
       <p>
         <input type="text" name="businessNumber" value="<?=set_value('businessNumber')?>" placeholder="123-45-67890"/>
         <label><?=lang("Auth.businessNumber")?></label>
-        <?=view('Auth\Views\_validations', ['col' => 'businessNumber', 'default' => lang('Auth.disallowedCharacters')]);?>
+        <?=view('Auth\Views\_validations', ['col' => 'businessNumber', 'default' => null]);?>
       </p>
       <p>
         <select name='buyerRegion'>

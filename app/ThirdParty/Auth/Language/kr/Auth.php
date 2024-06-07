@@ -68,7 +68,7 @@ return [
     // Error and success
     'passwordMismatch'      => 'The passwords must match!',
     // 'registrationSuccess'       => 'Success! Please activate your account by clicking the activation link in the e-mail we have sent!',
-    'registrationSuccess'   => '회원가입 완료. 승인요청중입니다. 승인요청이 완료되면 e-mail로 알려드립니다. 7일 이내 처리 완료 ',
+    'registrationSuccess'   => '회원가입 완료. 보내드린 이메일에서 활성화 링크를 클릭해서 계정을 활성화 해주세요. ',
     'activationNoUser'      => 'There is no user with this activation code.',
     'activationSuccess'     => 'Successful activation! Now you can login to your account!',
     'wrongCredentials'      => 'Wrong credentials!',
@@ -83,4 +83,5 @@ return [
     'emailAlreadySent'      => 'An e-mail is already sent to this address!',
     'invalidRequest'        => 'Invalid request!',
     'confirmationNoBuyer'   => '승인 요청중입니다!',
+    'contactUsEmail'        => '메일로 문의해주세요',
 ];

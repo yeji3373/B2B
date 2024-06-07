@@ -22,8 +22,8 @@ class Encryption extends BaseConfig {
      *
      * @var string
      */
-    // public $key = 'base64_decode:b1adeatyadfknetaao_korea_ppjjgil';
-    public $key = 'b1adeatyadfknetaao_korea_ppjjgil++a==';  
+
+     public $key = '39lBs7F1Xj1AEOm6jHxpD5U4BIVqbv7I';  
 
     /**
      * --------------------------------------------------------------------------

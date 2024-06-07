@@ -12,7 +12,8 @@ class BuyerModel extends Model {
   protected $allowedFields = [
     'name', 'business_number', 'region_ids', 'countries_ids', 
     'address', 'city', 'country_id', 'zipcode',
-    'phone', 'certificate_business'
+    'phone', 'certificate_business', 'regist_ip', 
+    'available', 'confirmation'
   ];
   
   protected $useTimestamps = true;

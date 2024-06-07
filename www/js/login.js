@@ -76,33 +76,6 @@ $(document).ready(function() {
     $(this).addClass('eye-slash');
     $(this).prev('input').attr('type', 'password');
   }
-// }).on('click', '.email-verify-check', function() {
-//   // let $this = $(this);
-//   // let verifyEmail = $this.prev().val();
-//   // let checkedVerified = false;
-//   // let msg = '';  
-
-//   // if ( $this.parent().parent().find('[name=verified]').length ) {
-//   //   if ( parseInt($this.parent().parent().find('[name=verified]').val()) ) {
-      
-//   //   } else {
-//   //     checkedVerified = true;
-//   //   }
-//   // }
-//   // if ( verifyEmail != 'undefined' && verifyEmail != '' && checkedVerified ) {
-//     getData('/api/verifyCheckJS?email');
-//   //   let _data = JSON.parse(getData('/api/verifyCheckJS?email=' + verifyEmail, {'email': verifyEmail}, 'GET'));
-//   //   if ( _data.verify === true ) {
-//   //     console.log("true");
-//   //     $this.parent().parent().find('[name=verified]').val(1).attr('data-checked', $this.parent().parent().find('[name=email]').val());
-//   //   } else {
-//   //     console.log('false');
-//   //     $this.parent().parent().find('[name=verified]').val(0);
-//   //   }
-//   //   msg = _data.msg;
-//   // }
-
-//   // $this.parent().parent().find('.guide-msg').text(msg);
 }).on('keyup', '[name=email]', function() {
   if ( $('form').find('[name=verified]').length ) {
     if ( parseInt($('form').find('[name=verified]').val()) ) {

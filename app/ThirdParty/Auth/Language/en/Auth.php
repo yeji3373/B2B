@@ -70,8 +70,7 @@ return [
 
     // Error and success
     'passwordMismatch'      => 'The passwords must match!',
-    // 'registrationSuccess'       => 'Success! Please activate your account by clicking the activation link in the e-mail we have sent!',
-    'registrationSuccess'   => 'Member registration complete. Approval is being requested. When the approval request is completed, you will be notified by e-mail within 7 days',
+    'registrationSuccess'   => 'Success! Please activate your account by clicking the activation link in the e-mail we have sent!',
     'activationNoUser'      => 'There is no user with this activation code.',
     'activationSuccess'     => 'Successful activation! Now you can login to your account!',
     'wrongCredentials'      => 'Wrong credentials!',
@@ -86,4 +85,5 @@ return [
     'emailAlreadySent'      => 'An e-mail is already sent to this address. It might be sitting in your spam folder, so you should check.',
     'invalidRequest'        => 'Invalid request!',
     'confirmationNoBuyer'   => 'Approval is being requested',
+    'contactUsEmail'        => 'Please contact us by email',
 ];
