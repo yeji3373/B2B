@@ -16,7 +16,6 @@ class Authorization extends Controller {
   public $countries;
 
   public function __construct() {
-    helper('date');
     $this->curl = \Config\Services::curlrequest();
     $this->config = config('Cafe24');
     $this->cafe24Model = new Cafe24Model;

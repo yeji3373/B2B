@@ -15,13 +15,29 @@ class BuyerModel extends Model {
     'phone', 'certificate_business', 'regist_ip', 
     'available', 'confirmation'
   ];
-  
+
+  protected $dynamicRules = [
+    'registration' => [
+      'name'              => 'trim|required|min_length[2]'
+    ]
+  ];
+
+  protected $skipValidation = false;
+
   protected $useTimestamps = true;
   protected $createdField  = 'created_at';
 	protected $updatedField  = 'updated_at';
   protected $dateFormat  	 = 'datetime';
 
   protected $default = ["buyers.available" => 1];
+
+
+  /**
+   * Retrieves validation rule
+   */
+  public function getRule(string $rule) {
+    return $this->dynamicRules[$rule];
+  }
 
   public function buyers() {
     return $this->where($this->default);

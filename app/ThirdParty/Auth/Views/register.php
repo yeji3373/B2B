@@ -2,9 +2,6 @@
 <?=$this->section('main')?>
 
 <section class='register_section'>
-  <?php
-  // if ( session()->has('validation') ) var_dump(session('validation')->getErrors()) 
-  ?>
   <h1><?=lang('Auth.registration')?></h1>
   <?=view('Auth\Views\_notifications')?>
   <form method="POST" action="<?=route_to('register'); ?>" accept-charset="UTF-8" onSubmit="return registerCheck(this);" enctype="multipart/form-data" id="registerForm">
@@ -12,7 +9,7 @@
     <?=csrf_field()?>
     <div>
       <p>
-        <input type="text" name="buyerName" value="<?=set_value('buyerName')?>" placeholder="Beautynetkorea Co.,"/>
+        <input type="text" name="buyerName" value="<?=set_value('buyerName')?>" placeholder="Beautynetkorea Co.," />
         <label class='required'><?=lang("Auth.vendorName")?></label>
         <?=view('Auth\Views\_validations', ['col' => 'buyerName', 'default' => null])?>
       </p>

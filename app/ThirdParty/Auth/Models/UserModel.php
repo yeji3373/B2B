@@ -28,7 +28,8 @@ class UserModel extends Model
 		'registration' => [
 			'name'              => 'trim|required|min_length[2]',
 			'email'             => 'trim|required|valid_email|is_unique[users.email]',
-			'password'			    => 'trim|required|min_length[5]|max_length[20]|regex_match[/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,20}$/]',
+			// 'password'			    => 'trim|required|min_length[5]|max_length[20]|regex_match[/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,20}$/]',
+      // 'password'			    => 'trim|required|min_length[5]|max_length[20]|regex_match[/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,20}$/]',
 			'password_confirm'	=> 'trim|matches[password]'
 		],
 		'updateAccount' => [

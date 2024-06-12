@@ -1,17 +1,19 @@
 <?php
 $validation = \Config\Services::validation();
 $msg = null;
+if ( !empty($validation) ) {
 
-if ( $validation->hasError($col) ) {
-  $msg = $validation->getError($col);
-} else {
-  $msg = $default;
-}
+  if ( $validation->hasError($col) ) {
+    $msg = $validation->getError($col);
+  } else {
+    $msg = $default;
+  }
 
-if ( !is_null($msg) ) {
-echo "<span class='guide-msg color-red'>
-        <i></i>
-        {$msg}
-      </span>";
+  if ( !is_null($msg) ) {
+  echo "<span class='guide-msg color-red'>
+          <i></i>
+          {$msg}
+        </span>";
+  }
 }
 ?>

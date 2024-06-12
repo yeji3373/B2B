@@ -69,18 +69,18 @@
       <a href='//zrr.kr/E2XS' target='_blank' class='btn learn-more py-1 px-3 mt-1 mb-3 fs-08r w-auto border-thin text-capitalize'>Catalog</a>
     </div>
     <div class='w-80 d-flex flex-row mx-auto mb-5'>
-      <div class='w-33 text-center d-flex flex-column align-items-center'>
-        <img src='/img/brand_logo/b2b_logo_Eyenlip.jpg' class='border border-1 rounded-1 w-72'>
+      <div class='w-50 text-center d-flex flex-column align-items-center'>
+        <img src='/img/brand_logo/b2b_logo_Eyenlip.jpg' class='border border-1 rounded-1'>
         <a href='//zrr.kr/PhrH' target='_blank' class='btn learn-more py-1 px-3 mt-1 w-auto fs-08r border-thin'>Learn more</a>
       </div>
-      <div class='w-33 text-center d-flex flex-column align-items-center'>
-        <img src='/img/brand_logo/b2b_logo_Fabyou.jpg' class='border border-1 rounded-1 w-72'>
+      <div class='w-50 text-center d-flex flex-column align-items-center'>
+        <img src='/img/brand_logo/b2b_logo_Fabyou.jpg' class='border border-1 rounded-1'>
         <a href='//zrr.kr/fwtQ' target='_blank' class='btn learn-more py-1 px-3 mt-2 fs-08r w-auto border-thin'>Learn more</a>
       </div>
-      <div class='w-33 text-center d-flex flex-column align-items-center'>
+      <!-- <div class='w-33 text-center d-flex flex-column align-items-center'>
         <img src='/img/brand_logo/b2b_logo_Sumhair.jpg' class='border border-1 rounded-1 w-72'>
         <a href='//zrr.kr/YxZX' target='_blank' class='btn learn-more py-1 px-3 mt-2 fs-08r w-auto border-thin'>Learn more</a>
-      </div>
+      </div> -->
     </div>
     <?php if ( !empty($brandList) ) : ?>
     <p class='title fs-4 manlope manlope800 text-center fst-italic'>Other Brands</p>
@@ -401,11 +401,11 @@
           </div>
         </div>
         <div class='d-flex flex-column w-60 h-100'>
-          <div class='eyenlip h-33 d-flex flex-column align-items-end'>
+          <div class='eyenlip h-50 d-flex flex-column align-items-end'>
             <img src='/img/brand_logo/b2b_logo_Eyenlip_2.png' class='w-100 h-80'>
             <a href='//zrr.kr/PhrH' target='_blank' class='eyenlip-btn fst-italic text-end me-3'>learn more&#8594;</a>
           </div>
-          <div class='fabyou h-33 d-flex flex-column align-items-end'>
+          <div class='fabyou h-50 d-flex flex-column align-items-end border-bottom-0'>
             <div class='d-flex h-80 w-100 align-items-center'>
               <img src='/img/brand_logo/b2b_logo_Fabyou_2.png' class='w-75 h-50 mx-auto'>
             </div>
@@ -413,10 +413,10 @@
             <a href='//zrr.kr/fwtQ' target='_blank' class='fabyou-btn fst-italic text-end me-3'>learn more&#8594;</a>
             </div>
           </div>
-          <div class='sumhair h-33 d-flex flex-column align-items-end'>
+          <!-- <div class='sumhair h-33 d-flex flex-column align-items-end'>
             <img src='/img/brand_logo/b2b_logo_Sumhair_2.png' class='w-100 h-80'>
             <a href='//zrr.kr/YxZX' target='_blank' class='sumhair-btn fst-italic text-end me-3'>learn more&#8594;</a>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class='d-flex flex-row h-10 justify-content-end align-items-center'>

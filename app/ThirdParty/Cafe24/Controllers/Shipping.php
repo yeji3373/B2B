@@ -8,7 +8,6 @@ class Shipping extends Cafe24InitController {
   public $countries;
 
   public function __construct() {
-    helper('date');
     helper('cafe24');
     $this->curl = \Config\Services::curlrequest();
     $this->config = config('Cafe24');

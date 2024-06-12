@@ -11,7 +11,6 @@ class Signature extends Controller
   protected $signature;
 
   public function __construct() {
-    helper('date');
     $this->curl = \Config\Services::curlrequest();
     $this->config = config('Cypix');
     // $this->body = [ "amount" => "120.00",

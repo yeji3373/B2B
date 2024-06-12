@@ -11,7 +11,6 @@ use App\Models\ProductModel;
 use App\Models\BuyerModel;
 // use CodeIgniter\Database\RawSql;
 
-// class Api extends BaseController
 class Api extends ResourceController {
   use ResponseTrait;
   protected $data;
@@ -19,12 +18,7 @@ class Api extends ResourceController {
 
   public function __construct() {
     helper('merge');
-    // helper('auth');
-    // // $pager = service('pager');
-
-    // $this->page = 0;
-    // $this->perPage = 15;
-    // $this->totalPage = 5;
+    helper('auth');
   }
 
   public function __remap(...$params) {
@@ -74,19 +68,21 @@ class Api extends ResourceController {
     return $this->respond($this->data);
   }
 
-  // public function getBrands() {
-  //   $brands = new BrandModel();
-  //   $default = [
-  //     'available'   => '1'
-  //   ];
-  //   $where = array_merge_return($default, $this->request->getVar());
+  public function getBrands() {
+    $brands = new BrandModel();
+    $default = [
+      'available'   => '1'
+    ];
+    $orderBy = '';
+    $where = array_merge_return($default, $this->request->getVar());
 
-  //   $this->data = $brands
-  //                 ->where($where)
-  //                 ->get()
-  //                 ->getResultArray();
-  //   return $this->respond($this->data);
-  // }
+    $this->data = $brands
+                  ->where($where)
+                  ->orderby($orderBy)
+                  ->get()
+                  ->getResultArray();
+    return $this->respond($this->data);
+  }
 
   // public function getBuyers() {
   //   $buyers = new BuyerModel();
@@ -101,11 +97,11 @@ class Api extends ResourceController {
   //   return $this->data;
   // }
 
-  // function productSelect() {
-  //   $products = new ProductModel();
-  //   $this->data = $products->selects()->select(['name_en', 'name'])->findAll();
-  //   echo $products->getLastQuery(); 
-  //   echo "<br/><br/>";
-  //   return $this->respond($this->data);
-  // }
+  function productSelect() {
+    $products = new ProductModel();
+    $this->data = $products->selects()->select(['name_en', 'name'])->findAll();
+    echo $products->getLastQuery(); 
+    echo "<br/><br/>";
+    return $this->respond($this->data);
+  }
 }

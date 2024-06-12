@@ -17,3 +17,11 @@
   <?php endforeach ?>
   </ul>
 <?php endif ?>
+
+<?php if ( session()->has('validation') ) : ?>
+  <div class='notification error'>
+  <?php if ( session('validation')->hasError('buyerName') ) :   
+    echo session('validation')->getError('buyerName');
+  endif; ?>
+  </div>
+<?php endif ?>

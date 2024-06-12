@@ -93,7 +93,6 @@ class RegistrationController extends Controller
     $regsiterRules = [
       'buyerName'           => [
         'label'   =>  'Name of the company',
-        // 'rules'   =>  'required|min_length[2]|is_unique[buyers.name,buyers.business_number]', // business_number랑 같이 체크?
         'rules'   =>  'required|min_length[2]|is_unique[buyers.name]',
         'errors'  =>  [
           'is_unique' =>  lang('Auth.alreadyData', ['Name of the company']),
@@ -147,7 +146,8 @@ class RegistrationController extends Controller
         ]
       ],
       'password'           => [
-        'rules'   =>  'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]/]',
+        // 'rules'   =>  'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]/]',
+        'rules'   =>  'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/]',
         'errors'  => [
           'regex_match' => lang('Auth.pwmsg')
         ]
@@ -167,10 +167,9 @@ class RegistrationController extends Controller
 
     $buyer = $this->buyers
                 ->asArray()
-                ->where("replace(name, ' ', '')", str_replace(' ', '', $this->request->getPost('buyerName')), 'both')
-                ->orWhere("replace(replace(business_number, ' ', ''), '-', '')", str_replace('-', '', $this->request->getPost('businessNumber')))
+                ->where("replace(LOWER(name), ' ', '')", str_replace(' ', '', strtolower($this->request->getPost('buyerName'))), 'both')
                 ->first();
-                
+
     if ( !empty($buyer) ) {
       return redirect()->back()->withInput()->with('error', lang('Auth.alreadyRegistered'));
     } else {
@@ -184,6 +183,9 @@ class RegistrationController extends Controller
         } else return redirect()->back()->withInput()->with('error', 'Files Size Error');
       }
 
+      $this->buyers->transBegin();
+      $getBuyerRule = $this->buyers->getRule('registration');
+      $this->buyers->setValidationRules($getBuyerRule);
       $buyerData = [
           'name'  => $this->request->getPost('buyerName'),
           'business_number' => $this->request->getPost('businessNumber'),
@@ -202,8 +204,9 @@ class RegistrationController extends Controller
       }
       $buyerId = $this->buyers->getInsertID();
     }
-    
-		// save new user, validation happens in the model		
+
+    // // save new user, validation happens in the model
+    // // $this->users->transBegin();
 		$getRule = $this->users->getRule('registration');
 		$this->users->setValidationRules($getRule);
     $user = [
@@ -216,9 +219,10 @@ class RegistrationController extends Controller
     ];
 
     if (!$this->users->save($user)) {
+      $this->buyers->transRollback();
 			return redirect()->back()->withInput()->with('errors', $this->users->errors());
     }
-
+    $this->buyers->transCommit();
     $emailStatus['user_idx'] = $this->users->getInsertID();
     $emailStatus['email_idx'] = get_mail_idx();
 
@@ -235,7 +239,7 @@ class RegistrationController extends Controller
       // send activation email
       send_activation_email($user['email'], $emailStatus['activate_hash']);
     }
-    
+
 		// success
     return redirect()->to('login')->with('success', lang('Auth.registrationSuccess'));
 	}
