@@ -213,7 +213,7 @@ class Order extends BaseController
     if ( empty($data['prd_id']) ) $msg = '제품정보가 정확하지 않습니다.';
     $margin_level = session()->userData['buyerMargin'];
 
-    get_cart();
+    get_cart($data);
     return;
     // var_dump(session()->currency);
     $product_price = [ 'select' => productPriceDefaultSelect()
