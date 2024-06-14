@@ -130,8 +130,11 @@ if ( !function_exists('combine_product_cart_info') ) {
 if ( !function_exists('get_cart')) {
   function get_cart($sql = array()) {
     $cartModel = new CartModel();
+
+    var_dump($sql);
     $cartList = $cartModel->combine_cart_status($sql)->findAll();
 
+    echo $cartModel->getLastQuery();
     return $cartList;
   }
 }
