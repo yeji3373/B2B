@@ -1,5 +1,4 @@
-<?php if ( !empty($products) ) : ?>
-<?php foreach($products as $product) : ?>
+<?php if (!empty($product) ) : ?>
 <div class='d-flex flex-row border border-top-0 justify-content-between py-1 px-2 list-group-item'>
   <div class='d-flex flex-row align-items-start product-item mx-0 my-auto'>
     <div class='position-relative thumbnail-group'>
@@ -126,14 +125,14 @@
         <!-- <input type='hidden' name='order_qty' value='<?//=empty($product['moq']) ? 10 : $product['moq']?>'> -->
         <?php 
         $hasCart = false;
-        if ( !empty($carts) ) :           
-          foreach( $carts AS $cart ) :
-            if ( $cart['id'] == $product['id'] ) : 
-              $hasCart = true; 
-              $cartId = $cart['cart_idx'];
-            endif;
-          endforeach;
-        endif; ?>
+        // if ( !empty($carts) ) :           
+        //   foreach( $carts AS $cart ) :
+        //     if ( $cart['id'] == $product['id'] ) : 
+        //       $hasCart = true; 
+        //       $cartId = $cart['cart_idx'];
+        //     endif;
+        //   endforeach;
+        // endif; ?>
         <?php if ( !$hasCart ) : ?>
         <button class='btn btn-sm order-req' 
               data-prd-id='<?=$product['id']?>'
@@ -156,5 +155,4 @@
     </div>
   </div>
 </div>
-<?php endforeach; ?>
 <?php endif; ?>

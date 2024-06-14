@@ -44,3 +44,43 @@ function product_query_return($params = []) {
 
   return $where;
 }
+
+function product_query_string_return($params = []) {
+  $table = 'product';
+  $where = "";
+  if( empty($params) ) return $where;
+  
+  if ( !empty($params['brand_id']) ) {    
+    if ( !empty($where) ) $where .= " AND ";
+    $where .= $table.'.brand_id IN ('.$params['brand_id'].')';
+  }
+
+  if ( !empty($params['name']) ) {
+   if ( !empty($where) ) $where .= " AND ";
+    $name_where= '(  REPLACE(UPPER('.$table.'.name_en), \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', strtoupper($params['name'])).'%\'
+                    OR REPLACE(UPPER('.$table.'.name), \' \', \'\') LIKE \'%'.preg_replace('/\s+/', '', strtoupper($params['name'])).'%\' )';
+    $where .= $name_where;
+  }
+
+  if ( !empty($params['barcode']) ) {
+    if ( !empty($where) ) $where .= " AND ";
+    $where .= $table.'.barcode LIKE "%'.$params['barcode'].'%"';
+  }
+  
+  if ( !empty($params['sample']) ) {
+    if ( !empty($where) ) $where .= " AND ";
+    $where .= $table.'.sample = '.$params['sample'];
+  }
+
+  if ( !empty($params['id']) ) {
+    if ( !empty($where) ) $where .= " AND ";
+    $where .= $table.'.id IN ('.$params['id'].')';
+  }
+
+  if ( !empty($params['product_id']) ) {
+    if ( !empty($where) ) $where .= " AND ";
+    $where .= $table.'.id IN ('.$params['product_id'].')';
+  }
+
+  return $where;
+}

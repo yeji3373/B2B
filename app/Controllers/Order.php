@@ -3,16 +3,17 @@ namespace App\Controllers;
 
 use App\Models\ProductModel;
 use App\Models\OrderModel;
-use App\Models\BrandModel;
 use App\Models\BuyerModel;
 use App\Models\CurrencyModel;
 use App\Models\CartModel;
+use App\Models\CartStatusModel;
 use App\Models\MarginModel;
 use App\Models\RegionModel;
 use App\Models\CountryModel;
 use App\Models\BuyerAddressModel;
 use App\Models\PaymentMethodModel;
 use App\Models\ProductPriceModel;
+use App\Models\SupplyPriceModel;
 use App\Models\ProductSpqModel;
 use App\Models\StockDetailModel;
 use App\Models\BuyerCurrencyModel;
@@ -27,29 +28,31 @@ class Order extends BaseController
 {
   protected $brands;
   protected $buyers;
-  protected $currency;
+  // protected $currency;
 
   protected $data;
   protected $searchData;
 
   public function __construct() {
-    helper('date');
-    $this->products = new ProductModel();
-    $this->brands = new BrandModel();
+    helper(['brand', 'auth', 'product']);
+
+    current_user();
+    
+    $this->product = new ProductModel();
     $this->buyers = new BuyerModel();
     $this->currency = new CurrencyModel();
     $this->margin = new MarginModel();
     $this->users = new UserModel();
     $this->productPrice = new ProductPriceModel();
+    $this->productSupplyPrice = new SupplyPriceModel();
     $this->productSpq = new ProductSpqModel();
-    $this->product = new ProductPriceModel();
     $this->address = new BuyerAddressModel();
     $this->stocks = new StockDetailModel();
     $this->buyerCurrency = new BuyerCurrencyModel();
     $this->cart = new CartModel();
+    $this->cartStatus = new CartStatusModel();
     
     $this->CartController = new CartController();
-
 
     $this->data['header'] = ['css' => ['/address.css', '/order.css'
                                       , '/inventory.css', '/stock.css'],
@@ -60,81 +63,40 @@ class Order extends BaseController
 
   public function index() {
     $this->CartController->initialCartList(); // 카트 초기화
-    $this->brandList();
-    $this->cartList();
-    $this->productList();
-    $this->cartTotalPrice();
-    // $this->applyDiscountCart();
+    $this->data['brands'] = brands();
+    // $this->cartList();
+    // $this->productList();
+    // // $this->cartTotalPrice();
     $this->basicLayout('product/list', $this->data);
   }
 
-  public function brandList() {
-    $page = null;
-    $brandGroup = 'brand';
-
-    $brands = $this->brands
-                  ->where('available', 1)
-                  ->orderBy('own_brand DESC, brand_name ASC, brand_id ASC')
-                  ->findAll();
-    $this->data['brands'] = $brands;
-  }
-  
   public function productList() {
-    // var_dump(session()->userData);
-    $params = $this->request->getPost();
-    $total = 0;
-    $request_unit = false;
-    $where = null;
-
-    $offset = 15;
-    $start = empty($params['page']) ? 0 : ((($params['page'] - 1) * 1) * $offset);
-
-    if ( !empty($params) ) {
-      if ( isset($params['page']) ) unset($params['page']);
-      if ( isset($params['brand_id']) && empty($params['brand_id']) ) unset($params['brand_id']);
-      if ( isset($params['request_unit']) ) {
-        if ( !empty($params['request_unit']) )  $request_unit = true;
-        unset($params['request_unit']);
-      }
-    }
-
-    $query['select'] = ','.$this->CartController->calcRetailPrice().' AS retail_price, '
-                    .$this->CartController->calcSupplyPrice().' AS product_price';
-    $query['where'] = $params;
-    $query['limit'] = " limit $start, $offset";
-    $products = $this->getProduct($query);
-
-    $this->data['products'] = $products;
-
-    if ( $this->request->isAJAX() ) {
-      // if ( $request_unit == true ) {
-        return view('/layout/includes/productItem', $this->data);
-      // } else return view('/layout/includes/product', $this->data);
-    } else {
-      // echo $this->products->getLastQuery(); 
-      return $this->data;
-    }
+    helper('product_item');
+    $params = $this->request->getVar();
+    return product_item($params['products']);
   }
 
   public function cartList() {
+    helper('cart_item');
     $data = $this->request->getPost();
-    $code = 500;
-    $msg = '';
-    $where = NULL;
+    // var_dump($data['carts']);
+    return cart_list($data['carts']);
 
-    if ( !empty(session()->userData) ) {
-      if ( isset($data['cart_id']) && !empty($data['cart_id']) ) {
-        $where .= " AND cart.idx = ".$data['cart_id'];
-      }
-      $query['where'] = $where;
-      $cartList = $this->CartController->getCartList($query);
-    }
-    // // $this->data['cartMinimize'] = false; // cart data 최소화해서 보여줌 여부. default false. false: 전체 다 보여주기;
-    $this->data['carts'] = $cartList;
-        if ( $this->request->isAJAX() ) {
-      $this->data['params'] = $data;
-      return view('/layout/includes/Cart', $this->data);
-    } else return $this->data;
+    // $code = 500;
+    // $msg = '';
+    // $where = NULL;
+    // $cartSet = ['where' => ['cart.buyer_id' => session()->userData['buyerId']]];
+
+    // $cartList = $this->cart->combine_cart_status($cartSet)->findAll();
+
+    // foreach($cartList AS $i => $cartItem) {
+    //   $cartItem['retail_price'] = round(($cartItem['retail_price'] / $cartItem['exchange_rate']), 2);
+    //   $cartList[$i] = array_merge($cartItem, get_product(['select' => productDefaultSelect(), 'where' => ['id' => $cartItem['prd_id']]]));
+    // }
+    // // var_dump($cartList);
+    // $this->data['carts'] = $cartList;
+
+    // return $this->data;
   }
   
   public function cartTotalPrice() {
@@ -235,75 +197,60 @@ class Order extends BaseController
   public function addCartList() {
     $code = 500;
     $msg = '';
+    $buyerInfo = array();
+    $cartData = array();
+    $margin_level = 2;
     $data = $this->request->getPost();
 
-    if ( !empty(session()->userData['buyerId']) ) {
-      // $data['order_qty'] = 10;
-      // $data['prd_section'] = (!empty($this->getBuyerInfo()) ? $this->getBuyerInfo()['margin_level'] : 2);
-      $data['prd_section'] = session()->userData['buyerMargin'];
-      $data['buyer_id'] = session()->userData['buyerId'];
-      if ( !empty($data['cart_idx']) && isset($data['cart_idx']) ) {
-        $data['idx'] = $data['cart_idx'];
-        unset($data['cart_idx']);
-      }
-      if ( !empty($data['prd_id']) ) {
-        $orderQty = 10;        
-        $productPrice = $this->productPrice
-                            ->where(['product_idx' => $data['prd_id']
-                                  , 'available' => 1])
-                            ->first();
-        if ( !empty($productPrice) ) {
-          $data['product_price_idx'] = $productPrice['idx'];
-        }
+    // var_dump($data); 
 
-        $productSpq = $this->productSpq
-                            ->where(['product_idx' => $data['prd_id']
-                                  , 'available' => 1])
-                            ->first();
-        if ( !empty($productSpq) ) {
-          if ( !empty($productSpq['moq']) ) {
-            $orderQty = $productSpq['moq'];
-          } else {
-            if ( !empty($productSpq['spq_inBox']) ) {
-              $orderQty = $productSpq['spq_inBox'];
-            } else {
-              if ( !empty($productSpq['spq_outBox']) ) {
-                $orderQty = $productSpq['spq_outBox'];
-              }
-            }
-          }
-          $data['order_qty'] = $orderQty;
-        }
-
-        $cart = $this->cart
-                ->where(['buyer_id' => $data['buyer_id']
-                        , 'prd_id' => $data['prd_id']])
-                ->first();
-        if ( empty($cart) ) {
-          if ( $this->cart->save($data) ) {
-            $code = 200;
-            $msg = $this->cart->getInsertID();
-            $aaaa = $productSpq;
-          } else {
-            $code = 500;
-            $msg = $this->cart->error();
-          }
-        } else {
-          $code = 500;
-          $msg = lang('Lang.alreadyExists');
-        }
-      } else {
-        $code = 500;
-        $msg = "cart insert error";
-      }
-    } else {
-      $code = 401;
-      $msg = '로그인 후 재 진행해주세요';
+    if ( empty($data) ) $msg = '처리할 대상 정보가 없음'; 
+    if ( empty($this->getBuyerInfo()) ) $msg = '바이어 정보가 없음';
+    else {
+      $buyerInfo = $this->getBuyerInfo();
+      if ( !$buyerInfo['available'] ) $msg = '바이어 정보가 유효하지 않음';
     }
+    if ( empty($data['prd_id']) ) $msg = '제품정보가 정확하지 않습니다.';
+    $margin_level = session()->userData['buyerMargin'];
 
-    if ( $this->request->isAJAX() ) {
-      return json_encode(['Code' => $code, 'Msg' => $msg]);
-    }
+    // var_dump(session()->currency);
+    $product_price = [ 'select' => productPriceDefaultSelect()
+                      , 'where' => ['product_idx' => $data['prd_id']] ];
+    $supply_price = [ 'select' => supplyPriceDefaultSelect()
+                      , 'where' => [  'product_idx' => $data['prd_id'] ]
+                      , 'orderby' => $margin_level > 1 ? 'margin_level desc' : '' ];
+    $product = get_product(['where' => ['id' => $data['prd_id']]]);
+    $combineProductInfo = array_merge($product, combine_price_info($product_price, $supply_price));
+
+    if ( !empty($combineProductInfo) ) {
+      $combineProductInfo['exchange_rate'] = session()->currency['exchangeRate'];
+      $productSpq = $this
+                      ->productSpq
+                      ->get_spq([ 'select' => 'id AS spq_idx, moq, spq, spq_inBox, spq_outBox, calc_code, calc_unit'
+                                 , 'where' => 
+                                        ['product_idx' => $data['prd_id']]])
+                      ->first();
+      // var_dump($productSpq);
+      $brand = brand([ 'select' => 'brand_id, brand_name'
+                      , 'where' => ['brand_id' => $data['brand_id']]]);
+      // var_dump($brand);
+      $combineProductInfo = array_merge($combineProductInfo, $productSpq, $brand);
+
+      if ( $this->cart->save(['buyer_id'  => session()->userData['buyerId']
+                            , 'prd_id'  => $data['prd_id']] ) ) {
+                      
+        $combineProductInfo['cart_idx'] = $this->cart->getInsertID();
+        $combineProductInfo['order_qty'] = $combineProductInfo['moq'];
+        $combineProductInfo['applied_price'] = round(($combineProductInfo['price'] /session()->currency['exchangeRate']), 2);
+
+        if ( $this->cartStatus->save($combineProductInfo) ) {
+          $code = 200;
+          $msg = $combineProductInfo;
+        } else $msg = '입력 안됨';
+      } else $msg = '입력 안됨...';
+    } else $msg = '해당하는 제품의 가격 정보가 없습니다.';
+    
+    return json_encode(['Code' => $code, 'Msg' => $msg]);
   }
 
   // public function applyDiscountCart(Int $totalPrice = null) {
@@ -373,7 +320,7 @@ class Order extends BaseController
     $this->data['payments'] = $payments->where('available', 1)->find();
     $this->data['itus'] = $this->getItus()->findAll();
     $this->data['currencies'] = $this->currency->currencyJoin()->where('currency.default_currency', 1)->find();
-    $this->data['orderDetails'] = $this->products
+    $this->data['orderDetails'] = $this->product
                                       ->productOrderJoin(
                                         ['orders_detail.order_id'=> $where['order']['id']
                                         , 'orders_detail.order_excepted' => 0])
@@ -440,16 +387,12 @@ class Order extends BaseController
       $query['where'] = " AND ".join(" AND ", $whereCondition);
     }
     
-    $products = $this->products->getProductQuery($query);    
+    $products = $this->product->getProductQuery($query);    
     return $products;  
   }
 
-  public function getUserIdx() {
-    $userIdx = $this->users->getUserIndex(session()->userData['email']);
-    return $userIdx;
-  }
-
   public function getBuyerInfo() {
+    if ( empty(session()->userData['buyerId']) ) return null;
     $buyer = $this->buyers->where('id', session()->userData['buyerId'])->first();
     return $buyer;
   }

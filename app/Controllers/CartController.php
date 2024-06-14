@@ -17,11 +17,17 @@ class CartController extends BaseController {
   public $checkDate;
 
   public function __construct() {
-    helper('date');
+    helper('product');
     $this->cart = new CartModel();
     $this->product = new ProductModel();
     $this->stocks = new StockModel();
     $this->checkDate = date_format(new Time('-7 days'), 'Y-m-d 23:59:59');
+  }
+
+  public function simpleCartList($params = []) {
+    $sql['where'] = ['buyer_id' => session()->userData['buyerId']];
+    
+    return $this->cart->carts($sql)->findAll();
   }
 
   public function getCartList($params = []) {
@@ -98,26 +104,10 @@ class CartController extends BaseController {
     if ( $exchangeRate > 1 ) : // 환율 혹은 달러에서 한화로 변경할 경우, 한화의 환율을 적용
       $this->cart
           ->select("(SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}) AS `order_price_total`")
-          // ->select("IF ( `cart`.`apply_discount` = 1, 
-          //           ROUND(((SUM({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * cart.order_qty) * {$exchangeRate}), 0),
-          //           0 
-          //         ) AS `order_discount_total`")
-          // ->select("IF ( `cart`.`apply_discount` = 1, 
-          //                 ROUND((SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`) * {$exchangeRate}), 0),
-          //                 ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}), 0)
-          //               ) AS order_subTotal");
           ->select("ROUND((SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) * {$exchangeRate}), 0) AS order_subTotal");
     else : 
       $this->cart
         ->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_price_total`")
-        // ->select("IF ( `cart`.`apply_discount` = 1, 
-        //                 SUM(({$this->calcSupplyPrice()} - {$this->calcSupplyPriceCompare()}) * `cart`.`order_qty`),
-        //                 0 
-        //               ) AS `order_discount_total`")
-        // ->select("IF ( `cart`.`apply_discount` = 1, 
-        //                 SUM({$this->calcSupplyPriceCompare()} * `cart`.`order_qty`),
-        //                 SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`)
-        //                 ) AS `order_subTotal`");
         ->select("SUM({$this->calcSupplyPrice()} * `cart`.`order_qty`) AS `order_subTotal`");
     endif;
 
@@ -151,49 +141,6 @@ class CartController extends BaseController {
       $this->removeCart(['updated_at <' => $this->checkDate]);
       unset($cartList);
     }
-
-    // $cartList = $this->cart
-    //               ->cartJoin()
-    //               ->where(['cart.buyer_id' => session()->userData['buyerId']])
-    //               ->findAll();
-    // if ( !empty($cartList) ) {
-    //   print_r($cartList);
-    // }
-
-    // if ( !empty($this->getCartTotalPrice()) ) {
-    //   if ( $this->getCartTotalPrice()['order_price_total'] < $this->basedDiscountVal ) {
-    //     $this->cart
-    //         ->set(['apply_discount' => 0])
-    //         ->where(['buyer_id' => session()->userData['buyerId']])
-    //         ->update();
-    //   } else {
-    //     $this->cart
-    //         ->set(['apply_discount' => 1])
-    //         ->where(['buyer_id' => session()->userData['buyerId']])
-    //         ->update();
-    //   }
-    // }
-
-    // // $cartList = $this->cart->where(['buyer_id' => session()->userData['buyerId'], 'product_price_changed' => 1])->findAll();
-    // // if ( !empty($cartList )) {
-    // //   $this->cart->set(['product_price_changed' => 0])
-    // //               ->where(['buyer_id' => session()->userData['buyerId'], 'product_price_changed' => 1])
-    // //               ->update();
-    // //   session()->setFlashdata('changed', 'product price');
-    // //   unset($cartList);
-    // // }
-
-    // // // if ( session()->currency['preferentialRate'] === true ) {
-    // // //   $buyerCurrency = $this->buyerCurrency->where(['buyer_id'=> session()->userData['buyerId']])->findAll();
-    // // // // 관리자에서 우대 환율 변경할 경우, 해당하는 바이어의 카트 내역 확인 후 금액 변경하기.
-    // // // }
-
-    // $cartList = $this->cart->where(['buyer_id' => session()->userData['buyerId']])->findAll();
-    // if (!empty($cartList) ) {
-    //   // foreach($cartList AS $cart) {
-    //   //   $cart['prd_id']
-    //   // }
-    // }
   }
 
   public function removeCart($where = []) {

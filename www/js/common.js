@@ -28,13 +28,15 @@ function getData(url, data, type = 'POST', parse = false) {
       async: false,
       data: data,
       success: function(res, status, xhr) {
-        val = res;
+        // console.log('res ', res, ' status ', status, ' xhr ', xhr);
+        val = { 'Msg': status, 'Code' : xhr.status, 'data' : res };
       },
       error: function(XMLHttpRequest, textStatus, errorThrow) {
-        console.log("error XMLHttpRequest", XMLHttpRequest);
+        errors = true;
+        // console.log("error XMLHttpRequest", XMLHttpRequest);
         // val = {'Code': XMLHttpRequest.status, 'Msg': XMLHttpRequest.responseText};
-        val = {'Code': XMLHttpRequest.status, 'Msg': textStatus};
-        return val;
+        val = {'Code': XMLHttpRequest.status, 'Msg': textStatus, 'data' : null};
+        // return val;
       }
     });
   } catch(e) {
@@ -52,8 +54,8 @@ function getData(url, data, type = 'POST', parse = false) {
           location.replace('/login');
         }
       }
-    } else {
-      val = {'Code': 500, 'Msg': val};
+    // } else {
+      // val = {'Code': 500, 'Msg': val};
     }
   }
 

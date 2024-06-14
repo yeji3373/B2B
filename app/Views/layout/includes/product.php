@@ -1,9 +1,11 @@
-<?php if( empty($products) ) : ?>
-  <div class='py-5 px-2 text-center'>
-    <?=lang('Lang.noResultSearch')?>
-  </div>  
-<?php else : ?>
-  <div class='product-list'>
-  <?=view('/layout/includes/productItem', ['product' => $products]) ?>
-  </div>
-<?php endif; ?>
+<div class="py-5 px-2 text-center empty <?=empty($products) ? '' : "d-none"?>">
+  <?=lang('Lang.noResultSearch')?>
+</div>
+
+<?php 
+if ( !empty($products) ) : 
+  foreach($products as $product) : 
+    echo view('layout/includes/productItem', ['product' => $product]);
+  endforeach; 
+endif;
+?>

@@ -1,5 +1,7 @@
-<?php if (!empty($carts) && isset($carts)) :
-  foreach($carts as $cart) : ?>
+<?php 
+if ( !empty($carts) ) :
+  foreach($carts as $cart) :
+  var_dump($cart);?>
   <div class='d-grid py-1 px-2 list-group-item position-relative w-100 slideUp'>
     <div class='d-flex flex-column product-item-info'>
       <div class='d-flex flex-row align-items-baseline align-self-baseline me-2'>
@@ -8,12 +10,12 @@
         <div class='d-flex flex-column ms-1'>
           <div class='name-group'>
             <span class='brand_name'><?=stripslashes($cart['brand_name'])?></span>
-            <span class='product_name'><?=stripslashes($cart['name_en'].' '.$cart['spec'])?></span>
+            <span class='product_name'><?=stripslashes($cart['name'].' '.$cart['spec'])?></span>
           </div>
-          <?php if ( $cart['type_en'] != "" ) : ?>
+          <?php if ( $cart['type'] != "" ) : ?>
           <div class='type font-size-7'>
             <label class='item-name'><?=lang('Lang.productType')?> : </label>
-            <span><?="#".$cart['type_en']?></span>
+            <span><?="#".$cart['type']?></span>
           </div>
           <?php endif ?>
           <?php if ( $cart['barcode'] > 0 ) : ?>
@@ -46,7 +48,6 @@
               ?>
             </span>
           </div>
-          
           <?php if ( $cart['container'] == 0 && $cart['spec_detail'] > 0 ) : ?>
           <div class='product-info-item spec-detail'>
             <label class='item-name'><?=lang('Lang.bundleSpec')?></label>
@@ -74,7 +75,7 @@
               <span>
                 <?php 
                   echo session()->currency['currencySign'];
-                  echo number_format($cart['product_price'], session()->currency['currencyFloat']);
+                  echo number_format($cart['applied_price'], session()->currency['currencyFloat']);
                 ?>
               </span>
             </div>
@@ -97,62 +98,39 @@
             <label class='item-name'>MOQ</label>
             <span><?=number_format($cart['moq'])?></span>
           </div>
-          
-          <div class='product-info-item stock'>
-            <label class='item-name'>Stock</label>
-            <span>
-              <?php if ( !empty($cart['available_stock']) && ($cart['available_stock'] > 0 && empty($cart['stock_req']))) : ?>
-              <?=number_format($cart['available_stock'])?>
-              <?php else:
-                // echo lang('Lang.noStock'); 
-              echo "-"; ?>
-              <?php endif ?>
-            </span>
-          </div>
 
         </div>
       </div>
     </div>
+    
     <div class='d-flex flex-column justify-content-end cart-qty-request'>
-      <form accept-charset='utf-8' method='post' class='cart-qty-form'>
-        <?=csrf_field() ?>
-        <input type='hidden' name='currency_chk' value='<?=session()->currency['exchangeRate']?>'>
-        <input type='hidden' name='prd_id' value='<?=$cart['id']?>'>
-        <input type='hidden' name='brd_id' value='<?=$cart['brand_id']?>'>
-        <input type='hidden' name='cart_idx' value='<?=$cart['cart_idx']?>'>
-        <input type='hidden' name='prd_price' value='<?=$cart['product_price']?>'>
-        <input type='hidden' name='prd_total_price' value='<?=$cart['order_price']?>'>
-        <input type='hidden' name='op_code' value='<?=$cart['calc_code']?>'>
-        <input type='hidden' name='op_val' value='<?=$cart['calc_unit']?>'>
-        <input type='hidden' name='order_qty' value='<?=$cart['moq']?>'> <!-- qty stand value -->
-        <input type='hidden' name='spq' value='<?=isset($cart['spq_criteria']) ? $cart['spq_criteria'] : -1?>'>
-        <!-- <input type='hidden' name='qty-maximum-val' value='<?//=!empty($cart['stock_req']) ? $cart['available_stock'] : ''?>'> -->
-
-        <div class='btn btn-close border-0 end-0 position-absolute top-0 bsk-del-btn'></div>
-        <div class='cart-qty-group'>
-          <div class='d-flex flex-row justify-content-center align-items-center flex-nowrap border mx-auto mb-2 w-100 qty-group'>          
-            <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='-'>-</div>
-            <?php 
-              $readOnly = false;
-              if ( isset($cart['spq_criteria']) && !is_null($cart['spq_criteria']) ) { 
-              $readOnly = true; ?> 
-            <?php } ?>
-            <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq text-center' 
-              <?=($readOnly) ? 'readonly': ''?>>
-            <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
-          </div>
-          <?php if ( !$readOnly ) : ?>
-          <div class='p-1 mb-1 text-end btn btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div>
-          <?php endif; ?>
+    <form accept-charset='utf-8' method='post' class='cart-qty-form'>
+      <div class='btn btn-close border-0 end-0 position-absolute top-0 bsk-del-btn'></div>
+      <div class='cart-qty-group'>
+        <div class='d-flex flex-row justify-content-center align-items-center flex-nowrap border mx-auto mb-2 w-100 qty-group'>
+          <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='-'>-</div>
+          <?php 
+            $readOnly = false;
+            if ( isset($cart['spq_criteria']) && !is_null($cart['spq_criteria']) ) { 
+            $readOnly = true; ?> 
+          <?php } ?>
+          <input type='text' value='<?=$cart['order_qty']?>' class='w-50 border-0 border-start border-end rounded-0 qty-spq text-center' 
+            <?=($readOnly) ? 'readonly': ''?>>
+          <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
+        </div>
+        <?php if ( !$readOnly ) : ?>
+        <div class='p-1 mb-1 text-end btn btn-dark qty-change-btn'><?=lang('Lang.changeQtyBtn')?></div>
+        <?php endif; ?>
         </div>
         <div class='text-end price-group'>
           <div>
             <?php echo session()->currency['currencySign']?>
-            <span class='prd-item-total-price'><?=number_format($cart['order_price'], session()->currency['currencyFloat'])?></span>
+            <span class='prd-item-total-price'><?=number_format(($cart['applied_price'] * $cart['order_qty']), session()->currency['currencyFloat'])?></span>
           </div>
         </div>
       </form>
     </div>
+
     <div class='w-100 grid-column-span-2 p-0 m-0 d-flex justify-content-center position-absolute bottom-0'>
       <span class='btn btn-sm btn-secondary badge rounded-0 py-0 px-2 font-size-6 position-absolute bottom-0 more-btn view-more'>View More</span>
     </div>

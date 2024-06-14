@@ -3,7 +3,7 @@
     <form id='product-form'>
       <input type='hidden' name='brand_id'>
       <input type='hidden' name='request_unit' value='0'>
-      <input type='hidden' name='page' value='1'>
+      <input type='hidden' name='offset' value='1'>
     </form>
     <div class='m-auto d-flex position-relative w-90'>
       <div class='border border-dark brand-section me-2 rounded w-14'>
@@ -61,15 +61,17 @@
           </div>
         </div>
         <div class='product-search-result border-top border-dark overflow-auto'>
-          <?=view('layout/includes/product');?>
+          <div class='product-list'>
+            <?=view('layout/includes/product');?>
+          </div>
         </div>
       </div>
       <div class='border border-dark rounded product-invoice-section w-45'>
         <div class='p-2 border-bottom'>
           Products in cart
         </div>
-        <div class='overflow-auto border-bottom border-dark product-selected'>
-          <?=view('/layout/includes/Cart') ?>
+        <div class='overflow-auto border-bottom border-dark product-selected cart-in-product'>
+          <?=view('layout/includes/Cart') ?>
         </div>
         <div class='px-3 py-2 d-flex flex-column product-total-price'>
           <?php if ( isset($cartSubTotal) ) : ?>
@@ -118,6 +120,6 @@
     alert('<?=session('error')?>');
   </script>
   <?php endif ?>
-  
+ 
   <!-- <div class='stock_modal'></div> -->
 </main>

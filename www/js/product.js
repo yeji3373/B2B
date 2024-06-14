@@ -1,43 +1,26 @@
 $(document).ready(function() {
-  $('.product-search-result .product-list').scroll(function() {
-    let scrollPer = Math.round((Math.ceil($(".product-search-result .product-list").scrollTop() + $(".product-search-result .product-list").height()) / $(this).prop('scrollHeight')) * 100);
+  if ( $(".product-search-result .product-list").length ) {
+    products = getData('/apiLoggedIn/products');
+    // console.log(products);
+    if ( products.Code == 200 ) {
+      // console.log(products.data);
+      list = getData('/order/productList', {'products' : products.data});
+      $(".product-search-result .product-list").html(JSON.parse(list.data));
+    }
+  }
 
-    if ( scrollPer > 70 ) {
-      $('#product-form input[name=request_unit]').val(1);
-      $('#product-form input[name=page]').val(parseInt($('#product-form input[name=page]').val()) + 1);
-
-      result = getData('/order/productList'
-                    , dataInit("#product-form"));
-      
-      if ( result != '' ) {
-        $(this).append(result);
-        
-        if ( $(".product-invoice-section .list-group-item").length != $('.product-search-result .cart_idx').length ) {
-          Array.from($('.product-search-result .list-group-item')).forEach(element => {
-            Array.from($(".product-invoice-section .list-group-item")).forEach(ele => {
-              if ($(element).find('[name=prd_id]').val() == $(ele).find('[name=prd_id]').val() ) {
-                if ( !$(element).find('form .cart_idx').length ) {
-                  let btn = $(element).find('button');
-                  let removeClass = btn.attr('data-remove-class');
-                  let addClass = btn.attr('data-add-class');
-                  let btnText = btn.attr('data-btn');
-  
-                  btn.attr('data-remove-class', addClass);
-                  btn.attr('data-add-class', removeClass);
-                  btn.attr('data-btn', $.trim(btn.text()));
-                  btn.removeClass(removeClass);
-                  btn.addClass(addClass);
-                  btn.text($.trim(btnText));
-
-                  $(element).find('form').append($('<input type="hidden" class="cart_idx" value=' + $(ele).find('[name=cart_idx]').val() + '>'));
-                }
-              }
-            });
-          });
-        }
+  if ( $('.cart-in-product').length ) {                    
+    carts = getData('/apiLoggedIn/carts');
+    // console.log(carts);
+    if ( carts.Code == 200 ) {
+      if ( carts.data.length > 0 ) {
+        list = getData('/order/cartList', {'carts': carts.data} );
+        // console.log(list);
+        $('.cart-in-product').html(JSON.parse(list.data));
       }
     }
-  });
+  }
+  $('.product-search-result .product-list').bind('scroll', productListPage);
 }).on('keydown', function(e) {
   // console.log(e.keyCode);
   if ( e.keyCode === 13 ) e.preventDefault();
@@ -50,9 +33,9 @@ $(document).ready(function() {
   if ( search.length > 0 ) {
     searchList.addClass('show');
     result = getData('/api/getLikeBrandName', {'brand_name': search});
-
-    if ( result != '' ) {
-      $.each(result, (idx, key) => {
+    // console.log(result);
+    if ( result.Code == 200 ) {
+      $.each(result.data, (idx, key) => {
         resultList = 
           resultList +
           `<li class='dropdown-item test' data-name='${key['brand_name']}' data-id='${key['brand_id']}'>
@@ -69,35 +52,38 @@ $(document).ready(function() {
     searchList.append("<li class='dropdown-header'>Search for brands</li>");
   }
 }).on('click', '.brand-keyword-search-result .dropdown-item', function() {
-  $("#product-form input[name=brand_id]").val($(this).data('id'));
-  result = getData('/order/productList', dataInit("#product-form"));
-  if ( result != '' ) {
-    $(".brand-section .brand-item.active").removeClass('active');
-    $(".brand-section .brand-keyword-search").val('');
-    $(this).parent().empty().append('<li class="dropdown-header">Search for brands</li>');
-    $.each($(".brand-section .brand-item"), (i, v) => {
-      if ( $(v).data('id') == $(this).data('id') ) $(v).addClass('active');
+  past_id = $(".brand-list-group .brand-item.active").data('id');
+  current_id = $(this).data('id');
+
+  if ( past_id != current_id ) {
+    $(".brand-list-group .brand-item.active").removeClass('active');
+    
+    $.each($(".brand-list-group .brand-item"), (i, v) => {
+      if ( $(v).data('id') == current_id ) $(v).addClass('active');
     });
-    $(".brand-keyword-search-result").removeClass('show').attr('style', '');
-    appendData($('.product-search-result .product-list'), result, true);
-    if ( $('.product-search-result .product-list').scrollTop() > 0 ) {
-      $('.product-search-result .product-list').scrollTop(0);
+
+    $("#product-form input[name=brand_id]").val(current_id);
+    $(".brand-keyword-search-result").removeClass('show');
+    result = getData('/apiLoggedIn/products', dataInit("#product-form"), true);
+    console.log(result);
+    if ( result.Code == 200 ) {
+      list = getData('/order/productList', {'products' : result.data});
+      $(".product-search-result .product-list").html(JSON.parse(list.data));
+      $('.product-search-result .product-list').scrollTop(0);      
     }
   }
 }).on('click', '.brand-list-group .brand-item', function() {
   $('.brand-item.active').removeClass('active');
-
   $(this).addClass('active');
-  $('#product-form input[name=brand_id]').val($(this).data('id'));
-  $('#product-form input[name=request_unit]').val(1);
-  $('#product-form input[name=page]').val(1);
 
-  result = getData('/order/productList', dataInit("#product-form"));
-  if ( result != '' ) {
-    appendData($('.product-search-result .product-list'), result, true);
-    if ( $('.product-search-result .product-list').scrollTop() > 0 ) {
-      $('.product-search-result .product-list').scrollTop(0);
-    }
+  $('#product-form input[name=brand_id]').val($(this).data('id'));
+  // $('#product-form input[name=request_unit]').val(1);
+  $('#product-form input[name=offset]').val(1);
+
+  result = getData('/apiLoggedIn/products', dataInit("#product-form", true));
+  if ( result.Code == 200 ) {
+    list = getData('/order/productList', {'products' : result.data});
+    $(".product-search-result .product-list").html("").scrollTop(0).append(JSON.parse(list.data));
   }
 }).on('keyup', '#productSearch', function(e) {
   if ( e.keyCode == 13 ) return;
@@ -110,8 +96,7 @@ $(document).ready(function() {
   if ( search.length > 2 ) {
     if ( opts == '' ) opts = 'name';
     formInSearchDateInit();
-    if ( $("#product-form input[name=page]").val() > 1 ) $("#product-form input[name=page]").val(1);
-    if ( $("#product-form input[name=request_unit]").val() == true ) $("#product-form input[name=request_unit]").val(0);
+    $(".product-search-result .product-list").scrollTop(0);
 
     if ( $("#product-form input[name=" + opts + "]").length) {
       $("#product-form input[name=" + opts + "]").val(search);
@@ -119,13 +104,15 @@ $(document).ready(function() {
       $("#product-form").append("<input type='hidden' name='" + opts + "' value='" + search + "'>");
     }
 
-    result = getData('/order/productList', dataInit("#product-form"));
-    if ( result != '' ) {
-      appendData($('.product-search-result .product-list'), result, true);
-      if ( $('.product-search-result .product-list').scrollTop() > 0 ) {
-        $('.product-search-result .product-list').scrollTop(0);
+    result = getData('/apiLoggedIn/products', dataInit("#product-form", true));
+    if ( result.Code == 200 ) {
+      if ( result.data.length > 0 ) {
+        list = getData('/order/productList', {'products': result.data});
+        $(".product-search-result .product-list").html(JSON.parse(list.data));
+      } else {
+        $('.product-search-result .product-list').html('not found');
       }
-    }
+    }    
   }
 }).on('click', '.search-btn', function() {
   if ( $(".productSearchOpts option:selected").val() == '' ) $(".productSearchOpts option[value=name]").attr('selected', true);
@@ -134,33 +121,34 @@ $(document).ready(function() {
   let opts = $(".productSearchOpts option:selected").val();
   let search = $("#productSearch").val();
 
-  formInSearchDateInit();
-  if ( $("#product-form input[name=page]").val() > 1 ) $("#product-form input[name=page]").val(1);
-  if ( $("#product-form input[name=request_unit]").val() == true ) $("#product-form input[name=request_unit]").val(0);
-
+  $(".product-search-result .product-list").scrollTop(0);
+  
   if ( $("#product-form input[name=" + opts + "]").length) {
     $("#product-form input[name=" + opts + "]").val(search);
   } else {
     $("#product-form").append("<input type='hidden' name='" + opts + "' value='" + search + "'>");
   }
-  
-  result = getData('/order/productList', dataInit("#product-form"));
-  if ( result != '' ) {
-    appendData($('.product-search-result .product-list'), result, true);
-    if ( $('.product-search-result .product-list').scrollTop() > 0 ) {
-      $('.product-search-result .product-list').scrollTop(0);
+
+  result = getData('/apiLoggedIn/products', dataInit("#product-form", true));
+  console.log(result);
+  if ( result.Code == 200 ) {
+    if ( result.data.length > 0 ) {
+      list = getData('/order/productList', {'products': result.data});
+      appendData($('.product-search-result .product-list'), list.data, true);
+    } else {
+      $('.product-search-result .product-list').html('not found');
     }
   }
 }).on('change', '.productSearchOpts', function() {
   if ( $(this).val() == '' ) {
     formInSearchDateInit();
     $("#productSearch").val('');
-    if ( $("#product-form input[name=page]").val() > 1 ) $("#product-form input[name=page]").val(1);
+    if ( $("#product-form input[name=offset]").val() > 1 ) $("#product-form input[name=offset]").val(1);
     if ( $("#product-form input[name=request_unit]").val() == true ) $("#product-form input[name=request_unit]").val(0);
 
-    result = getData('/order/productList', dataInit("#product-form"));
-    if ( result != '' ) {
-      appendData($('.product-search-result .product-list'), result, true);
+    result = getData('/order/productList', dataInit("#product-form", true));
+    if ( result.Code == 200 ) {
+      appendData($('.product-search-result .product-list'), result.data, true);
       if ( $('.product-search-result .product-list').scrollTop() > 0 ) {
         $('.product-search-result .product-list').scrollTop(0);
       }
@@ -188,10 +176,10 @@ $(document).ready(function() {
     return;
   }
 }).on("click", '.order-req', function(e) {
-  // $(this).closest('form').attr('action', '/order/addCartList');
+  $(this).closest('form').attr('action', '/order/addCartList');
+  return;
   e.preventDefault();
   let data = $(this).closest('form').serializeArray();
-
   result = getData("/order/addCartList", data, 'POST', true);
 
   if ( parseInt(result['Code']) != 200 ) {
@@ -603,10 +591,18 @@ $(document).ready(function() {
 //   $(".prev-addr-sel:first").click();
 // });
 
-function dataInit(target = null) {
+function dataInit(target = null, refresh = false) {
   let formData = null;
-  if ( target == null ) formData = $("form:first").serializeArray();
-  else formData = $('form' + target).serializeArray();
+
+  if ( target == null ) target = $("form:first");
+  else target = $('form' + target);
+
+  if ( refresh ) {
+    if ( target.find('input[name=offset]').length ) target.find('input[name=offset]').val(1);
+  }
+  
+  formData = target.serializeArray();
+  console.log(formData);
   return formData;
 }
 
@@ -719,4 +715,28 @@ function formInSearchDateInit() {
       }
     }
   });
+}
+
+function productListPage() {
+  // scroll up check
+  let scrollPer = Math.round((Math.ceil($(this).scrollTop() + $(this).height()) / $(this).prop('scrollHeight')) * 100);
+  let page = parseInt($('#product-form input[name=offset]').val());
+  let $this = $(this);
+
+  if ( scrollPer > 90 ) {
+    console.log($(this).prop('scrollHeight'));
+    $this.unbind('scroll');
+    $('#product-form input[name=request_unit]').val(1);
+    $('#product-form input[name=offset]').val(page + 1);
+
+    result = getData('/apiLoggedIn/products', dataInit("#product-form"));
+    if ( result.Code == 200 ) {
+      console.log(result.data);
+      if ( result.data.length > 0) {
+        list = getData('/order/productList', {'products' : result.data});
+        $this.append(JSON.parse(list.data));
+      }
+    }
+    $this.bind('scroll', productListPage);
+  }
 }

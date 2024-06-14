@@ -19,6 +19,15 @@ class ProductModel extends Model {
     'display'      => 1,
   ];
 
+  function productCnt($sql = array()) {
+    $select = '*';
+    $where = http_build_query($this->default, '', ' AND ');
+
+    if ( !empty($sql['select']) ) $select = $sql['select'];
+    if ( !empty($sql['where']) ) $where .= ' AND '.$sql['where'];
+
+    return $this->select('COUNT( '.$select.' ) AS cnt')->where($where)->first();    
+  }
 
   function products($sql = array()) {
     $select = '';
@@ -27,10 +36,16 @@ class ProductModel extends Model {
 
     if ( !empty($sql) ) {
       if ( !empty($sql['select']) ) $select = $sql['select'];
-      if ( !empty($sql['where']) ) $where = array_merge($where, $sql['where']);
+      if ( !empty($sql['where']) ) {
+        if ( gettype($sql['where']) == 'string') {
+          $where = http_build_query($where, '', ' AND ');
+          $where .= ' AND '.$sql['where'];
+        } else $where = array_merge($where, $sql['where']);
+      }
       if ( !empty($sql['orderby']) ) $orderBy = $sql['orderby'];
       if ( !empty($sql['orderBy']) ) $orderBy = $sql['orderBy'];
     }
+
     $this->select($select)->where($where)->orderBy($orderBy);
     return $this;
   }

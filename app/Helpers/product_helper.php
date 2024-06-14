@@ -4,7 +4,6 @@ use App\Models\ProductPriceModel;
 use App\Models\SupplyPriceModel;
 use App\Models\CartModel;
 use App\Models\CartStatusModel;
-// use App\Views\layout\includes\productItem;
 
 if ( !function_exists('productDefaultSelect') ) {
   function productDefaultSelect($sel = null) {
@@ -49,10 +48,11 @@ if ( !function_exists('get_product') ) {
       unset($sql['offset']);
     }
     $productModel = new ProductModel();
-    // var_dump($sql);
     $productModel->products($sql);
     if ( is_null($callType) ) $product = $productModel->first();
-    else $product = $productModel->findAll($limit, $offset);
+    else {
+      $product = $productModel->findAll($limit, $offset);
+    }
 
     return $product;
   }
@@ -72,6 +72,15 @@ if ( !function_exists('get_product_price') ) {
     else $productPrice = $productPriceModel->first();
 
     return $productPrice;
+  }
+}
+
+if ( !function_exists('get_product_total') ) {
+  function get_product_total($sql = array()){
+    $productModel = new ProductModel();
+    $Cnt = $productModel->productCnt();
+    
+    return $Cnt;
   }
 }
 
@@ -118,10 +127,22 @@ if ( !function_exists('combine_product_cart_info') ) {
   }
 }
 
-if ( !function_exists('view_product_item')) {
-  function view_product_item($data = array()) {    
-    // if ( empty($data) ) return;
-    return view('layout\includes\test');
+if ( !function_exists('get_cart')) {
+  function get_cart($sql = array()) {
+    $cartModel = new CartModel();
+    $cartList = $cartModel->combine_cart_status($sql)->findAll();
+
+    return $cartList;
   }
 }
+
+// if ( !function_exists('view_product_item')) {
+//   function view_product_item($data = array()) {
+//     $msg = $data;
+//     helper('product_item');
+//     $a = json_encode(product_item($msg));
+
+//     return $a;
+//   }
+// }
 

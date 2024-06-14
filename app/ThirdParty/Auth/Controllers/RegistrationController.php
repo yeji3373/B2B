@@ -139,14 +139,13 @@ class RegistrationController extends Controller
       ],
       'email'              => [
         'label'   =>  'e-mail',
-        'rules'   =>  'required|is_unique[users.email]',
+        'rules'   =>  'required|is_unique[users.email]|valid_email',
         'errors'  =>  [
           'required'  =>  'The {field} is required. ',
           'is_unique' =>  lang('Auth.alreadyData', ['e-mail']),
         ]
       ],
       'password'           => [
-        // 'rules'   =>  'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]/]',
         'rules'   =>  'required|min_length[5]|regex_match[/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/]',
         'errors'  => [
           'regex_match' => lang('Auth.pwmsg')
