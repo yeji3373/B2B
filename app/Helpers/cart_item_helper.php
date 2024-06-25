@@ -12,12 +12,13 @@ if ( !function_exists('cart_list') ) {
 
 if ( !function_exists('cart_item') ) {
   function cart_item($cart) {
+    $item = '';
+    
     $qtyInputReadOnly = false;
-
     if ( isset($cart['spq_criteria']) && !is_null($cart['spq_criteria']) ) { 
       $qtyInputReadOnly = true;
     }
-
+    
     $item = 
     "<div class='d-grid py-1 px-2 list-group-item position-relative w-100 slideUp'>
       <div class='d-flex flex-column product-item-info'>
@@ -143,12 +144,14 @@ if ( !function_exists('cart_item') ) {
       </div> <!-- product-item-info 닫음 -->
       <div class='d-flex flex-column justify-content-end cart-qty-request'>
         <form accept-charset='utf-8' method='post' class='cart-qty-form'>
+          <input type='hidden' name='idx' value='".$cart['idx']."'>
+          <input type='hidden' name='dataType' value='delete'>
           <div class='btn btn-close border-0 end-0 position-absolute top-0 bsk-del-btn'></div>
           <div class='cart-qty-group'>
             <div class='d-flex flex-row justify-content-center align-items-center flex-nowrap border mx-auto mb-2 w-100 qty-group'>
-              <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='-'>-</div>
+              <div class='w-25 h-100 p-0 fw-bold text-center shadow-none decrease-btn' data-calc='1'>-</div>
               <input type='text' value='".$cart['order_qty']."' class='w-50 border-0 border-start border-end rounded-0 qty-spq text-center'".($qtyInputReadOnly ? 'readonly': '').">
-              <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='+'>+</div>
+              <div class='w-25 h-100 p-0 fw-bold text-center shadow-none increase-btn' data-calc='0'>+</div>
             </div>";
             if ( !$qtyInputReadOnly ) :
             $item .=

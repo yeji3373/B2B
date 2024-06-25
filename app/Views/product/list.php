@@ -74,20 +74,19 @@
           <?=view('layout/includes/Cart') ?>
         </div>
         <div class='px-3 py-2 d-flex flex-column product-total-price'>
-          <?php if ( isset($cartSubTotal) ) : ?>
-          <div class='w-100 d-flex flex-column product-price-detail'>
-            <!-- <div class='d-flex flex-row justify-content-between align-items-baseline'>
+          <!-- <div class='w-100 d-flex flex-column product-price-detail'>
+            <div class='d-flex flex-row justify-content-between align-items-baseline'>
               <label>total</label>
               <div>
                 <span><?//=session()->currency['currencySign']?></span>
-                <span class='total-price'><?//=$cartSubTotal['order_price_total'];?></span>
+                <span class='total-price'>0</span>
               </div>
             </div>
             <div class='d-flex flex-row justify-content-between align-items-baseline'>
               <label>discount</label>
               <div>
                 <span><?//=session()->currency['currencySign']?></span>
-                <span class='discount-price'><?//=$cartSubTotal['order_discount_total']?></span>
+                <span class='discount-price'>0</span>
               </div>
             </div>
           </div> -->
@@ -95,11 +94,7 @@
             <label>subtotal</label>
             <div class='fw-bold font-size-large-large d-flex'>
               <span><?=session()->currency['currencySign']?></span>
-              <span class='sub-total-price'>
-                <?php 
-                  echo $cartSubTotal['order_subTotal']
-                ?>
-              </span>
+              <span class='sub-total-price'>0</span>
             </div>
           </div>
           <div class='w-100 text-end'>
@@ -109,7 +104,6 @@
               <?=lang('Lang.inventoryRequest.inventoryCheckRq')?>
             </button>
           </div>
-          <?php endif ?>
         </div>
       </div>
     </div>

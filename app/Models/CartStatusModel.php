@@ -16,6 +16,7 @@ class CartStatusModel extends Model {
     "exchange_rate",
     "product_price_idx", "retail_price", "supply_price",
     "supply_price_idx", "price", "applied_price",
+    "margin_rate_id",
     "spq_idx", "moq", 'spq_criteria', 'spq', 'spq_inBox', 
     'spq_outBox', 'calc_code', 'calc_unit'
   ];

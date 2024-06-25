@@ -119,11 +119,7 @@ if ( !function_exists('__item') ) {
               session()->currency['currencySign'].
               number_format($product['product_price'], session()->currency['currencyFloat']).
           "</div>
-          <div class='d-flex flex-column align-items-end'>
-            <form method='post'>
-              <input type='hidden' name='brand_id' value='".$product['brand_id']."'>
-              <input type='hidden' name='prd_id' value='".$product['id']."'>
-              <input type='hidden' name='prd_price' value='".$product['product_price']."'>";
+          <div class='d-flex flex-column align-items-end'>";
               $hasCart = false;
               if ( !$hasCart ) : 
               $item.="<button class='btn btn-sm order-req' 
@@ -143,8 +139,8 @@ if ( !function_exists('__item') ) {
                 .lang('Lang.unselectBtn')."
               </button>";
               endif;
-            $item.= "</form>
-          </div>
+            $item.= 
+          "</div>
         </div>
       </div>";
 

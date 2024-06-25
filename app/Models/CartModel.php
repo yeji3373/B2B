@@ -17,6 +17,7 @@ class CartModel extends Model {
     , "request_order_date"
     , "onlyZeroTax"
     , "order_qty"
+    , "req_price"
     // , "prd_section"
     , "chkd" 
     //, "product_price_idx" 
@@ -33,15 +34,22 @@ class CartModel extends Model {
     $orderby = "{$this->table}.idx ASC"; 
 
     if ( !empty($sql) ) {
-      if ( !empty($sql['where']) ) $where = $sql['where'];
+      if ( array_key_exists('where', $sql) ) {
+        if ( gettype($sql['where']) != 'string' ) {
+          $where = http_build_query($sql['where'], '', ' AND ');
+        } else $where = $sql['where'];
+      }
     }
 
+    if ( !empty($where) ) $this->where($where);
+    
     $this->select("{$this->table}.*")
           ->select("cart_status.*")
-          ->join('cart_status', "cart_status.cart_idx = {$this->table}.idx", "STRAIGHT")
-          ->where($where)
+          ->join('cart_status', "cart_status.cart_idx = {$this->table}.idx", "LEFT OUTER")
           ->orderBy($orderby);
+
     return $this;
+    // return $where;
   }
 
   public function combine_cart_product_info($sql = array()) {

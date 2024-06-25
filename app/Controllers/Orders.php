@@ -60,10 +60,10 @@ class Orders extends BaseController {
   }
 
   public function index() {
-    $this->data['orders'] = $this->getOrderList();
+    $this->data['orders'] = self::getOrderList();
     // if ( empty($this->request->getGet('order_number')) || empty($this->data['order']['order_number'])) {
     if ( empty($this->request->getGet('order_number')) ) {
-      $this->data['statistics'] = $this->ordersStatistics();
+      $this->data['statistics'] = self::ordersStatistics();
       $this->data['orderBrand'] = $this->order->select('brand.brand_name, COUNT(brand.brand_id) AS cnt')
                                     ->join('orders_detail', 'orders_detail.order_id = orders.id')
                                     ->join('product', 'product.id = orders_detail.prd_id')
@@ -73,11 +73,11 @@ class Orders extends BaseController {
                                     ->groupby('brand.brand_id')
                                     ->findAll(10);
     } else {
-      $this->data['order'] = $this->getOrder();
+      $this->data['order'] = self::getOrder();
       if ( empty($this->data['order']) ) {
         return redirect()->to(base_url('orders'))->with('error', 'There is no sush order information');
       }
-      $this->data['paymentMethod'] = $this->getPaymentMethod();
+      $this->data['paymentMethod'] = self::getPaymentMethod();
       $this->data['receipts'] = $this->getOrderReceipts();
       $this->data['orderDetails'] = $this->getOrderDetails();
       $this->data['orderRequirement'] = $this->requirementRequest->getRequirementOptions($this->orderId);
@@ -454,11 +454,11 @@ class Orders extends BaseController {
 
   public function getOrderData() {
     // var_dump($this->request->getVar());
-    $data['order'] = $this->getOrder();
-    $data['payment'] = $this->getPaymentMethod();
-    $data['orderDetails'] = $this->getOrderDetails();
-    $data['receipt'] = $this->getOrderReceipt();
-    $data['buyer'] = $this->getBuyer();
+    $data['order'] = self::getOrder();
+    $data['payment'] = self::getPaymentMethod();
+    $data['orderDetails'] = self::getOrderDetails();
+    $data['receipt'] = self::getOrderReceipt();
+    $data['buyer'] = self::getBuyer();
     
     $data['user'] = Array();
     $data['delivery'] = Array();

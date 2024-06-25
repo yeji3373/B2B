@@ -11,7 +11,8 @@ class OrderDetailModel extends Model {
 
   protected $allowedFields = [
     'order_id', 'prd_id', 'stock_req', 'stock_req_qty',
-    'prd_order_qty', 'prd_price_changed', 'prd_price_id',
+    'prd_order_qty', 'prd_price_changed', 
+    'prd_price_id', 'prd_supply_price_id',
     'prd_price', 'prd_discount', 'margin_rate_id'
   ];
 

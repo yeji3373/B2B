@@ -39,10 +39,6 @@ class Api extends ResourceController {
   //     // return view('dash/main');
   // }
 
-  // public function getProduct() {
-  //   current_user();
-  // }
-
   public function getCountry() {
     $countries = new CountryModel();
     $where = [

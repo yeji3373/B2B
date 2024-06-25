@@ -34,31 +34,31 @@ function getData(url, data, type = 'POST', parse = false) {
       error: function(XMLHttpRequest, textStatus, errorThrow) {
         errors = true;
         // console.log("error XMLHttpRequest", XMLHttpRequest);
-        // val = {'Code': XMLHttpRequest.status, 'Msg': XMLHttpRequest.responseText};
-        val = {'Code': XMLHttpRequest.status, 'Msg': textStatus, 'data' : null};
+        // console.log('textStatus ', textStatus);
+        // console.log('errorThrow ', errorThrow);
+        val = {'Code': XMLHttpRequest.status, 'Msg': textStatus, 'data' : errorThrow };
         // return val;
       }
     });
   } catch(e) {
     val = e;
-  } finally {  
-    if ( !errors ) {
-      if (parse) val = JSON.parse(val);
+  // } finally {  
+  //   if ( !errors ) {
+  //     if (parse) val = JSON.parse(val);
 
-      if ( typeof val.Code != 'undefined' ) {
-        if ( val.Code == 401 ) {
-          if ( val.Msg == '' ) {
-            val.Msg = '로그인 필요';
-          }
-          alert(val.Msg);
-          location.replace('/login');
-        }
-      }
-    // } else {
-      // val = {'Code': 500, 'Msg': val};
-    }
+  //     if ( typeof val.Code != 'undefined' ) {
+  //       if ( val.Code == 401 ) {
+  //         if ( val.Msg == '' ) {
+  //           val.Msg = '로그인 필요';
+  //         }
+  //         alert(val.Msg);
+  //         location.replace('/login');
+  //       }
+  //     }
+  //   // } else {
+  //     // val = {'Code': 500, 'Msg': val};
+  //   }
   }
-
   return val;
 }
 
@@ -158,6 +158,25 @@ $.urlParam = function(param) {
   } else return;
 
   return decodeURI(urlParams);
+}
+
+function formSubmitTest(data = Array(), formOpt = {}, $form = '') {
+  if ( $form == '' ) {
+    if ( formOpt.action == '' ) formOpt.action ='/api';
+    if ( formOpt.name == '' || !formOpt.name ) formOpt.name = 'test';
+    if ( formOpt.method == '' || !formOpt.method ) formOpt.method = 'post';
+    $form = $("<form/>").attr({'action': formOpt.action, 'name': formOpt.name, 'method': formOpt.method});
+    $("body").append($form);
+  }
+  console.log(data);
+  if ( data != '' ) {
+    for(key in data) {
+      console.log("key " ,key);
+      $form.append($("<input/>").attr({"type": "hidden", "name" : key, "value": data[key]}));
+    }
+  } else return;
+  
+  return $form;
 }
 
 $(document).on('click', '.pre-order', function(e) {

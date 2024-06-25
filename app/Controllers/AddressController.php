@@ -22,14 +22,25 @@ class AddressController extends BaseController {
   public function addressConduct($data = []) {
     if ( is_null($this->request) ) {
       if ( !empty($data) ) $req = $data;
-      else return NULL;
+      else return false;
     } else $req = $this->request->getVar('address');
 
     $req['buyer_id'] = session()->userData['buyerId'];
 
+    if ( isset($req['address_operate']) ) {
+      if ( empty($req['address_operate']) ) {
+        if ( !empty($req['idx']) ) return false;
+      }
+    }
+
+    $this->address->transBegin();
     if ( $this->address->save($req) ) {
       $this->addressId = $this->address->getInsertID();
-    } 
+      $this->address->transCommit();
+    } else {
+      $this->addressId = 0;
+      $this->address->transRollback();
+    }
     return $this->addressId;
   }
 

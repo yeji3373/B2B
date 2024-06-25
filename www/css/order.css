@@ -103,6 +103,7 @@
   padding-left: 3.6rem;
   display: flex;
   height: fit-content;
+  margin-bottom: 2rem;
 }
 .products .product-invoice-section .list-group-item.d-grid.slideUp .product-item-info .product-item-detail-info {
   display: none;
