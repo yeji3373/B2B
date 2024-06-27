@@ -18,17 +18,7 @@ class ProductModel extends Model {
     'discontinued' => 0,
     'display'      => 1,
   ];
-
-  function productCnt($sql = array()) {
-    $select = '*';
-    $where = http_build_query($this->default, '', ' AND ');
-
-    if ( !empty($sql['select']) ) $select = $sql['select'];
-    if ( !empty($sql['where']) ) $where .= ' AND '.$sql['where'];
-
-    return $this->select('COUNT( '.$select.' ) AS cnt')->where($where)->first();    
-  }
-
+  
   function products($sql = array()) {
     $select = '';
     $where = $this->default;

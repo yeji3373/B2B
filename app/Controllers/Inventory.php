@@ -38,6 +38,7 @@ class Inventory extends BaseController {
     $this->cartStatus = new CartStatusModel();
     $this->buyer = new BuyerModel();
     $this->currency = new CurrencyModel();
+    $this->requirement = new RequirementModel();
     $this->requirmentRequest = new RequirementRequestModel();
     $this->requirementOption = new RequirementOptionModel();
     $this->margin = new MarginModel();
@@ -60,12 +61,11 @@ class Inventory extends BaseController {
 
   public function requestInventoryCheck() {
     $country = new CountryModel();
-    $requirement = new RequirementModel();
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->orderBy('idx DESC')->findAll(0, 1);
     $this->data['regions'] = $country->findAll();
     $this->data['itus'] = $this->OrderController->getItus()->findAll();
-    $this->data['requirements'] = $requirement->where('display', 1)->findAll();
+    $this->data['requirements'] = $this->requirement->where('display', 1)->findAll();
 
     if ( $this->request->isAJAX() ) {
       $result['view'] = view('order/InventoryCheck', $this->data);
@@ -77,7 +77,6 @@ class Inventory extends BaseController {
   public function requestInventory() {
     $result = [];
     $data = $this->request->getPost();
-    // d($data);
 
     // $getCarts = $this->cart->select('idx')->where(['cart.buyer_id' => session()->userData['buyerId']])->findAll();
     $getCarts = get_cart(['callType' => 1, ['where' => ['cart.buyer_id' => session()->userData['buyerId']]]]);
@@ -145,6 +144,30 @@ class Inventory extends BaseController {
                       $result['error']['message'] = 'cart status delete error';
                       $this->response->setStatusCode(400, $result['error']['message']);
                       return redirect()->to('/order')->with('error', $result['error']['message']);
+                    } else {
+                      if ( empty($data['requirement']) ) {
+                        $data['requirement'] = $this->requirement
+                                                  ->select("idx AS requirement_id, NULL AS requirement_detail")
+                                                  ->where(['display' => 1, 'default' => 1])
+                                                  ->find();
+                      }
+                      
+                      $details = $this->orderDetail->where('order_id', $this->order->getInsertID())->find();
+                      if ( !empty($details)) {
+                        foreach($data['requirement'] AS $requirment ) {
+                          foreach($details AS $detail) {
+                            if ( !$this->requirmentRequest->save(['order_id' => $this->order->getInsertID()
+                                                                , 'order_detail_id' => $detail['id']
+                                                                , 'requirement_id' => $requirment['requirement_id']
+                                                                , 'requirement_detail' => $requirment['requirement_detail']]) ) {
+                              
+                              $this->order->transRollback();
+                              $result['error']['message'] = 'Request error';
+                              return redirect()->to('/order')->with('error', $result['error']['message']);
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }

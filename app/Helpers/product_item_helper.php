@@ -2,7 +2,7 @@
 if ( !function_exists('product_item') ) {
   function product_item($data) {
     $items = "";
-    foreach($data AS $product) {
+    foreach($data AS $i => $product) {
       $items .= __item($product);
     }
     return json_encode($items);
@@ -145,5 +145,11 @@ if ( !function_exists('__item') ) {
       </div>";
 
     return $item;
+  }
+}
+
+if ( !function_exists('is_empty') ) {
+  function is_empty($msg = 'is empty') {
+    return json_encode("<div class='empty'>$msg</div>");
   }
 }

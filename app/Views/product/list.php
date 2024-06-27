@@ -1,9 +1,10 @@
 <main class='my-1 mx-auto w-auto products'>
   <section>
     <form id='product-form'>
-      <input type='hidden' name='brand_id'>
-      <input type='hidden' name='request_unit' value='0'>
-      <input type='hidden' name='offset' value='1'>
+      <input type='hidden' name='brand_id' data-default-value>
+      <input type='hidden' name='request_unit' value='0' data-default-value='0'>
+      <input type='hidden' name='offset' value='1' data-default-value='1'>
+      <input type='hidden' name='totalpage'>
     </form>
     <div class='m-auto d-flex position-relative w-90'>
       <div class='border border-dark brand-section me-2 rounded w-14'>

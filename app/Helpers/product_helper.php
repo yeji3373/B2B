@@ -8,7 +8,6 @@ use App\Models\ProductSpqModel;
 use App\Models\CurrencyRateModel;
 use App\Models\MarginModel;
 
-
 if ( !function_exists('productDefaultSelect') ) {
   function productDefaultSelect($sel = null) {
     $temp = "barcode, sample, img_url, name_en AS name, type_en AS type, edition_en AS edition, box,
@@ -55,7 +54,7 @@ if ( !function_exists('get_product') ) {
     } 
 
     if ( array_key_exists('offset', $sql) ) {
-      $offset = $sql['offset'];      
+      $offset = $sql['offset'];
       unset($sql['offset']);
     }
 
@@ -64,9 +63,9 @@ if ( !function_exists('get_product') ) {
     if ( is_null($callType) ) $product = $productModel->first();
     else {
       if ( !empty($limit) ) $product = $productModel->findAll($limit, $offset);
-      else $product = $productModel->findAll();
+      else $product = $productModel->find();
     }
-
+    // echo $productModel->getLastQuery();
     return $product;
   }
 }
@@ -88,16 +87,6 @@ if ( !function_exists('get_product_price') ) {
   }
 }
 
-if ( !function_exists('get_product_total') ) {
-  function get_product_total($sql = array()){
-    $productModel = new ProductModel();
-
-    $Cnt = $productModel->productCnt();
-    
-    return $Cnt;
-  }
-}
-
 if ( !function_exists('get_supply_price') ) {
   function get_supply_price($sql = array()) {
     $callType = null;
@@ -112,7 +101,7 @@ if ( !function_exists('get_supply_price') ) {
 
     if ( is_null($callType) ) $supplyPrice = $supplyPriceModel->first();
     else $supplyPrice = $supplyPriceModel->findAll();
-
+    // echo $supplyPriceModel->getLastQuery().";<br/>";
     return $supplyPrice;
   }
 }
@@ -160,6 +149,7 @@ if ( !function_exists('get_cart')) {
         // $cartList = combine_product_price_info()
       }
     } else {
+      // find() => getresultArray findAll() => limit() getresultArray()
       $cartList = $cartModel->combine_cart_status($sql)->findAll();
     }
     return $cartList;

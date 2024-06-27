@@ -7,7 +7,7 @@ use App\Models\StockModel;
 
 use CodeIgniter\I18n\Time;
 
-class CartController extends BaseController {
+class Cart extends BaseController {
   protected $tax = 1.1;
   protected $products;
   protected $data;
@@ -17,7 +17,8 @@ class CartController extends BaseController {
   public $checkDate;
 
   public function __construct() {
-    helper('product');
+    helper(['product', 'auth']);
+    current_user();
     $this->cart = new CartModel();
     $this->product = new ProductModel();
     $this->stocks = new StockModel();
@@ -158,30 +159,16 @@ class CartController extends BaseController {
   }
 
   public function addCartList($data = array()) {
-    $margin_level = 2;
     if ( empty($data) ) $data = $this->request->getPost();
-    var_dump($data);
-    if ( empty($data) ) return '처리할 대상 정보가 없음'; 
-    if ( empty($this->getBuyerInfo()) ) return '바이어 정보가 없음';
-    else {
-      $buyerInfo = $this->getBuyerInfo();
-      if ( !$buyerInfo['available'] ) return '바이어 정보가 유효하지 않음';
-    }
-    if ( empty($data['prd_id']) ) return '제품정보가 정확하지 않습니다.';
+    if ( empty($data['prd_id']) ) return ['product' => 'Invalid data'];
+    
     $margin_level = session()->userData['buyerMargin'];
-
-    // $this->data['data'] = $data;
-    // return $this->data;
-    // // var_dump(session()->currency);
-
-    $prdSpq = get_spq(['where' => ['product_idx' => $data['prd_id']]]);
-
-    if ( isset($data['cartIdx']) ) {
+    
+    if ( isset($data['idx']) ) {
       self::editCartList();
-      // $this->cart->save(['idx' => $data['cartIdx'], 'order_qty' => $data['orderQty']]);
       return;
     }
-
+    $prdSpq = get_spq(['where' => ['product_idx' => $data['prd_id']]]);
     $product_price = [ 'select' => productPriceDefaultSelect()
                       , 'where' => ['product_idx' => $data['prd_id']] ];
     $supply_price = [ 'select' => supplyPriceDefaultSelect()
@@ -215,75 +202,105 @@ class CartController extends BaseController {
     // return json_encode(['Code' => $code, 'Msg' => $msg, 'data' => $resultData]);
   }
 
-
   public function editCartList($data = array()) {
     if ( empty($data) ) $data = $this->request->getVar();
-    var_dump($data);
     $where = [];
+    $result = [];
     
-    if ( !isset($data['cartIdx']) ) {
+    if ( !isset($data['idx']) ) {
       $where = ['buyer_id' => session()->userData['buyerId']];
       if ( !empty($data['prd_id']) ) $where = array_merge($where, ['prd_id' => $data['prd_id']]);
-    } else $where = ['idx' => $data['cartIdx']];
+    } else $where = ['idx' => $data['idx']];
 
-    $cart = $this->cart->where($where)->first();
-
+    $cart = get_cart(['where' => $where]);
     if ( !empty($cart) ) {
-      var_dump($cart);
-      var_dump($where);
-      return;
-      $this->cart->where($where);
-      if ( empty($data['oper']) ) {
-        $prdTotalPrice = ($data['product_price'] * $cart['order_qty']);
-        $this->cart
-            ->set(['order_qty' => $data['order_qty']])
-            ->update();
-        
-        if ( $this->cart->affectedRows() ) {
-          $prdTotalPrice = ($data['product_price'] * $data['order_qty']);
-          $code = 200;
-          $msg = number_format($prdTotalPrice, session()->currency['currencyFloat']);
-        } else {
-          $code = 500; 
-          $msg = lang('Lang.unknownError', [ 'error' => 'update' ]);
-        }
+      $dataOperator = $data['dataType'];
+      unset($data['dataType']);
+      
+      $result = ['cartList' => $cart];
+
+      if ( $dataOperator == 'update' ) {        
+        if ( isset($data['order_qty'] ) ) $data['order_qty'] = $cart['order_qty'] + $data['order_qty'];
+        else $data['order_qty'] = $cart['order_qty'];
+
+        $data['req_price'] = round(($cart['applied_price'] * $data['order_qty']), 2);
+
+        // if ( $this->cart->save($data) ) {
+        //   $result['update'] = 'success';
+        // } else {
+        //   $this->response->setStatusCode(404);
+        //   $result['update'] = $this->cart->error()['message'];
+        // }
       } else {
-        if ( $data['oper'] == 'del' ) {
-          $this->cart->delete();
-          if ( $this->cart->affectedRows() ) {
-            if ( isset($data['stock_req_parent']) && isset($data['case']) ) {
-              $this->cart->where(['idx' => $data['stock_req_parent']]);
-              if ( $data['case'] == 1 ) {
-                $this->cart->set(['stock_req_parent' => NULL])->update();
-              } else if ( $data['case'] == 0 ) {
-                $this->cart->delete();
-              }
-
-              if ( $this->cart->affectedRows() ) {
-                $code = 200;
-                // // $msg = $this->cart->getLastQuery();
-                // $this->applyDiscountCart();
-              } else {
-                $code = 500;
-                // $msg = $this->cart->getLastQuery();
-              }
-            } else {
-              $code = 200;
-              // $this->applyDiscountCart();
-            }
-          } else {
-            $code = 500; 
-            // $msg = $data;
-          }
-        }
+        $deleteResult = 'success';
+        $this->cart->delete(['idx' => $data['idx']]);
+        if ( !$this->cart->affectedRows() ) {
+          // $this->response->setStatusCode(404);
+          $deleteResult = $this->cart->error()['message'];
+          $this->fail($deleteResult, 400);
+        } 
+        $result['delete'] = $deleteResult;
       }
-    } else {
-      $code = 500;
-      $msg = $this->cart->error()['message'].' is null '.json_encode($data);
-    }
 
-    if ( $this->request->isAJAX() ) {
-      return json_encode(['Code' => $code, 'Msg' => $msg]);
+      if ( $this->request->isAJAX() ) {
+        // return json_encode($result);
+        return $this->response->setJSON($result); // 하지만 안됨...ㅠㅠㅠㅠㅠㅠ
+        // return $this->respond($result); // use ResponseTrait; 일때만 가능
+        // return $this->response->setStatusCode(404);
+      }
+      return $result;
+    //   $this->cart->where($where);
+    //   if ( empty($data['oper']) ) {
+    //     $prdTotalPrice = ($data['product_price'] * $cart['order_qty']);
+    //     $this->cart
+    //         ->set(['order_qty' => $data['order_qty']])
+    //         ->update();
+        
+    //     if ( $this->cart->affectedRows() ) {
+    //       $prdTotalPrice = ($data['product_price'] * $data['order_qty']);
+    //       $code = 200;
+    //       $msg = number_format($prdTotalPrice, session()->currency['currencyFloat']);
+    //     } else {
+    //       $code = 500; 
+    //       $msg = lang('Lang.unknownError', [ 'error' => 'update' ]);
+    //     }
+    //   } else {
+    //     if ( $data['oper'] == 'del' ) {
+    //       $this->cart->delete();
+    //       if ( $this->cart->affectedRows() ) {
+    //         if ( isset($data['stock_req_parent']) && isset($data['case']) ) {
+    //           $this->cart->where(['idx' => $data['stock_req_parent']]);
+    //           if ( $data['case'] == 1 ) {
+    //             $this->cart->set(['stock_req_parent' => NULL])->update();
+    //           } else if ( $data['case'] == 0 ) {
+    //             $this->cart->delete();
+    //           }
+
+    //           if ( $this->cart->affectedRows() ) {
+    //             $code = 200;
+    //             // // $msg = $this->cart->getLastQuery();
+    //             // $this->applyDiscountCart();
+    //           } else {
+    //             $code = 500;
+    //             // $msg = $this->cart->getLastQuery();
+    //           }
+    //         } else {
+    //           $code = 200;
+    //           // $this->applyDiscountCart();
+    //         }
+    //       } else {
+    //         $code = 500; 
+    //         // $msg = $data;
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   $code = 500;
+    //   $msg = $this->cart->error()['message'].' is null '.json_encode($data);
+    // }
+
+    // if ( $this->request->isAJAX() ) {
+    //   return json_encode(['Code' => $code, 'Msg' => $msg]);
     }
   }
 }

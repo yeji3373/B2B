@@ -163,7 +163,7 @@ class Order extends BaseController
     //     return json_encode(['error' => lang('Lang.orderMinCheck', [$this->CartController->basedMinimumOrderVal])]);
     //   } 
     //   return redirect()->to(site_url('/order'))->with('error', lang('Lang.orderMinCheck', [$this->CartController->basedMinimumOrderVal]));
-    // }    
+    // }
 
     $this->data['prevAddrList'] = $this->address->where('buyer_id', session()->userData['buyerId'])->findAll();
     $this->data['regions'] = $country->findAll();

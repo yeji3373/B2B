@@ -56,7 +56,6 @@ class Orders extends BaseController {
                               'js' => ['https://cdn.jsdelivr.net/npm/chart.js'
                                       , '/address.js', '/checkout.js'
                                       , '/orders.js']];
-
   }
 
   public function index() {
@@ -78,8 +77,8 @@ class Orders extends BaseController {
         return redirect()->to(base_url('orders'))->with('error', 'There is no sush order information');
       }
       $this->data['paymentMethod'] = self::getPaymentMethod();
-      $this->data['receipts'] = $this->getOrderReceipts();
-      $this->data['orderDetails'] = $this->getOrderDetails();
+      $this->data['receipts'] = self::getOrderReceipts();
+      $this->data['orderDetails'] = self::getOrderDetails();
       $this->data['orderRequirement'] = $this->requirementRequest->getRequirementOptions($this->orderId);
       $this->data['packagingStatus'] = $this->packagingStatus
                                             ->select('packaging_status.*')
