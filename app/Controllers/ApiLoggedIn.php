@@ -19,23 +19,8 @@ class ApiLoggedIn extends ResourceController {
 
   public function __construct() {
     helper('merge');
-    helper('auth');
     helper('brand');
     helper('product');
-
-    current_user();
-  }
-
-  public function __remap(...$params) {
-    $method = $this->request->getMethod();
-    $params = [($params[0] !== 'index' ? $params[0] : false)];
-    $this->data = $this->request->getJSON();
-
-    if (method_exists($this, $method)) {
-      return call_user_func_array([$this, $method], $params);
-    } else {
-      throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-    }
   }
 
   function products() {
