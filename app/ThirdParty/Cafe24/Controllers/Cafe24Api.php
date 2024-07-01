@@ -33,7 +33,7 @@ class Cafe24Api extends ResourceController {
 		$thisIP = $_SERVER['REMOTE_ADDR'];
 		
 		$result = []; 
-		$ipLookup = $this->ipcheck->ipLookup('112.144.72.702');
+		$ipLookup = $this->ipcheck->ipLookup($thisIP);
 		// print_r($ipLookup);
 		// ipLookup 에러처리를...
 		// 국가 값 있는지 확인 후 오류 처리
