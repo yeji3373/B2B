@@ -65,7 +65,7 @@ if ( !function_exists('get_product') ) {
       if ( !empty($limit) ) $product = $productModel->findAll($limit, $offset);
       else $product = $productModel->find();
     }
-    // echo $productModel->getLastQuery();
+
     return $product;
   }
 }
@@ -101,7 +101,7 @@ if ( !function_exists('get_supply_price') ) {
 
     if ( is_null($callType) ) $supplyPrice = $supplyPriceModel->first();
     else $supplyPrice = $supplyPriceModel->findAll();
-    // echo $supplyPriceModel->getLastQuery().";<br/>";
+
     return $supplyPrice;
   }
 }
@@ -149,7 +149,6 @@ if ( !function_exists('get_cart')) {
         // $cartList = combine_product_price_info()
       }
     } else {
-      // find() => getresultArray findAll() => limit() getresultArray()
       $cartList = $cartModel->combine_cart_status($sql)->findAll();
     }
     return $cartList;
