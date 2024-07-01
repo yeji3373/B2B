@@ -16,6 +16,8 @@ $routes->group('cafe24', ['namespace' => 'Cafe24\Controllers'], function($routes
   // $routes->get('category', 'Category::getCategory');
   
   // $routes->get('variants', 'Products::getVariants');
+  $routes->get('get_ip', 'Cafe24Api::getIp');
+  $routes->post('get_ip', 'Cafe24Api::getIp');
 });
 
 // http://127.0.0.8/cafe24/authorization?code=dDRq43gYCRGkpifGETEyeD&state=MTIzNDU2Nzg=
