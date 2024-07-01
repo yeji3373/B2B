@@ -27,37 +27,47 @@ function getData(url, data, type = 'POST', parse = false) {
       url: url,
       async: false,
       data: data,
+      beforeSend: function(xhr, settings) {
+        if ( settings.url == "/apiLoggedIn/products" ) {
+          console.log('before send');
+          console.log('xhr ', xhr, ' settings ', settings);
+        }
+      },
       success: function(res, status, xhr) {
-        // console.log('res ', res, ' status ', status, ' xhr ', xhr);
+        console.log('res ', res, ' status ', status, ' xhr ', xhr);
         val = { 'Msg': status, 'Code' : xhr.status, 'data' : res };
       },
       error: function(XMLHttpRequest, textStatus, errorThrow) {
         errors = true;
-        // console.log("error XMLHttpRequest", XMLHttpRequest);
-        // console.log('textStatus ', textStatus);
-        // console.log('errorThrow ', errorThrow);
+        console.log("error XMLHttpRequest", XMLHttpRequest);
+        console.log('textStatus ', textStatus);
+        console.log('errorThrow ', errorThrow);
         val = {'Code': XMLHttpRequest.status, 'Msg': textStatus, 'data' : errorThrow };
         // return val;
+      },
+      complete: function(xhr, status) {
+        console.log('complete');
+        console.log('xhr ', xhr, ' status ', status);
       }
     });
   } catch(e) {
     val = e;
-  // } finally {  
-  //   if ( !errors ) {
-  //     if (parse) val = JSON.parse(val);
+  } finally {  
+    if ( !errors ) {
+      if (parse) val = JSON.parse(val);
 
-  //     if ( typeof val.Code != 'undefined' ) {
-  //       if ( val.Code == 401 ) {
-  //         if ( val.Msg == '' ) {
-  //           val.Msg = '로그인 필요';
-  //         }
-  //         alert(val.Msg);
-  //         location.replace('/login');
-  //       }
-  //     }
-  //   // } else {
-  //     // val = {'Code': 500, 'Msg': val};
-  //   }
+      if ( typeof val.Code != 'undefined' ) {
+        if ( val.Code == 401 ) {
+          if ( val.Msg == '' ) {
+            val.Msg = '로그인 필요';
+          }
+          alert(val.Msg);
+          location.replace('/login');
+        }
+      }
+    // } else {
+      // val = {'Code': 500, 'Msg': val};
+    }
   }
   return val;
 }

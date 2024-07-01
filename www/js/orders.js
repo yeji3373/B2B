@@ -76,12 +76,6 @@ $(document).ready(function() {
       }
       data = $.merge(data, $('.requirmentOptForm').serializeArray());
     }
-    // $(this).closest('form')
-    //     .attr({'action' : '/orders/orderFixed', 'method' : 'post'})
-    //     .append($(".requirmentOptForm input"));
-    // $(this).closest('form').submit();
-    // data = $(this).closest('form').serializeArray();
-    console.log(data);
 
     result = getData('/orders/orderFixed', data, 'POST', true);
     if (result['Code'] == 200 ) {
