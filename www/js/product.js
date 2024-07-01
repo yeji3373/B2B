@@ -64,7 +64,7 @@ $(document).ready(function() {
     getProductList(data);
   }
 }).on('change', '.productSearchOpts', function() {
-  console.log('change value ' , $(this).val());
+  // console.log('change value ' , $(this).val());
   formInSearchDateInit($(this).val());
 }).on('keyup', '#productSearch', function(e) {
   if ( e.keyCode == 13 ) {
@@ -92,7 +92,7 @@ $(document).ready(function() {
 }).on('click', '.search-btn', function() {
   let opts = $(".productSearchOpts option:selected").val();
   let search = $("#productSearch").val();
-  console.log('before opts ', opts);
+  // console.log('before opts ', opts);
   if ( opts == '' ) {
     $(".productSearchOpts").val('name').change();
     opts = $(".productSearchOpts option:selected").val();
@@ -392,6 +392,8 @@ function getProductList(data = Array(), append = false) {
     }
     data = $.merge(data, [{name: 'null_msg', value: "Product not found"}]);
 
+    // $("#product-form").attr({'action': '/apiLoggedIn/products', 'method': 'post'}).submit();
+    // return;
     products = getData('/apiLoggedIn/products', data);
     // console.log(products);
     console.log(append);

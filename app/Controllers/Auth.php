@@ -11,11 +11,11 @@ class Auth extends BaseController {
     $this->users = new UserModel();
   }
 
-  public function __remap() { 
+  public function _remap() { 
     // 함수 호출 재매핑
   }
 
-  public function __output() {
+  public function _output() {
     // 웹브라우저로 마지막 렌더링된 데이터 출력하는 view와 output class가 있음
     // 마지막 데이터가 웹브라우저로 보내지기 전에 처리해야 할 것이있다면 __output()함수를 추가
     // __output()함수가 있으면 마지막 데이터가 보여지기 전에 항상 호출 됨

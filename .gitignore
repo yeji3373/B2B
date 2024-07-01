@@ -1,5 +1,7 @@
 writable/*
 .vscode/*
-app/*/* copy.php
-app/*/*/* copy
-public/fonts/*
+app/* copy*
+app/*/* copy*
+app/*/*/* copy*
+app/*/*/*/* copy*
+public/*
