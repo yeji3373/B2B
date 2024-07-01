@@ -16,9 +16,11 @@ $routes->group('cafe24', ['namespace' => 'Cafe24\Controllers'], function($routes
   // $routes->get('category', 'Category::getCategory');
   
   // $routes->get('variants', 'Products::getVariants');
-  $routes->get('get_ip', 'Cafe24Api::getIp');
-  $routes->post('get_ip', 'Cafe24Api::getIp');
-});
+  $routes->match(['get', 'post'], 'get_ip', 'Cafe24Api::getIp');
 
-// http://127.0.0.8/cafe24/authorization?code=dDRq43gYCRGkpifGETEyeD&state=MTIzNDU2Nzg=
-// https://koreacosmeticmall.com/cafe24/authentication?code=FYsif6yyHaADV8rLLfYD8P&state=MTIzNDU2Nzg=
+  $routes->group('bnk', function($routes) {
+    // BNK _remap에 1번방식으로 함수 호출 시에는 두 방법다 1번 호출을 사용
+    $routes->match(['get', 'post'], '/', 'BNK');
+    $routes->get('test', 'BNK::test'); // _remap을 통해 2번 호출일 경우에만 사용 가능
+  });
+});
