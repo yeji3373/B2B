@@ -10,9 +10,11 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
+        "agungsugiarto/codeigniter4-cors": "^3.0",
         "dompdf/dompdf": "^2.0",
         "kint-php/kint": "^4.0",
         "laminas/laminas-escaper": "^2.9",
+        "phpunit/phpunit": "^9.6",
         "psr/log": "^1.1"
     },
     "require-dev": {
@@ -23,7 +25,6 @@
         "nexusphp/cs-config": "^3.3",
         "nexusphp/tachycardia": "^1.0",
         "phpstan/phpstan": "1.4.3",
-        "phpunit/phpunit": "^9.1",
         "predis/predis": "^1.1",
         "rector/rector": "0.12.10"
     },
