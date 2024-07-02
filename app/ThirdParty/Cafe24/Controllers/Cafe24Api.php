@@ -31,39 +31,34 @@ class Cafe24Api extends ResourceController {
 		$this->requestHeaders();
 
 		$thisIP = $_SERVER['REMOTE_ADDR'];
-		
-		$result = []; 
+
+		// 접속 불가 국가 목록
+		$bannedCountries = ['KR', 'JP'];
+
+		// 해당 ip의 접속 허용 여부 (false 접속 불가 / true 접속 가능)
+		$result['flag'] = false;
+
 		$ipLookup = $this->ipcheck->ipLookup($thisIP);
-		// print_r($ipLookup);
-		// ipLookup 에러처리를...
-		// 국가 값 있는지 확인 후 오류 처리
+
 		if($ipLookup['statusCode'] == 200){
+			// ipLookup 시 국가코드가 안나오면 fail
 			if(!empty($ipLookup['countryCode'])){
-				$result = ['statusCode' => 200, 'data' => $ipLookup];
+				$result = array_merge($result, $ipLookup);
+				
+				if(in_array($result['countryCode'], $bannedCountries)){
+					// 접속 불가 국가지만 예외적으로 접속 허용하는 ip
+					$available_ip = $this->cafe24Ip->where('ip', $thisIP)->first();
+					if(!empty($available_ip)){
+						$result['flag'] = true;
+					}
+				}else{
+					$result['flag'] = true;
+				}
 			}else{
-				$result = ['statusCode' => 500, 'msg' => 'There is no country code'];
+				$result['status'] = 'fail';
+				$result['statusCode'] = 500;
 			}
 		}
-		// var_dump($accept);
-
-		$available_ips = $this->cafe24Ip->findAll();
-		// print_r($available_ips);
-		// foreach($available_ips as $k => $ip){
-		// 	// var_dump($ip['idx']);
-		// 	$ipLookup = $this->ipcheck->ipLookup($ip['ip']);
-		// 	if(!empty($ipLookup['countryCode'])){
-		// 		$data = ['idx' => $ip['idx'], 'ip_nation' => $ipLookup['countryCode']];
-		// 		$this->cafe24Ip->save($data);
-		// 	}
-		// }
-		$flag = false;
-		foreach($available_ips as $k => $ip){
-			if($ip['ip'] == $thisIP){
-				$flag = true;
-			}
-		}
-
-		$result['flag'] = $flag;
 
 		return $this->respond($result);
 	}

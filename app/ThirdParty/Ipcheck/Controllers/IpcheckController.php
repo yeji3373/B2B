@@ -21,8 +21,9 @@ class IpcheckController extends Controller {
 			'https://extreme-ip-lookup.com/json/'.$ip.'?key='.$this->key);
 		
 		// var_dump('https://extreme-ip-lookup.com/json/'.$ip.'?key='.$this->key);
-		// 이 $response 는 무조건 json 타입을 준다.. 이게 php 에선 object 자료형이고.
-		// $response->body 는 array
+		// 이 $response 는 무조건 json 타입을 준다. 이게 php 에선 object 자료형이고.
+		// $response->body 는 array로 형변환 가능
+		// statusCode 는 무조건 200 을 return 한다.
 		$result = [];
 
 		$result = json_decode($response->getBody());
