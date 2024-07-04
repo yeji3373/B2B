@@ -24,9 +24,7 @@ class Cafe24 extends BaseConfig {
   public $scope = 'mall.read_application,mall.write_application,mall.read_category,mall.write_category,mall.read_product,mall.read_collection,mall.read_order,mall.write_order,mall.read_community,mall.write_community,mall.read_customer,mall.read_notification,mall.write_notification,mall.read_salesreport,mall.read_shipping,mall.write_shipping,mall.read_analytics,mall.read_personal,mall.write_personal';
 
   public $allow_origin = ['https://beautynetkr.cafe24.com', 
-                          'https://beautynetkr.cafe24.com/', 
-                          'https://beautynetkorea.com/',
-                          'https://beautynetkorea.com'];
+                          'https://www.beautynetkorea.com'];
 
   // https://beautynetkr.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id=45icFc2YGBpryVwZjZBkdC&state=MTIzNDU2Nzg=&redirect_uri=https://koreacosmeticmall.com/cafe24/authorization&scope=mall.read_application,mall.write_application,mall.read_category,mall.write_category,mall.read_product,mall.read_collection,mall.read_order,mall.write_order,mall.read_community,mall.write_community,mall.read_customer,mall.read_notification,mall.write_notification,mall.read_salesreport,mall.read_shipping,mall.write_shipping,mall.read_analytics
 }

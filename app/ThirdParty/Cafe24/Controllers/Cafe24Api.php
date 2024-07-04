@@ -14,21 +14,25 @@ class Cafe24Api extends ResourceController {
 	public function __construct() {
 		$this->ipcheck = new IpcheckController();
 		$this->cafe24Ip = new Cafe24IpModel();
+    $this->result = [];
 	}
 
 	public function index() {
 
 	}
 
-	public function requestHeaders() {
-		header('Access-Control-Allow-Credentials: TRUE');
-    header('Access-Control-Allow-Origin: *');
-    header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Methods: GET, POST');
-	}
-
 	public function getIp() {
-		$this->requestHeaders();
+    // $.ajax({
+    //   method: 'get',
+    //   headers: {'Access-Control-Allow-Origin': 'https://www.beautynetkorea.com'}, // headers 반드시 기억하기
+    //   url: 'https://koreacosmeticmall.com/cafe24/get_ip',
+    //   dataType: 'json',
+    //   async: false,
+    //   success: function(data) {
+    //       console.log('data', data);
+    //   }
+    // });
+    // 호출할 때 반드시 headers 기억하기
 
 		$thisIP = $_SERVER['REMOTE_ADDR'];
 
@@ -36,30 +40,30 @@ class Cafe24Api extends ResourceController {
 		$bannedCountries = ['KR', 'JP'];
 
 		// 해당 ip의 접속 허용 여부 (false 접속 불가 / true 접속 가능)
-		$result['flag'] = false;
+		$this->result['flag'] = false;
 
 		$ipLookup = $this->ipcheck->ipLookup($thisIP);
 
 		if($ipLookup['statusCode'] == 200){
 			// ipLookup 시 국가코드가 안나오면 fail
 			if(!empty($ipLookup['countryCode'])){
-				$result = array_merge($result, $ipLookup);
+				$this->result = array_merge($this->result, $ipLookup);
 				
-				if(in_array($result['countryCode'], $bannedCountries)){
+				if(in_array($this->result['countryCode'], $bannedCountries)){
 					// 접속 불가 국가지만 예외적으로 접속 허용하는 ip
 					$available_ip = $this->cafe24Ip->where('ip', $thisIP)->first();
 					if(!empty($available_ip)){
-						$result['flag'] = true;
+						$this->result['flag'] = true;
 					}
 				}else{
-					$result['flag'] = true;
+					$this->result['flag'] = true;
 				}
 			}else{
-				$result['status'] = 'fail';
-				$result['statusCode'] = 500;
+				$this->result['status'] = 'fail';
+				$this->result['statusCode'] = 500;
 			}
 		}
-
-		return $this->respond($result);
+    // $result['header'] = json_encode($request->getHeader('Origin'));
+    return $this->respond($this->result);
 	}
 }
