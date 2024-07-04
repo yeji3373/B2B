@@ -9,7 +9,6 @@ function setHeaders() {
   $request_headers = apache_request_headers();
   $origin = NULL;
   
-  $response->setHeaders('Auth', 'key=?');
   if ( isset($request_headers['origin']) && !empty($request_headers['origin']) ) {  
     if ( !in_array($request_headers['origin'], config('Cafe24')->allow_origin)) return;
     
