@@ -8,6 +8,9 @@ class BNK extends Controller {
     $method = $this->request->getMethod();
     $params = [($params[0] !== 'index' ? $params[0] : false)];
     $this->data = $this->request->getJSON();
+
+    d(apache_response_headers());
+    // d(headers_list());
     
     // dd($this->request); // debug하고 die 그래서 dd
     // d($method); // dubug만 그래서 d
@@ -27,7 +30,8 @@ class BNK extends Controller {
   }
 
   public function get() { // 1번방식 호출
-    echo "get";
+    return;
+    // return json_encode(['result' => 'get']);
   }
 
   public function post() { // 1번방식 호출
