@@ -44,7 +44,7 @@ class Cafe24Api extends ResourceController {
 		// 자사 ip 여부
 		$this->result['bnk_ip'] = false;
 
-		$ipLookup = $this->ipcheck->ipLookup('5.181.235.154');
+		$ipLookup = $this->ipcheck->ipLookup($thisIP);
 
 		if($ipLookup['statusCode'] == 200){
 			// ipLookup 시 국가코드가 안나오면 fail
@@ -53,7 +53,7 @@ class Cafe24Api extends ResourceController {
 				
 				if(in_array($this->result['countryCode'], $bannedCountries)){
 					// 접속 불가 국가지만 예외적으로 접속 허용하는 ip
-					$available_ip = $this->cafe24Ip->where('ip', '5.181.235.154')->first();
+					$available_ip = $this->cafe24Ip->where('ip', $thisIP)->first();
 					if(!empty($available_ip)){
 						$this->result['flag'] = true;
 						if($available_ip['own_ip']){
