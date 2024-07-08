@@ -66,7 +66,6 @@ class Home extends BaseController {
 
   // public function sampleIndex() {
   //   $path = $path = $this->path."/top20";
-
   //   $myfiles = array_diff(scandir($path), array('.', '..'));
   //   $this->data['brandList'] = $myfiles;
 
@@ -79,10 +78,11 @@ class Home extends BaseController {
     
     if($this->request->isAJAX()){
       if(!empty($parameter)){
-        $params = ['type_idx' => 3 , 
+        $params = ['type_idx' => 3, 
                   'title' => $parameter['full-name'] ,
                   'contents' => $parameter['email-address'] ,
                   'display' => 0];
+
         if($this->notice->save($params)){
           return json_encode(['code' => 200, 'msg' => "Your subscription has been successfully completed."]);
         };

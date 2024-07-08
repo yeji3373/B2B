@@ -126,21 +126,20 @@ class ApiLoggedIn extends ResourceController {
   //   return $this->respond($this->data);
   // }
 
-  // // 안씀...
-  // function cartItem() {
-  //   $data = $this->request->getPost();
-  //   $cartSet = ['where' => ['cart.buyer_id' => session()->userData['buyerId']]];
+  function cartItem() {
+    $data = $this->request->getPost();
+    $cartSet = ['where' => ['cart.buyer_id' => session()->userData['buyerId']]];
 
-  //   if ( !empty($data['where']) ) $cartSet['where'] = array_merge($cartSet['where'], $data['where']);
-  //   if ( !empty($data['prd_id']) ) $cartSet['where'] = array_merge($cartSet['where'], ['cart.prd_id' => $data['prd_id']]);
+    if ( !empty($data['where']) ) $cartSet['where'] = array_merge($cartSet['where'], $data['where']);
+    if ( !empty($data['prd_id']) ) $cartSet['where'] = array_merge($cartSet['where'], ['cart.prd_id' => $data['prd_id']]);
 
-  //   $cartList = get_cart($cartSet);
+    $cartList = get_cart($cartSet);
     
-  //   $this->data['cartList'] = $cartList;
-  //   $this->data['cartSet'] = $cartSet;
-  //   $this->data['data'] = $data;
-  //   return $this->respond($this->data);
-  // }
+    $this->data['cartList'] = $cartList;
+    $this->data['cartSet'] = $cartSet;
+    $this->data['data'] = $data;
+    return $this->respond($this->data);
+  }
 
   public function cartList() {
     $data = $this->request->getPost();
@@ -166,12 +165,4 @@ class ApiLoggedIn extends ResourceController {
     $this->data['spqList'] = $getSpq;
     return $this->respond($this->data);
   }
-
-  // function productSelect() {
-  //   $products = new ProductModel();
-  //   $this->data = $products->selects()->select(['name_en', 'name'])->findAll();
-  //   // echo $products->getLastQuery(); 
-  //   // echo "<br/><br/>";
-  //   return $this->respond($this->data);
-  // }
 }
