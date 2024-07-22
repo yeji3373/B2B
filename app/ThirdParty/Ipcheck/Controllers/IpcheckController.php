@@ -11,11 +11,24 @@ class IpcheckController extends Controller {
 		$this->curl = \Config\Services::curlrequest();
 	}
 
+	public function requestHeaders() {
+		$response = service('response');
+		$response->setHeader('Access-Control-Allow-Credentials', 'TRUE');
+    $response->setHeader('Access-Control-Allow-Origin', '*');
+    $response->setHeader('Content-Type', 'application/json; charset=utf-8');
+    $response->setHeader('Access-Control-Allow-Methods', 'GET, POST');
+
+		return $response;
+	}
+
 	public function ipLookup($ip = '') {
+		$this->requestHeaders();
 		
+		// var_dump($ip);
 		if(empty($ip)){
 			$ip = $_SERVER['REMOTE_ADDR'];
 		}
+
 
 		$response = $this->curl->get(
 			'https://extreme-ip-lookup.com/json/'.$ip.'?key='.$this->key);
@@ -29,9 +42,8 @@ class IpcheckController extends Controller {
 		$result = json_decode($response->getBody());
 
 		$result->statusCode = $response->getStatusCode();
-
 		// var_dump((array) $result);
-
+		// return $response->getBody();
 		return (array) $result;
 	}
 }
